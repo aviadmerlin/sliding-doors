@@ -213,3 +213,32 @@ def fit_traits(df: pd.DataFrame, teams: list[str], weights: np.ndarray) -> pd.Da
     for col in ("attack", "defense"):  # recenter: remove the arbitrary reference-team baseline
         traits[col] /= np.exp(np.log(traits[col]).mean())
     return traits
+
+
+def compute_state_exposure(table: pd.DataFrame, teams: list[str]) -> pd.DataFrame:
+    """Minutes of data behind each club's state-dependent trait estimate —
+    used to decide how much to shrink each club's estimate toward the
+    league average."""
+    def minutes(mask: pd.Series, by: str) -> pd.Series:
+        return table[mask].groupby(by).exposure.sum().reindex(teams, fill_value=0)
+
+    exposure = pd.DataFrame(index=teams)
+    exposure["comeback_factor"] = minutes(table.trailing, "shooter")
+    exposure["protect_lead_factor"] = minutes(table.trailing, "opponent")
+    exposure["ten_men_resilience"] = minutes(table.own_card, "shooter") + minutes(table.opp_card, "opponent")
+    exposure["fatigue_factor"] = minutes(table.late, "opponent")
+    return exposure
+
+
+def shrink_traits(estimated: pd.DataFrame, exposure: pd.DataFrame, traits: list[str]) -> pd.DataFrame:
+    """Pulls each club's estimate toward the league average, by an amount
+    that depends on how little data backs it (James-Stein-style shrinkage:
+    weight = exposure / (exposure + k), so a club with roughly the typical
+    (median) amount of data gets pulled about halfway)."""
+    shrunk = estimated.copy()
+    for trait in traits:
+        k = exposure[trait].median()
+        weight = exposure[trait] / (exposure[trait] + k)
+        league_mean = estimated[trait].mean()
+        shrunk[trait] = league_mean + weight * (estimated[trait] - league_mean)
+    return shrunk

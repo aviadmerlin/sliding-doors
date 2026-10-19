@@ -11,7 +11,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.trait_estimation import build_regression_table, compute_weights, fit_traits
+from src.trait_estimation import (build_regression_table, compute_state_exposure, compute_weights,
+                                   fit_traits, shrink_traits)
+
+SHRINKAGE_CANDIDATES = ["comeback_factor", "protect_lead_factor", "ten_men_resilience", "fatigue_factor"]
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
@@ -90,11 +93,32 @@ def main() -> None:
     print(f"Best half-life: {label(best_half_life)} "
           f"(avg correlation {reports[best_half_life].correlation.mean():.3f})")
 
-    plot_validation(results[best_half_life], true_latest, label(best_half_life),
-                     ASSETS_DIR / "trait_validation.png")
+    # Shrinkage: pull each club's noisier traits toward the league average,
+    # weighted by how much data (exposure minutes) backs that club's estimate.
+    best = results[best_half_life]
+    exposure = compute_state_exposure(table, teams)
+    shrunk = shrink_traits(best, exposure, SHRINKAGE_CANDIDATES)
 
-    results[best_half_life].to_csv(DATA_DIR / "estimated_traits.csv")
-    print(f"Saved estimated traits ({label(best_half_life)}) to {DATA_DIR / 'estimated_traits.csv'}")
+    print("\nShrinkage effect on MAE (raw -> shrunk toward league average):")
+    helps = []
+    for trait in SHRINKAGE_CANDIDATES:
+        mae_raw = (best[trait] - true_latest.set_index("team")[trait]).abs().mean()
+        mae_shrunk = (shrunk[trait] - true_latest.set_index("team")[trait]).abs().mean()
+        verdict = "helps" if mae_shrunk < mae_raw else "no help"
+        if mae_shrunk < mae_raw:
+            helps.append(trait)
+        print(f"  {trait:22} {mae_raw:.4f} -> {mae_shrunk:.4f}  ({verdict})")
+
+    # Only keep shrinkage where it actually lowers error; leave the rest as raw MLE.
+    final = best.copy()
+    final[helps] = shrunk[helps]
+    print(f"\nApplying shrinkage to: {helps}")
+
+    plot_validation(final, true_latest, label(best_half_life), ASSETS_DIR / "trait_validation.png")
+
+    final.to_csv(DATA_DIR / "estimated_traits.csv")
+    print(f"Saved estimated traits ({label(best_half_life)}, shrunk where it helps) "
+          f"to {DATA_DIR / 'estimated_traits.csv'}")
 
 
 if __name__ == "__main__":

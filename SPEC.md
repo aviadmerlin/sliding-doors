@@ -29,8 +29,8 @@ language.
 
 - [x] 1. League + season generator
 - [x] 2. Trait estimation + validation
-- [ ] 3. Win probability chart for one match, minute by minute
-- [ ] 4. Top 3 "turning points", ranked by win-probability swing
+- [x] 3. Win probability chart for one match, minute by minute
+- [x] 4. Top 3 "turning points", ranked by win-probability swing
 - [ ] 5. One working "what if" question, end to end, via an agent on Foundry
 - [ ] 6. Simple Streamlit UI, deployed on Azure
 
