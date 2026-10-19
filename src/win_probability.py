@@ -130,15 +130,22 @@ def real_state_at(real_states: pd.DataFrame, final_score: tuple[int, int], minut
 
 
 def win_probability_curve(home: Club, away: Club, real_states: pd.DataFrame, final_score: tuple[int, int],
-                           rng: np.random.Generator, n_trials: int, checkpoints: list[int]) -> pd.DataFrame:
+                           seed: int, n_trials: int, checkpoints: list[int]) -> pd.DataFrame:
     """Win probability at each checkpoint minute, re-simulating forward from
     the REAL match's actual state at that minute each time (independent
     per checkpoint — appropriate since the real continuation is known).
     Reflects simulation noise only; see win_probability_curve_with_uncertainty
-    for a version that also reflects trait-estimation uncertainty."""
+    for a version that also reflects trait-estimation uncertainty.
+
+    Uses the same `seed` to start every checkpoint's simulation (common
+    random numbers): adjacent checkpoints then share most of their random
+    draws, so the curve only moves meaningfully where the real state
+    actually changed, instead of jittering from independent Monte Carlo
+    noise between checkpoints that are simulating almost the same thing."""
     rows = []
     for minute in checkpoints:
         h_score, a_score, h_card, a_card = real_state_at(real_states, final_score, minute)
+        rng = np.random.default_rng(seed)
         final_home, final_away = simulate_forward(home, away, rng, minute, h_score, a_score,
                                                     h_card, a_card, n_trials)
         probs = win_probabilities(final_home, final_away)
@@ -166,17 +173,23 @@ def _pool_batches(batch_probs: list[dict]) -> dict:
 
 def win_probability_curve_with_uncertainty(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
                                             real_states: pd.DataFrame, final_score: tuple[int, int],
-                                            rng: np.random.Generator, trials_per_batch: int,
+                                            seed: int, trials_per_batch: int,
                                             checkpoints: list[int]) -> pd.DataFrame:
     """Like win_probability_curve, but each of the len(team_draws) batches
     uses a different sampled set of club traits (see
     trait_estimation.sample_trait_draws), so the resulting bands reflect
-    both simulation noise and trait-estimation uncertainty."""
+    both simulation noise and trait-estimation uncertainty.
+
+    Common random numbers: batch i always starts from seed + i, regardless
+    of which checkpoint it's simulating, so adjacent checkpoints are highly
+    correlated and the curve doesn't jitter between them (see
+    win_probability_curve for the full rationale)."""
     rows = []
     for minute in checkpoints:
         h_score, a_score, h_card, a_card = real_state_at(real_states, final_score, minute)
         batch_probs = []
-        for draw in team_draws:
+        for i, draw in enumerate(team_draws):
+            rng = np.random.default_rng(seed + i)
             final_home, final_away = simulate_forward(draw[home_name], draw[away_name], rng, minute,
                                                         h_score, a_score, h_card, a_card, trials_per_batch)
             batch_probs.append(win_probabilities(final_home, final_away))
@@ -187,17 +200,21 @@ def win_probability_curve_with_uncertainty(team_draws: list[dict[str, Club]], ho
 
 
 def counterfactual_continuation_curve(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
-                                       rng: np.random.Generator, fork_minute: int, home_goals: int,
+                                       seed: int, fork_minute: int, home_goals: int,
                                        away_goals: int, home_has_card: bool, away_has_card: bool,
                                        trials_per_batch: int, checkpoints: list[int]) -> pd.DataFrame:
     """Win probability at each checkpoint >= fork_minute, following ONE
     coherent imagined continuation from the fork state onward (a single
     simulate_forward_snapshots pass per trait draw, snapshotted at every
     checkpoint) -- for a counterfactual "what if" branch, rather than
-    independently re-simulating from a real known state each time."""
+    independently re-simulating from a real known state each time. Already
+    free of the independent-checkpoint jitter problem by construction
+    (one continuous simulated path per draw), but still seeded
+    deterministically per draw for reproducibility."""
     rows = []
     batches_by_minute = {m: [] for m in checkpoints}
-    for draw in team_draws:
+    for i, draw in enumerate(team_draws):
+        rng = np.random.default_rng(seed + i)
         snapshots = simulate_forward_snapshots(draw[home_name], draw[away_name], rng, fork_minute,
                                                 home_goals, away_goals, home_has_card, away_has_card,
                                                 trials_per_batch, checkpoints)
@@ -229,7 +246,7 @@ def sample_team_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], ex
 
 
 def rank_matches_by_drama(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                           clubs: dict[str, Club], rng: np.random.Generator, n_trials: int = 150,
+                           clubs: dict[str, Club], seed: int, n_trials: int = 150,
                            checkpoints: list[int] | None = None) -> pd.DataFrame:
     """Coarse (fast) home-win-probability swing for every match, using
     point-estimate traits, sorted most to least dramatic. Used both to
@@ -240,52 +257,97 @@ def rank_matches_by_drama(matches: pd.DataFrame, shots: pd.DataFrame, red_cards:
     for _, match in matches.iterrows():
         states = match_real_states(match, shots, red_cards)
         curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
-                                       (match.home_goals, match.away_goals), rng, n_trials, checkpoints)
+                                       (match.home_goals, match.away_goals), seed, n_trials, checkpoints)
         swing = curve.p_home.max() - curve.p_home.min()
         rows.append({"match_id": match.match_id, "swing": swing})
     return pd.DataFrame(rows).sort_values("swing", ascending=False).reset_index(drop=True)
 
 
 def find_most_dramatic_match(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                              clubs: dict[str, Club], rng: np.random.Generator,
+                              clubs: dict[str, Club], seed: int,
                               n_trials: int = 150, checkpoints: list[int] | None = None) -> tuple[pd.Series, float]:
     """Screens every match for the largest home-win-probability swing. Returns (match_row, swing)."""
-    ranked = rank_matches_by_drama(matches, shots, red_cards, clubs, rng, n_trials, checkpoints)
+    ranked = rank_matches_by_drama(matches, shots, red_cards, clubs, seed, n_trials, checkpoints)
     top = ranked.iloc[0]
     best_match = matches[matches.match_id == top.match_id].iloc[0]
     return best_match, float(top.swing)
 
 
-def label_event(minute: int, match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> str:
-    """A short human-readable description of whatever scoring/card event
-    happened at this exact minute in this match (used to annotate turning
-    points)."""
-    match_shots = shots[(shots.match_id == match.match_id) & shots.is_goal]
+# Priority for attributing a turning point when multiple events share a minute:
+# state-changing events (goals, red cards) actually move the simulated win
+# probability; missed shots don't change the score or cards, so they can
+# never be what drove a swing, even if one happened in the same minute.
+_EVENT_PRIORITY = {"goal": 0, "red_card": 1, "big_chance": 2, "missed_penalty": 2}
+
+
+def events_at_minute(minute: int, match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> list[dict]:
+    """All notable events at this exact minute, ranked by _EVENT_PRIORITY so
+    the first one is whichever actually could have driven a win-probability
+    swing (a goal or red card), not a merely-coincidental missed shot."""
+    match_shots = shots[shots.match_id == match.match_id]
     match_cards = red_cards[red_cards.match_id == match.match_id]
 
-    goal = match_shots[match_shots.minute == minute]
-    if len(goal):
-        row = goal.iloc[0]
-        side = "home" if row.team == match.home_team else "away"
-        return f"{minute}' GOAL — {row.player} ({row.team}, {side}), {int(row.home_score)}-{int(row.away_score)} -> " \
-               f"{int(row.home_score) + (side == 'home')}-{int(row.away_score) + (side == 'away')}"
+    events = []
+    for _, r in match_shots[match_shots.minute == minute].iterrows():
+        if r.is_goal:
+            kind = "goal"
+        elif r.is_penalty:
+            kind = "missed_penalty"
+        elif r.is_big_chance:
+            kind = "big_chance"
+        else:
+            continue
+        events.append({"kind": kind, "team": r.team, "player": r.player, "is_penalty": bool(r.is_penalty)})
 
-    card = match_cards[match_cards.minute == minute]
-    if len(card):
-        row = card.iloc[0]
-        return f"{minute}' RED CARD — {row.player} ({row.team})"
+    for _, r in match_cards[match_cards.minute == minute].iterrows():
+        events.append({"kind": "red_card", "team": r.team, "player": r.player, "is_penalty": False})
 
-    return f"{minute}' (no scoring/card event this exact minute)"
+    events.sort(key=lambda e: _EVENT_PRIORITY[e["kind"]])
+    return events
+
+
+def event_minutes(match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> set[int]:
+    """Minutes with a real, state-changing event (a goal or a red card) --
+    the only minutes that can legitimately be turning points. Excludes
+    missed shots, which never change the simulated score/card state."""
+    match_shots = shots[(shots.match_id == match.match_id) & shots.is_goal]
+    match_cards = red_cards[red_cards.match_id == match.match_id]
+    return set(match_shots.minute.tolist()) | set(match_cards.minute.tolist())
 
 
 def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFrame,
                          red_cards: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
-    """Ranks minutes by total movement across all three outcome probabilities
-    (not just home win) -- a goal that mostly swings the draw probability
-    (e.g. an injury-time equalizer) is just as much a turning point as one
-    that swings the home/away split."""
+    """Ranks REAL events (goals and red cards only) by total movement across
+    all three outcome probabilities -- never a minute with no event, which
+    would just be Monte Carlo noise between checkpoints, not a turning
+    point. When more than one event shares a minute, the state-changing one
+    (a goal or red card) is attributed as the primary driver; any other
+    event at that minute is kept as secondary context."""
+    candidate_minutes = event_minutes(match, shots, red_cards)
     c = curve.copy()
     c["swing"] = (c.p_home.diff().abs() + c.p_draw.diff().abs() + c.p_away.diff().abs()) / 2
-    top = c.nlargest(top_n, "swing")
-    top = top.assign(event=[label_event(m, match, shots, red_cards) for m in top.minute])
-    return top[["minute", "swing", "p_home", "p_draw", "p_away", "event"]]
+    c = c[c.minute.isin(candidate_minutes)]
+    top = c.nlargest(min(top_n, len(c)), "swing").sort_values("minute").reset_index(drop=True)
+
+    indexed = curve.set_index("minute")
+    rows = []
+    for _, row in top.iterrows():
+        minute = int(row.minute)
+        events = events_at_minute(minute, match, shots, red_cards)
+        primary, secondary = events[0], events[1:]
+
+        before = indexed.loc[minute - 1]
+        deltas = {outcome: row[f"p_{outcome}"] - before[f"p_{outcome}"] for outcome in ("home", "draw", "away")}
+        headline_outcome = max(deltas, key=lambda o: abs(deltas[o]))
+
+        rows.append({
+            "minute": minute, "swing": row.swing,
+            "p_home": row.p_home, "p_draw": row.p_draw, "p_away": row.p_away,
+            "event_kind": primary["kind"], "event_team": primary["team"], "event_player": primary["player"],
+            "is_penalty": primary["is_penalty"], "secondary_events": secondary,
+            "headline_outcome": headline_outcome,
+            "headline_before": before[f"p_{headline_outcome}"],
+            "headline_after": row[f"p_{headline_outcome}"],
+        })
+
+    return pd.DataFrame(rows)

@@ -8,21 +8,23 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 
 from src.counterfactual import Counterfactual, apply_counterfactual
-from src.trait_estimation import build_regression_table, compute_state_exposure, compute_weights, \
-    fit_traits_distribution
-from src.win_probability import sample_team_draws
+from src.win_probability import clubs_from_traits
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
-N_TRAIT_DRAWS = 15
-TRIALS_PER_DRAW = 100
-SHRINK_COLS = ["comeback_factor", "ten_men_resilience"]
+TRIALS_PER_DRAW = 200
 CHECKPOINTS = list(range(0, 91))
+
+
+def load_team_draws() -> list[dict]:
+    """Loads the trait draws precomputed by scripts/precompute_featured_matches.py
+    (run that first) -- instant, no refitting."""
+    df = pd.read_csv(DATA_DIR / "model_team_draws.csv")
+    return [clubs_from_traits(group.set_index("team")) for _, group in df.groupby("draw")]
 
 
 def plot_scenarios(results: list, out_path: Path) -> None:
@@ -51,16 +53,10 @@ def main() -> None:
     matches = pd.read_csv(DATA_DIR / "matches.csv")
     shots = pd.read_csv(DATA_DIR / "shots.csv")
     red_cards = pd.read_csv(DATA_DIR / "red_cards.csv")
-    teams = sorted(matches.home_team.unique())
     latest_season = matches.season.max()
 
-    print("Fitting trait regression and sampling parameter-uncertainty draws...")
-    table = build_regression_table(matches, shots, red_cards)
-    weights = compute_weights(table.season, None, latest_season)
-    _, params, cov = fit_traits_distribution(table, teams, weights)
-    exposure = compute_state_exposure(table, teams)
-    rng = np.random.default_rng(3)
-    team_draws = sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS, rng)
+    print("Loading the precomputed trait model (data/model_team_draws.csv)...")
+    team_draws = load_team_draws()
 
     dramatic = matches[(matches.season == latest_season) & (matches.home_team == "Silverlake FC") &
                         (matches.away_team == "Northgate United")].iloc[0]
@@ -75,10 +71,10 @@ def main() -> None:
 
     results = []
     cached_actual = {}
-    for cf in scenarios:
+    for i, cf in enumerate(scenarios):
         print(f"\nApplying: {cf}")
         actual_curve = cached_actual.get(cf.match_id)
-        result = apply_counterfactual(cf, matches, shots, red_cards, team_draws, rng,
+        result = apply_counterfactual(cf, matches, shots, red_cards, team_draws, 5000 + i * 97,
                                        TRIALS_PER_DRAW, CHECKPOINTS, actual_curve=actual_curve)
         cached_actual[cf.match_id] = result.actual_curve
 

@@ -53,7 +53,7 @@ def plot_curve(curve: pd.DataFrame, match: pd.Series, turning_points: pd.DataFra
         level = level + 1 if prev_minute is not None and tp.minute - prev_minute < 6 else 0
         prev_minute = tp.minute
 
-        short_label = tp.event.split(" — ")[1].split(",")[0] if " — " in tp.event else tp.event
+        short_label = f"{tp.event_kind} — {tp.event_player}"
         ax.axvline(tp.minute, color="black", linestyle="--", linewidth=0.8, alpha=0.6)
         ax.annotate(f"{tp.minute}' {short_label}", xy=(tp.minute, 1.0),
                      xytext=(tp.minute, 1.03 + level * 0.12), fontsize=8, ha="center", va="bottom",
@@ -82,12 +82,11 @@ def main() -> None:
     season_matches = matches[matches.season == latest_season]
     teams = sorted(matches.home_team.unique())
     clubs = clubs_from_traits(estimated_traits)
-    rng = np.random.default_rng(0)
 
     print(f"Screening {len(season_matches)} matches from season {latest_season} "
           f"({len(COARSE_CHECKPOINTS)} checkpoints x {COARSE_TRIALS} trials each, point-estimate traits)...")
-    best_match, best_swing = find_most_dramatic_match(season_matches, shots, red_cards, clubs, rng,
-                                                        COARSE_TRIALS, COARSE_CHECKPOINTS)
+    best_match, best_swing = find_most_dramatic_match(season_matches, shots, red_cards, clubs, seed=0,
+                                                        n_trials=COARSE_TRIALS, checkpoints=COARSE_CHECKPOINTS)
     print(f"Most dramatic: {best_match.home_team} {best_match.home_goals}-{best_match.away_goals} "
           f"{best_match.away_team} (matchday {best_match.matchday}), "
           f"coarse win-prob swing = {best_swing:.2f}\n")
@@ -97,7 +96,8 @@ def main() -> None:
     weights = compute_weights(table.season, None, latest_season)
     _, params, cov = fit_traits_distribution(table, teams, weights)
     exposure = compute_state_exposure(table, teams)
-    team_draws = sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS, rng)
+    team_draws = sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS,
+                                    np.random.default_rng(42))
     print(f"Sampled {N_TRAIT_DRAWS} alternate leagues from the regression's uncertainty.\n")
 
     total_trials = N_TRAIT_DRAWS * TRIALS_PER_DRAW
@@ -106,7 +106,8 @@ def main() -> None:
     states = match_states(best_match, shots, red_cards)
     curve = win_probability_curve_with_uncertainty(team_draws, best_match.home_team, best_match.away_team,
                                                      states, (best_match.home_goals, best_match.away_goals),
-                                                     rng, TRIALS_PER_DRAW, FINAL_CHECKPOINTS)
+                                                     seed=1000, trials_per_batch=TRIALS_PER_DRAW,
+                                                     checkpoints=FINAL_CHECKPOINTS)
 
     turning_points = rank_turning_points(curve, best_match, shots, red_cards)
     print("\nTop 3 turning points:")

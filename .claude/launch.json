@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "sliding-doors-ui",
-      "runtimeExecutable": ".venv/bin/streamlit",
-      "runtimeArgs": ["run", "app.py", "--server.headless", "true"],
+      "runtimeExecutable": ".venv/bin/python3",
+      "runtimeArgs": ["-m", "streamlit", "run", "app.py", "--server.headless", "true"],
       "port": 8501
     }
   ]

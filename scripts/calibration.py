@@ -49,7 +49,7 @@ def fit_traits_on_seasons(matches: pd.DataFrame, shots: pd.DataFrame, red_cards:
 
 
 def collect_predictions(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                         clubs: dict, rng: np.random.Generator) -> pd.DataFrame:
+                         clubs: dict, seed: int) -> pd.DataFrame:
     rows = []
     for _, match in matches.iterrows():
         match_shots = shots[shots.match_id == match.match_id]
@@ -58,7 +58,7 @@ def collect_predictions(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: p
 
         actual_home_win = match.home_goals > match.away_goals
         curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
-                                       (match.home_goals, match.away_goals), rng, N_TRIALS, CHECKPOINTS)
+                                       (match.home_goals, match.away_goals), seed, N_TRIALS, CHECKPOINTS)
         for _, row in curve.iterrows():
             rows.append({"match_id": match.match_id, "minute": row.minute,
                          "predicted_p_home": row.p_home, "actual_home_win": actual_home_win})
@@ -104,9 +104,9 @@ def plot_calibration(summary: pd.DataFrame, overall_n: int, ece: float, title: s
 
 
 def run_check(label: str, clubs: dict, season_matches: pd.DataFrame, shots: pd.DataFrame,
-              red_cards: pd.DataFrame, rng: np.random.Generator, out_path: Path, title: str) -> float:
+              red_cards: pd.DataFrame, seed: int, out_path: Path, title: str) -> float:
     print(f"\n-- {label} --")
-    predictions = collect_predictions(season_matches, shots, red_cards, clubs, rng)
+    predictions = collect_predictions(season_matches, shots, red_cards, clubs, seed)
     summary = bucket_calibration(predictions, N_BUCKETS)
     print(summary.round(3).to_string(index=False))
     ece = expected_calibration_error(summary)
@@ -122,12 +122,11 @@ def main() -> None:
 
     latest_season = matches.season.max()
     season_matches = matches[matches.season == latest_season]
-    rng = np.random.default_rng(1)
 
     in_sample_traits = pd.read_csv(DATA_DIR / "estimated_traits.csv").set_index("team")
     ece_leaky = run_check(
         "In-sample (leaky): fit on seasons 1-5, tested on season 5",
-        clubs_from_traits(in_sample_traits), season_matches, shots, red_cards, rng,
+        clubs_from_traits(in_sample_traits), season_matches, shots, red_cards, 1,
         ASSETS_DIR / "calibration_in_sample.png", "Calibration (in-sample, leaky)")
 
     print("\nRefitting traits on seasons 1-4 only (out-of-sample test)...")
@@ -136,7 +135,7 @@ def main() -> None:
     out_of_sample_traits.to_csv(DATA_DIR / "estimated_traits_seasons_1_4.csv")
     ece_honest = run_check(
         f"Out-of-sample (honest): fit on seasons {train_seasons}, tested on season {latest_season}",
-        clubs_from_traits(out_of_sample_traits), season_matches, shots, red_cards, rng,
+        clubs_from_traits(out_of_sample_traits), season_matches, shots, red_cards, 2,
         ASSETS_DIR / "calibration.png", "Calibration (out-of-sample)")
 
     print(f"\nSummary: in-sample ECE = {ece_leaky:.4f}  |  out-of-sample ECE = {ece_honest:.4f}")

@@ -12,7 +12,6 @@ built to become a tool an AI agent calls directly in a later step.
 
 from dataclasses import dataclass
 
-import numpy as np
 import pandas as pd
 
 from src.league import Club
@@ -114,7 +113,7 @@ def _forked_state(cf: Counterfactual, event: pd.Series, match: pd.Series,
 
 def apply_counterfactual(cf: Counterfactual, matches: pd.DataFrame, shots: pd.DataFrame,
                           red_cards: pd.DataFrame, team_draws: list[dict[str, Club]],
-                          rng: np.random.Generator, trials_per_draw: int = 150,
+                          seed: int, trials_per_draw: int = 150,
                           checkpoints: list[int] | None = None,
                           actual_curve: pd.DataFrame | None = None) -> CounterfactualResult:
     """Re-simulates `cf.match_id` from `cf.minute` with exactly one change
@@ -138,12 +137,12 @@ def apply_counterfactual(cf: Counterfactual, matches: pd.DataFrame, shots: pd.Da
     if actual_curve is None:
         actual_curve = win_probability_curve_with_uncertainty(
             team_draws, match.home_team, match.away_team, real_states, final_score,
-            rng, trials_per_draw, checkpoints)
+            seed, trials_per_draw, checkpoints)
 
     h_score, a_score, h_card, a_card = _forked_state(cf, event, match, real_states, final_score)
     fork_checkpoints = [m for m in checkpoints if m >= cf.minute]
     continuation = counterfactual_continuation_curve(
-        team_draws, match.home_team, match.away_team, rng, cf.minute,
+        team_draws, match.home_team, match.away_team, seed + 10_000, cf.minute,
         h_score, a_score, h_card, a_card, trials_per_draw, fork_checkpoints)
     continuation["home_score"], continuation["away_score"] = h_score, a_score
 

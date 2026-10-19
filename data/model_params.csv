@@ -1,0 +1,140 @@
+,value
+intercept,-3.911290605290278
+home,0.09169529016200784
+atk_Blackthorn Rovers,-0.5003260342930306
+atk_Bridgeport Rovers,-0.05264043817427676
+atk_Castlebay FC,-0.3912682785323017
+atk_Dunmore Town,-0.37862039790429525
+atk_Eastcliff FC,-0.07985378253607214
+atk_Fenwick United,-0.7223700146764738
+atk_Greymoor Athletic,-0.1443586721739207
+atk_Harrow Vale,-0.5721859661983801
+atk_Kingswell Athletic,-0.5109775281147249
+atk_Millbrook Town,0.09924848731710217
+atk_Northgate United,-0.014477420664213397
+atk_Oakhaven City,-0.21005376558202643
+atk_Port Albion,-0.018844212128088778
+atk_Red Valley FC,-0.040120098703935236
+atk_Riversedge United,-0.6509672600979037
+atk_Silverlake FC,0.06734983512097123
+atk_Stonebridge Town,0.06572547476507629
+atk_Thornfield United,-0.03492510429654968
+atk_West Harbor City,-0.07628745513743512
+def_Blackthorn Rovers,-0.41641541838968427
+def_Bridgeport Rovers,-0.15620857301260527
+def_Castlebay FC,-0.6307741269072961
+def_Dunmore Town,0.2251958601634636
+def_Eastcliff FC,0.12571351095725444
+def_Fenwick United,0.21588448021270074
+def_Greymoor Athletic,-0.36098992750682435
+def_Harrow Vale,-0.3775144496177619
+def_Kingswell Athletic,-0.10626481497975768
+def_Millbrook Town,-0.020269990039914906
+def_Northgate United,-0.25352737358322674
+def_Oakhaven City,0.017063800802009615
+def_Port Albion,-0.4813379241090341
+def_Red Valley FC,-0.4869814825601583
+def_Riversedge United,-0.5100838520121909
+def_Silverlake FC,0.039612847884706946
+def_Stonebridge Town,-0.3101619240773667
+def_Thornfield United,-0.3935834952879998
+def_West Harbor City,-0.4691961877192065
+trail_Ashford Rovers,0.13444617635454253
+trail_Blackthorn Rovers,0.18702859883550293
+trail_Bridgeport Rovers,0.09130642649423874
+trail_Castlebay FC,0.20020573711037157
+trail_Dunmore Town,0.04725543203972388
+trail_Eastcliff FC,-0.04821979841899668
+trail_Fenwick United,0.16492085544813762
+trail_Greymoor Athletic,-0.027984381643056583
+trail_Harrow Vale,0.09808804673744306
+trail_Kingswell Athletic,0.002014161651072842
+trail_Millbrook Town,0.10235187942080497
+trail_Northgate United,0.19216818263620122
+trail_Oakhaven City,0.02633355593369488
+trail_Port Albion,0.0016038019477076781
+trail_Red Valley FC,0.10728091676893062
+trail_Riversedge United,0.08102017563637477
+trail_Silverlake FC,-0.008045841981112474
+trail_Stonebridge Town,0.08917573216238595
+trail_Thornfield United,0.14804176983723516
+trail_West Harbor City,0.021772914413741462
+prolead_Blackthorn Rovers,-0.10291131677073224
+prolead_Bridgeport Rovers,-0.2024172648731792
+prolead_Castlebay FC,-0.05086763555138121
+prolead_Dunmore Town,-0.1199806243221498
+prolead_Eastcliff FC,0.14916999894472044
+prolead_Fenwick United,-0.012682067614479833
+prolead_Greymoor Athletic,-0.26566722843075197
+prolead_Harrow Vale,-0.10445944162338452
+prolead_Kingswell Athletic,-0.1187490241560488
+prolead_Millbrook Town,-0.2149578582021821
+prolead_Northgate United,-0.13412288913460876
+prolead_Oakhaven City,-0.04664495905340474
+prolead_Port Albion,-0.07597347216068726
+prolead_Red Valley FC,-0.06183942366468083
+prolead_Riversedge United,-0.003050928150464788
+prolead_Silverlake FC,0.0024538749888654426
+prolead_Stonebridge Town,-0.08340597128209358
+prolead_Thornfield United,-0.11028963244873374
+prolead_West Harbor City,-0.07290266768138282
+cardA_Ashford Rovers,-0.4985608884429147
+cardA_Blackthorn Rovers,-0.28094176328887577
+cardA_Bridgeport Rovers,-0.5249933136306766
+cardA_Castlebay FC,-0.04730773958476703
+cardA_Dunmore Town,0.10200240521396295
+cardA_Eastcliff FC,-0.1805196867977336
+cardA_Fenwick United,-0.6214928050972819
+cardA_Greymoor Athletic,-0.1817356666425546
+cardA_Harrow Vale,-0.3017777080180625
+cardA_Kingswell Athletic,-0.20095752982404122
+cardA_Millbrook Town,-0.042433888173670775
+cardA_Northgate United,-0.42225143576740154
+cardA_Oakhaven City,-0.12886174861894933
+cardA_Port Albion,-0.15196986630490922
+cardA_Red Valley FC,-0.2963369059003083
+cardA_Riversedge United,-0.4873040830274302
+cardA_Silverlake FC,-0.46206520272976
+cardA_Stonebridge Town,-0.3614937307180468
+cardA_Thornfield United,-0.5653670830985069
+cardA_West Harbor City,0.020974505118497203
+cardD_Ashford Rovers,0.4598610886647759
+cardD_Blackthorn Rovers,0.03367856658405313
+cardD_Bridgeport Rovers,0.49645413065481925
+cardD_Castlebay FC,0.4193945701510591
+cardD_Dunmore Town,0.09165186322494423
+cardD_Eastcliff FC,-0.08130396881157555
+cardD_Fenwick United,0.4530282779521496
+cardD_Greymoor Athletic,-0.2864082207449029
+cardD_Harrow Vale,0.38691307710569967
+cardD_Kingswell Athletic,0.3364149241989296
+cardD_Millbrook Town,0.16929232965550198
+cardD_Northgate United,0.6481517048681592
+cardD_Oakhaven City,0.4330851300156126
+cardD_Port Albion,0.30048637031049313
+cardD_Red Valley FC,0.2631739177928068
+cardD_Riversedge United,0.2746844735044517
+cardD_Silverlake FC,0.477607592980442
+cardD_Stonebridge Town,0.03778211649923616
+cardD_Thornfield United,0.528368448870891
+cardD_West Harbor City,0.011911330810760831
+late_Ashford Rovers,0.04711001811876328
+late_Blackthorn Rovers,0.15942512496172334
+late_Bridgeport Rovers,0.1287097733653588
+late_Castlebay FC,0.17116216084914565
+late_Dunmore Town,0.06950192986127468
+late_Eastcliff FC,0.07425480440785558
+late_Fenwick United,0.25197512668153066
+late_Greymoor Athletic,0.28814999969394295
+late_Harrow Vale,0.18977764823459012
+late_Kingswell Athletic,0.06887558078779248
+late_Millbrook Town,0.21560736161557228
+late_Northgate United,-0.053567967544770306
+late_Oakhaven City,0.10051110820223709
+late_Port Albion,0.21735126039457098
+late_Red Valley FC,0.27692698484006956
+late_Riversedge United,0.2055965681666081
+late_Silverlake FC,0.0810682532569155
+late_Stonebridge Town,-0.0070289008131317054
+late_Thornfield United,0.2303728601478061
+late_West Harbor City,0.2778525128269322

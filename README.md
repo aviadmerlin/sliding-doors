@@ -30,6 +30,7 @@ scripts/
 data/
   *.csv                   # generated season data (matches, shots, goals, red cards, players, true/estimated traits)
   featured_curves.csv, featured_turning_points.csv, featured_matches.json  # precomputed for instant loading
+  model_params.csv, model_cov.csv, model_team_draws.csv  # the fitted trait model, saved so the app never refits it
 assets/
   trait_validation.png     # estimated vs. true traits scatter (see below)
   win_probability.png      # win probability chart for the most dramatic match (see below)
@@ -174,13 +175,15 @@ credit for having already seen the answers.
 ![Calibration](assets/calibration.png)
 
 Expected calibration error (the average gap between predicted and
-actual, weighted by bucket size) is **0.026 out-of-sample**, versus
-**0.020 in-sample** (`assets/calibration_in_sample.png`) — a small but
-real gap from the leakage, in line with how slowly traits drift season
-to season (see "no decay" winning the half-life sweep above). Both are
-still good: buckets sit close to the diagonal within their error bars,
-a reassuring sign that the estimated traits, even with the noise
-discussed above, combine into well-calibrated match-level predictions.
+actual, weighted by bucket size) is **0.028 out-of-sample**, essentially
+indistinguishable from **0.029 in-sample**
+(`assets/calibration_in_sample.png`) — any leakage effect is smaller
+than the run-to-run noise at this sample size, consistent with how
+slowly traits drift season to season (see "no decay" winning the
+half-life sweep above). Both are good: buckets sit close to the diagonal
+within their error bars, a reassuring sign that the estimated traits,
+even with the noise discussed above, combine into well-calibrated
+match-level predictions.
 
 ## Counterfactual engine
 
@@ -227,29 +230,55 @@ python scripts/precompute_featured_matches.py   # run once, before deploying/sha
 streamlit run app.py
 ```
 
-Ties every piece above into one app: pick a match (defaults to the most
-dramatic one), see its score and event timeline, an interactive win
-probability chart with uncertainty bands and turning points marked, and
-a "What if...?" section that runs the counterfactual engine live — pick
-an event from the match's timeline and a change, and it plots the actual
-vs. counterfactual win probability side by side with the outcome deltas.
-A clearly-marked "coming soon" placeholder sits where a free-text
-natural-language question box will go once the Foundry agent is wired up.
+Ties every piece above into one app: a one-line explanation and 3-step
+guide for first-time visitors, a match picker (defaults to the most
+dramatic match), a score header, a small "club profile" card per team
+(plain-language traits like "Strong at protecting a lead," with a note
+on which estimates are solid vs. noisier), the event timeline, an
+interactive win probability chart with uncertainty bands and turning
+points marked, turning-point cards with a clear before → after
+(`Bridgeport win: 34% → 78%`) plus a one-line plain-English summary, and
+a "What if...?" section that runs the counterfactual engine live —
+pick an event from the match's timeline (the change dropdown only ever
+shows the one change that event actually supports) and it plots the
+actual vs. counterfactual win probability side by side with the outcome
+deltas. A clearly-marked "coming soon" placeholder sits where a
+free-text natural-language question box will go once the Foundry agent
+is wired up.
 
-**Cold start.** Fitting the trait regression from 5 seasons of
-shot-level data takes ~25-30s, and simulating one match's win-probability
-curve takes another ~5-10s — far too slow for a judge's first click to
-sit on a blank page. `scripts/precompute_featured_matches.py` fits the
-model once offline, ranks every season-5 match by win-probability swing,
-and saves full curves + turning points for the most dramatic match plus
-10 other high-swing games to `data/featured_curves.csv` /
-`featured_turning_points.csv` / `featured_matches.json`. The app loads
-those with a plain CSV/JSON read — no simulation, no model fit — so the
-default view (and any of the 11 ⚡-marked matches in the picker) appears
-in about a second.
+**Cold start and the fitted model.** Fitting the trait regression from 5
+seasons of shot-level data takes ~15-20s — far too slow for a judge's
+first click, and wasteful to redo on every server start besides.
+`scripts/precompute_featured_matches.py` fits it once offline and saves
+the result to `data/model_params.csv` / `model_cov.csv` /
+`model_team_draws.csv`; the app always *loads* the model from disk
+(a fast CSV read) instead of refitting it. The same script ranks every
+season-5 match by win-probability swing and saves full curves + turning
+points for the most dramatic match plus 10 other high-swing games to
+`data/featured_curves.csv` / `featured_turning_points.csv` /
+`featured_matches.json`. Net effect: the default view (and any of the 11
+⚡-marked matches) loads in about a second, any other match simulates in
+a couple of seconds the first time (`@st.cache_data`, instant after
+that), and even the very first counterfactual of a session — on any
+match — now takes well under a second of actual computation, down from
+~15s when the app used to refit the model on demand.
 
-Any *other* match, or a counterfactual on *any* match, still works — it
-just triggers the trait-model fit on first use (`@st.cache_resource`,
-so it only ever happens once per server process) and that match's
-simulation (`@st.cache_data`, so revisiting it later is instant), both
-with a clear spinner message rather than a silent wait.
+**Turning points, fixed two ways.** Early versions occasionally flagged
+a minute with no real event as a "turning point" — that's just Monte
+Carlo noise between checkpoints, not a real turning point, so
+`rank_turning_points` now only ever considers minutes with an actual
+goal or red card. When two events land in the same minute (a goal and a
+missed chance, say), the state-changing one is always attributed as the
+cause — a missed shot never changes the simulated score, so it can't be
+what drove a swing, even if it coincidentally happened in the same
+minute; the other event is still shown as secondary context.
+
+**Smoother curves via common random numbers.** The win-probability curve
+used to independently re-simulate from scratch at every single-minute
+checkpoint, so adjacent minutes could show unrelated Monte Carlo noise
+even when nothing in the match had actually changed. Now every
+checkpoint's simulation is reseeded from the *same* seed, so neighboring
+checkpoints share most of their random draws — the curve only moves
+where the real state actually changed, not from sampling noise. Bumping
+replay counts alongside this (120 → 200 trials per trait draw) smooths
+it further.

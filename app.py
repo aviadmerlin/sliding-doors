@@ -4,15 +4,14 @@ Pick a match, see its win-probability story, and ask "what if" about any
 goal, missed chance, or red card.
 
 Cold-start performance: fitting the trait regression from 5 seasons of
-shot-level data takes ~25-30s, and simulating one match's win-probability
-curve takes another ~5-10s -- too slow to make a judge stare at a blank
-page on first load. A shortlist of ~11 "featured" matches (the most
-dramatic one, plus other high-swing games) is precomputed offline by
-scripts/precompute_featured_matches.py and loads here instantly, with no
+shot-level data takes ~15-20s. scripts/precompute_featured_matches.py
+fits it once offline and saves the result to data/model_team_draws.csv,
+so the app always loads the model from disk (a fast CSV read) instead of
+refitting. It also precomputes full curves + turning points for a
+shortlist of ~11 "featured" matches, which load here instantly with no
 simulation at all. Any other match -- and any counterfactual, on any
-match -- still works, but triggers the trait-model fit (once, cached
-after that) and/or that match's simulation on demand, with a clear
-progress indicator.
+match -- still works, simulating on demand with a progress indicator,
+but no longer pays the model-fitting cost.
 """
 
 import json
@@ -28,17 +27,14 @@ import streamlit as st
 
 from src.counterfactual import Counterfactual, CounterfactualResult, apply_counterfactual
 from src.league import Club
-from src.trait_estimation import (build_regression_table, compute_state_exposure, compute_weights,
-                                   fit_traits_distribution, match_real_states)
-from src.win_probability import rank_turning_points, sample_team_draws, win_probability_curve_with_uncertainty
+from src.trait_estimation import match_real_states
+from src.win_probability import clubs_from_traits, rank_turning_points, win_probability_curve_with_uncertainty
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
 # Must match scripts/precompute_featured_matches.py so on-demand curves are
 # directly comparable to the precomputed featured ones.
-N_TRAIT_DRAWS = 18
-TRIALS_PER_DRAW = 120
-SHRINK_COLS = ["comeback_factor", "ten_men_resilience"]
+TRIALS_PER_DRAW = 200
 CHECKPOINTS = list(range(0, 91))
 
 COLOR_HOME = "#22C55E"
@@ -54,6 +50,18 @@ KIND_TO_CHANGE = {"goal": "goal_cancelled", "missed_penalty": "shot_becomes_goal
                    "big_chance": "shot_becomes_goal", "red_card": "red_card_undone"}
 KIND_BADGE = {"goal": ("Goal", "green"), "missed_penalty": ("Penalty missed", "red"),
               "big_chance": ("Big chance missed", "orange"), "red_card": ("Red card", "red")}
+
+# (high-trait phrase, low-trait phrase), shown only when a club is in the top/bottom
+# 30% of the league for that trait. Confidence tags reflect the validation
+# correlations from step 2 (see README "Estimated vs. true traits").
+TRAIT_DESCRIPTIONS = {
+    "attack": ("Potent going forward", "Struggles to create chances", "well-established"),
+    "defense": ("Hard to break down", "Leaky at the back", "well-established"),
+    "protect_lead_factor": ("Strong at protecting a lead", "Can let leads slip", "well-established"),
+    "fatigue_factor": ("Strong legs late on", "Fades late in matches", "rougher estimate"),
+    "ten_men_resilience": ("Copes well with 10 men", "Struggles with 10 men", "rougher estimate"),
+    "comeback_factor": ("Dangerous when behind", "Rarely fights back from behind", "rougher estimate"),
+}
 
 st.set_page_config(page_title="Sliding Doors", page_icon=":material/sports_soccer:", layout="wide")
 
@@ -82,30 +90,34 @@ def load_season_matches() -> pd.DataFrame:
 
 
 @st.cache_data(show_spinner=False)
+def load_estimated_traits() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "estimated_traits.csv").set_index("team")
+
+
+@st.cache_data(show_spinner=False)
 def load_featured() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     """Precomputed curves/turning points for the featured shortlist (see
     scripts/precompute_featured_matches.py) -- instant, no model fit."""
     curves = pd.read_csv(DATA_DIR / "featured_curves.csv")
     turning_points = pd.read_csv(DATA_DIR / "featured_turning_points.csv")
+    turning_points["secondary_events"] = turning_points.secondary_events.apply(json.loads)
     meta = json.loads((DATA_DIR / "featured_matches.json").read_text())
     return curves, turning_points, meta
 
 
-# --- Slow, lazily-loaded model: only fit when something actually needs to simulate ---
+# --- The fitted model: loaded from disk, never refit by the app itself ---
 
-@st.cache_resource(show_spinner="Loading the trait model to simulate this match (one-time, ~30s)...")
+@st.cache_resource(show_spinner="Loading the trait model...")
 def load_team_draws() -> list[dict[str, Club]]:
-    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
-    teams = sorted(matches.home_team.unique())
-    latest_season = int(matches.season.max())
-
-    table = build_regression_table(matches, shots, red_cards)
-    weights = compute_weights(table.season, None, latest_season)
-    _, params, cov = fit_traits_distribution(table, teams, weights)
-    exposure = compute_state_exposure(table, teams)
-
-    rng = np.random.default_rng(42)
-    return sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS, rng)
+    """Loads the trait draws scripts/precompute_featured_matches.py already
+    fit and saved -- a fast CSV read + reshape, not a refit."""
+    path = DATA_DIR / "model_team_draws.csv"
+    if not path.exists():
+        st.error("Model not found: run `python scripts/precompute_featured_matches.py` first.",
+                  icon=":material/error:")
+        st.stop()
+    df = pd.read_csv(path)
+    return [clubs_from_traits(group.set_index("team")) for _, group in df.groupby("draw")]
 
 
 @st.cache_data(show_spinner="Simulating thousands of replays for this match...", max_entries=50)
@@ -113,10 +125,9 @@ def simulate_curve(match_id: int, _team_draws: list[dict[str, Club]]) -> pd.Data
     matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
     match = matches[matches.match_id == match_id].iloc[0]
     states = match_real_states(match, shots, red_cards)
-    rng = np.random.default_rng(1000 + match_id)
     return win_probability_curve_with_uncertainty(
         _team_draws, match.home_team, match.away_team, states,
-        (int(match.home_goals), int(match.away_goals)), rng, TRIALS_PER_DRAW, CHECKPOINTS)
+        (int(match.home_goals), int(match.away_goals)), 1000 + match_id, TRIALS_PER_DRAW, CHECKPOINTS)
 
 
 @st.cache_data(show_spinner="Re-simulating the counterfactual...", max_entries=100)
@@ -125,16 +136,16 @@ def compute_counterfactual(match_id: int, minute: int, change: str, team: str | 
                             _actual_curve: pd.DataFrame) -> CounterfactualResult:
     matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
     cf = Counterfactual(match_id=match_id, minute=minute, change=change, team=team)
-    rng = np.random.default_rng(2000 + match_id * 97 + minute)
-    return apply_counterfactual(cf, matches, shots, red_cards, _team_draws, rng, TRIALS_PER_DRAW,
+    seed = 2000 + match_id * 97 + minute
+    return apply_counterfactual(cf, matches, shots, red_cards, _team_draws, seed, TRIALS_PER_DRAW,
                                  CHECKPOINTS, actual_curve=_actual_curve)
 
 
 def get_curve_and_turning_points(match_id: int, featured_curves: pd.DataFrame,
                                   featured_turning_points: pd.DataFrame,
                                   featured_ids: set[int]) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Instant for a featured match (precomputed). Simulates on demand --
-    triggering the one-time model fit first if needed -- for anything else."""
+    """Instant for a featured match (precomputed). Simulates on demand for
+    anything else, using the model already loaded from disk."""
     if match_id in featured_ids:
         curve = (featured_curves[featured_curves.match_id == match_id]
                  .drop(columns="match_id").reset_index(drop=True))
@@ -182,6 +193,33 @@ def build_timeline(match_id: int) -> pd.DataFrame:
 
     timeline = pd.DataFrame(rows)
     return timeline.sort_values("minute").reset_index(drop=True) if len(timeline) else timeline
+
+
+def club_profile(team: str, estimated_traits: pd.DataFrame) -> list[dict]:
+    """Traits where this club sits in the top or bottom 30% of the league,
+    i.e. actually notable rather than merely average."""
+    notable = []
+    for trait, (high_label, low_label, confidence) in TRAIT_DESCRIPTIONS.items():
+        percentile = (estimated_traits[trait] < estimated_traits.loc[team, trait]).mean()
+        if percentile >= 0.7:
+            notable.append({"label": high_label, "confidence": confidence})
+        elif percentile <= 0.3:
+            notable.append({"label": low_label, "confidence": confidence})
+    return notable
+
+
+def render_club_card(team: str, estimated_traits: pd.DataFrame) -> None:
+    with st.container(border=True, height="stretch"):
+        st.markdown(f"**{team}**")
+        traits = club_profile(team, estimated_traits)
+        if not traits:
+            st.caption("Average across the board in our estimates — no standout traits.")
+            return
+        for t in traits:
+            st.caption(f"• {t['label']}")
+        rough = [t["label"] for t in traits if t["confidence"] == "rougher estimate"]
+        if rough:
+            st.caption(f":material/info: Less certain estimate: {', '.join(rough).lower()}.")
 
 
 def rgba(hex_color: str, alpha: float) -> str:
@@ -250,12 +288,45 @@ def build_counterfactual_figure(result: CounterfactualResult, fork_minute: int) 
     return fig
 
 
+def stat_label(outcome: str, match: pd.Series) -> str:
+    return {"home": f"{match.home_team} win", "draw": "Draw", "away": f"{match.away_team} win"}[outcome]
+
+
+def prose_label(outcome: str, match: pd.Series) -> str:
+    return {"home": f"{match.home_team}'s chances", "draw": "the draw's chances",
+            "away": f"{match.away_team}'s chances"}[outcome]
+
+
+def turning_point_summary(tp: pd.Series, match: pd.Series) -> str:
+    event_phrase = {"goal": f"{tp.event_player}'s {tp.minute}' goal",
+                     "red_card": f"{tp.event_player}'s {tp.minute}' red card"}[tp.event_kind]
+    verb = "boosts" if tp.headline_after > tp.headline_before else "hurts"
+    summary = f"{event_phrase} {verb} {prose_label(tp.headline_outcome, match)}."
+    if tp.secondary_events:
+        extra = tp.secondary_events[0]
+        summary += f" (Also this minute: {extra['player']} had a missed chance.)"
+    return summary
+
+
 def main() -> None:
     st.title("Sliding Doors", icon=":material/sports_soccer:")
     st.caption("Counterfactual match intelligence for a fictional 20-club league")
+    st.markdown("**See how a match turned, and replay it with one moment changed.**")
+
+    how_to = [
+        (":material/list:", "Pick a match", "Choose any match from the sidebar — ⚡ ones load instantly."),
+        (":material/show_chart:", "See the swings", "Watch win probability move through the 90 minutes."),
+        (":material/alt_route:", "Try a What if", "Replay one moment differently and compare the outcome."),
+    ]
+    how_to_cols = st.columns(3)
+    for col, (icon, title, desc) in zip(how_to_cols, how_to):
+        with col, st.container(border=True):
+            st.markdown(f"{icon} **{title}**")
+            st.caption(desc)
 
     matches = load_matches()
     season_matches = load_season_matches()
+    estimated_traits = load_estimated_traits()
     featured_curves, featured_turning_points, featured_meta = load_featured()
     featured_ids = set(featured_meta["featured_match_ids"])
     default_match_id = featured_meta["default_match_id"]
@@ -274,7 +345,7 @@ def main() -> None:
                                  label_visibility="collapsed")
         st.caption(f"Season {int(season_matches.season.iloc[0])} · {len(match_ids)} matches. "
                    "⚡ matches load instantly (precomputed); others simulate on selection, "
-                   "~30-40s the first time.")
+                   "a few seconds the first time.")
 
     match = matches[matches.match_id == match_id].iloc[0]
 
@@ -288,6 +359,13 @@ def main() -> None:
         with cols[2]:
             st.subheader(match.away_team, text_alignment="left")
         st.caption(f"Season {match.season} · Matchday {match.matchday}", text_alignment="center")
+
+    # --- Club profiles ---
+    profile_cols = st.columns(2)
+    with profile_cols[0]:
+        render_club_card(match.home_team, estimated_traits)
+    with profile_cols[1]:
+        render_club_card(match.away_team, estimated_traits)
 
     timeline = build_timeline(match_id)
 
@@ -322,14 +400,13 @@ def main() -> None:
     tp_cols = st.columns(3)
     for col, (_, tp) in zip(tp_cols, turning_points.iterrows()):
         with col, st.container(border=True, height="stretch"):
-            matching = timeline[timeline.minute == tp.minute]
-            desc = matching.iloc[0].description if len(matching) else tp.event
-            kind = matching.iloc[0].kind if len(matching) else None
-            badge_label, badge_color = KIND_BADGE.get(kind, ("Event", "gray"))
+            badge_label, badge_color = KIND_BADGE[tp.event_kind]
             st.markdown(f"**{tp.minute}'**")
             st.badge(badge_label, color=badge_color)
-            st.caption(desc)
-            st.metric("Win-probability swing", f"{tp.swing:.0%}")
+            st.caption(f"{tp.event_player} ({tp.event_team})")
+            st.markdown(f"**{stat_label(tp.headline_outcome, match)}: "
+                        f"{tp.headline_before:.0%} → {tp.headline_after:.0%}**")
+            st.caption(turning_point_summary(tp, match))
 
     # --- What if? ---
     st.subheader("What if...?", icon=":material/alt_route:")
@@ -345,26 +422,19 @@ def main() -> None:
                     format_func=lambda i: f"{timeline.loc[i, 'minute']}' — "
                                            f"{KIND_BADGE[timeline.loc[i, 'kind']][0]} — {timeline.loc[i, 'description']}")
             selected_event = timeline.loc[event_idx]
-            default_change = KIND_TO_CHANGE[selected_event.kind]
-            change_options = list(CHANGE_LABELS.keys())
+            compatible_change = KIND_TO_CHANGE[selected_event.kind]
 
             with event_cols[1]:
-                change = st.selectbox(
-                    "Change", change_options, format_func=lambda c: CHANGE_LABELS[c],
-                    index=change_options.index(default_change), key=f"change_{event_idx}")
+                # Only ever shows the one change compatible with the selected event,
+                # so there's nothing incompatible to pick and nothing to warn about.
+                st.selectbox("Change", [compatible_change], format_func=lambda c: CHANGE_LABELS[c],
+                             key=f"change_{event_idx}")
 
-            compatible = change == default_change
-            if not compatible:
-                st.warning(f"This event doesn't support '{CHANGE_LABELS[change]}'. "
-                           f"The compatible change is '{CHANGE_LABELS[default_change]}'.",
-                           icon=":material/warning:")
-
-            run = st.button("Run counterfactual", type="primary", icon=":material/play_arrow:",
-                            disabled=not compatible)
+            run = st.button("Run counterfactual", type="primary", icon=":material/play_arrow:")
 
         if run:
             team_draws = load_team_draws()
-            result = compute_counterfactual(match_id, int(selected_event.minute), change,
+            result = compute_counterfactual(match_id, int(selected_event.minute), compatible_change,
                                              selected_event.team, team_draws, curve)
 
             st.markdown(f"#### {result.description}")
