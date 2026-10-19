@@ -3,3 +3,5 @@ numpy
 streamlit
 plotly
 python-dotenv
+statsmodels
+matplotlib

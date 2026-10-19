@@ -28,7 +28,7 @@ language.
 ## MVP checklist (must work by Oct 27)
 
 - [x] 1. League + season generator
-- [ ] 2. Trait estimation + validation
+- [x] 2. Trait estimation + validation
 - [ ] 3. Win probability chart for one match, minute by minute
 - [ ] 4. Top 3 "turning points", ranked by win-probability swing
 - [ ] 5. One working "what if" question, end to end, via an agent on Foundry
