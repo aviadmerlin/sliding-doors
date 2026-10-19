@@ -50,6 +50,15 @@ def _match_minute_states(home_team: str, away_team: str, shots: pd.DataFrame,
     return pd.DataFrame(rows)
 
 
+def match_real_states(match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> pd.DataFrame:
+    """Convenience wrapper: the minute-by-minute real state for one match
+    row (as found in matches.csv), filtering the full shots/red_cards
+    tables down to that match first."""
+    match_shots = shots[shots.match_id == match.match_id]
+    match_cards = red_cards[red_cards.match_id == match.match_id]
+    return _match_minute_states(match.home_team, match.away_team, match_shots, match_cards)
+
+
 def _collapse_to_segments(states: pd.DataFrame) -> pd.DataFrame:
     """Groups consecutive minutes with identical state into segments."""
     states = states.copy()

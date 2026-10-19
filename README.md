@@ -24,15 +24,18 @@ scripts/
   generate_season.py      # entry point: builds a league + squads, generates seasons, saves + summarizes
   estimate_traits.py       # estimates current traits, sweeps recency half-lives, validates, plots
   win_probability.py       # picks the most dramatic match, plots its win-probability curve + turning points
-  calibration.py            # checks predicted win probabilities against actual outcomes
+  calibration.py            # checks predicted win probabilities against actual outcomes (in- and out-of-sample)
   counterfactual_demo.py    # demos the counterfactual engine on 3 "what if" scenarios
 data/
   *.csv                   # generated season data (matches, shots, goals, red cards, players, true/estimated traits)
 assets/
   trait_validation.png     # estimated vs. true traits scatter (see below)
   win_probability.png      # win probability chart for the most dramatic match (see below)
-  calibration.png           # predicted vs. actual win rates (see below)
+  calibration.png           # predicted vs. actual win rates, out-of-sample (see below)
   counterfactual_demo.png   # actual vs. counterfactual curves for 3 "what if" scenarios (see below)
+app.py                    # interactive Streamlit UI (see below)
+.streamlit/config.toml    # dark sports-product theme
+.claude/skills/developing-with-streamlit/  # official Streamlit agent skill (vendored, see Setup)
 ```
 
 ## Setup
@@ -42,6 +45,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+The repo vendors the official [Streamlit agent skill](https://github.com/streamlit/agent-skills)
+under `.claude/skills/developing-with-streamlit/` — Claude Code picks it up
+automatically for any Streamlit work in this project (styling, caching,
+layout, etc.).
 
 ## Generate seasons
 
@@ -154,13 +162,23 @@ team actually win about 70% of the time? This checks exactly that, across
 (stopping at minute 75, since predictions right before full time are
 nearly trivial and wouldn't be a fair test).
 
+**The honest version of this test fits traits on seasons 1-4 only and
+checks calibration on season 5** — out-of-sample, the way it would
+actually work in production (you'd never have next season's results
+when making this season's predictions). Fitting and testing on season 5
+alike, like the first version of this check did, lets the model get
+credit for having already seen the answers.
+
 ![Calibration](assets/calibration.png)
 
-Expected calibration error (the average gap between predicted and actual,
-weighted by bucket size) is 0.020 — buckets sit right on the diagonal
-within their error bars. This is a reassuring sign that the estimated
-traits, even with the noise discussed above, combine into well-calibrated
-match-level predictions.
+Expected calibration error (the average gap between predicted and
+actual, weighted by bucket size) is **0.026 out-of-sample**, versus
+**0.020 in-sample** (`assets/calibration_in_sample.png`) — a small but
+real gap from the leakage, in line with how slowly traits drift season
+to season (see "no decay" winning the half-life sweep above). Both are
+still good: buckets sit close to the diagonal within their error bars,
+a reassuring sign that the estimated traits, even with the noise
+discussed above, combine into well-calibrated match-level predictions.
 
 ## Counterfactual engine
 
@@ -199,3 +217,25 @@ different match that actually had a red card (the first one didn't):
   flips the predicted outcome entirely, from 100% away win to a 51%
   home-win favorite. That sending-off looks like the single biggest
   factor in the result.
+
+## Interactive UI
+
+```bash
+streamlit run app.py
+```
+
+Ties every piece above into one app: pick a match (defaults to the most
+dramatic one), see its score and event timeline, an interactive win
+probability chart with uncertainty bands and turning points marked, and
+a "What if...?" section that runs the counterfactual engine live — pick
+an event from the match's timeline and a change, and it plots the actual
+vs. counterfactual win probability side by side with the outcome deltas.
+A clearly-marked "coming soon" placeholder sits where a free-text
+natural-language question box will go once the Foundry agent is wired up.
+
+The trait regression only needs to be fit once per server process
+(`@st.cache_resource`), and each match's win-probability curve is cached
+by match id (`@st.cache_data`) — so the *first* match viewed takes
+~30-40 seconds (fitting the model from 5 seasons of shot-level data,
+then simulating thousands of replays), and every match after that,
+including re-visiting one already viewed, is instant.

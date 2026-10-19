@@ -11,11 +11,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.league import Club
-from src.trait_estimation import (_match_minute_states, build_regression_table, compute_state_exposure,
-                                   compute_weights, fit_traits_distribution)
-from src.win_probability import clubs_from_traits, sample_team_draws, win_probability_curve, \
-    win_probability_curve_with_uncertainty
+from src.trait_estimation import build_regression_table, compute_state_exposure, compute_weights, \
+    fit_traits_distribution, match_real_states
+from src.win_probability import clubs_from_traits, find_most_dramatic_match, rank_turning_points, \
+    sample_team_draws, win_probability_curve_with_uncertainty
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
@@ -29,55 +28,7 @@ SHRINK_COLS = ["comeback_factor", "ten_men_resilience"]
 
 
 def match_states(match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> pd.DataFrame:
-    match_shots = shots[shots.match_id == match.match_id]
-    match_cards = red_cards[red_cards.match_id == match.match_id]
-    return _match_minute_states(match.home_team, match.away_team, match_shots, match_cards)
-
-
-def find_most_dramatic_match(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                              clubs: dict[str, Club], rng: np.random.Generator) -> tuple[pd.Series, float]:
-    best_match, best_swing = None, -1.0
-    for _, match in matches.iterrows():
-        states = match_states(match, shots, red_cards)
-        curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
-                                       (match.home_goals, match.away_goals), rng,
-                                       COARSE_TRIALS, COARSE_CHECKPOINTS)
-        swing = curve.p_home.max() - curve.p_home.min()
-        if swing > best_swing:
-            best_match, best_swing = match, swing
-    return best_match, best_swing
-
-
-def label_event(minute: int, match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> str:
-    match_shots = shots[(shots.match_id == match.match_id) & shots.is_goal]
-    match_cards = red_cards[red_cards.match_id == match.match_id]
-
-    goal = match_shots[match_shots.minute == minute]
-    if len(goal):
-        row = goal.iloc[0]
-        side = "home" if row.team == match.home_team else "away"
-        return f"{minute}' GOAL — {row.player} ({row.team}, {side}), {int(row.home_score)}-{int(row.away_score)} -> " \
-               f"{int(row.home_score) + (side == 'home')}-{int(row.away_score) + (side == 'away')}"
-
-    card = match_cards[match_cards.minute == minute]
-    if len(card):
-        row = card.iloc[0]
-        return f"{minute}' RED CARD — {row.player} ({row.team})"
-
-    return f"{minute}' (no scoring/card event this exact minute)"
-
-
-def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFrame,
-                         red_cards: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
-    """Ranks minutes by total movement across all three outcome probabilities
-    (not just home win) -- a goal that mostly swings the draw probability
-    (e.g. an injury-time equalizer) is just as much a turning point as one
-    that swings the home/away split."""
-    c = curve.copy()
-    c["swing"] = (c.p_home.diff().abs() + c.p_draw.diff().abs() + c.p_away.diff().abs()) / 2
-    top = c.nlargest(top_n, "swing")
-    top = top.assign(event=[label_event(m, match, shots, red_cards) for m in top.minute])
-    return top[["minute", "swing", "p_home", "p_draw", "p_away", "event"]]
+    return match_real_states(match, shots, red_cards)
 
 
 def plot_curve(curve: pd.DataFrame, match: pd.Series, turning_points: pd.DataFrame, out_path: Path) -> None:
@@ -135,7 +86,8 @@ def main() -> None:
 
     print(f"Screening {len(season_matches)} matches from season {latest_season} "
           f"({len(COARSE_CHECKPOINTS)} checkpoints x {COARSE_TRIALS} trials each, point-estimate traits)...")
-    best_match, best_swing = find_most_dramatic_match(season_matches, shots, red_cards, clubs, rng)
+    best_match, best_swing = find_most_dramatic_match(season_matches, shots, red_cards, clubs, rng,
+                                                        COARSE_TRIALS, COARSE_CHECKPOINTS)
     print(f"Most dramatic: {best_match.home_team} {best_match.home_goals}-{best_match.away_goals} "
           f"{best_match.away_team} (matchday {best_match.matchday}), "
           f"coarse win-prob swing = {best_swing:.2f}\n")

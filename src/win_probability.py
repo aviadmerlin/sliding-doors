@@ -16,7 +16,7 @@ from src.league import Club
 from src.match_engine import (BIG_CHANCE_FRACTION, BIG_CHANCE_XG_RANGE, HOME_ADVANTAGE,
                                PENALTY_SHOT_FRACTION, PENALTY_XG_MEAN, RED_CARD_CHANCE_PER_MINUTE,
                                BASE_SHOT_RATE_PER_90, NORMAL_XG_RANGE)
-from src.trait_estimation import sample_trait_draws, shrink_traits
+from src.trait_estimation import match_real_states, sample_trait_draws, shrink_traits
 
 BIG_CHANCE_XG_MEAN = sum(BIG_CHANCE_XG_RANGE) / 2
 NORMAL_XG_MEAN = sum(NORMAL_XG_RANGE) / 2
@@ -226,3 +226,55 @@ def sample_team_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], ex
     raw_draws = sample_trait_draws(params, cov, teams, n_draws, rng)
     shrunk_draws = [shrink_traits(d, exposure, shrink_cols) for d in raw_draws]
     return [clubs_from_traits(d) for d in shrunk_draws]
+
+
+def find_most_dramatic_match(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
+                              clubs: dict[str, Club], rng: np.random.Generator,
+                              n_trials: int = 150, checkpoints: list[int] | None = None) -> tuple[pd.Series, float]:
+    """Screens every match for the largest home-win-probability swing, using
+    a coarse (fast) point-estimate curve. Returns (match_row, swing)."""
+    checkpoints = checkpoints if checkpoints is not None else list(range(0, 91, 10))
+    best_match, best_swing = None, -1.0
+    for _, match in matches.iterrows():
+        states = match_real_states(match, shots, red_cards)
+        curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
+                                       (match.home_goals, match.away_goals), rng, n_trials, checkpoints)
+        swing = curve.p_home.max() - curve.p_home.min()
+        if swing > best_swing:
+            best_match, best_swing = match, swing
+    return best_match, best_swing
+
+
+def label_event(minute: int, match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> str:
+    """A short human-readable description of whatever scoring/card event
+    happened at this exact minute in this match (used to annotate turning
+    points)."""
+    match_shots = shots[(shots.match_id == match.match_id) & shots.is_goal]
+    match_cards = red_cards[red_cards.match_id == match.match_id]
+
+    goal = match_shots[match_shots.minute == minute]
+    if len(goal):
+        row = goal.iloc[0]
+        side = "home" if row.team == match.home_team else "away"
+        return f"{minute}' GOAL — {row.player} ({row.team}, {side}), {int(row.home_score)}-{int(row.away_score)} -> " \
+               f"{int(row.home_score) + (side == 'home')}-{int(row.away_score) + (side == 'away')}"
+
+    card = match_cards[match_cards.minute == minute]
+    if len(card):
+        row = card.iloc[0]
+        return f"{minute}' RED CARD — {row.player} ({row.team})"
+
+    return f"{minute}' (no scoring/card event this exact minute)"
+
+
+def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFrame,
+                         red_cards: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
+    """Ranks minutes by total movement across all three outcome probabilities
+    (not just home win) -- a goal that mostly swings the draw probability
+    (e.g. an injury-time equalizer) is just as much a turning point as one
+    that swings the home/away split."""
+    c = curve.copy()
+    c["swing"] = (c.p_home.diff().abs() + c.p_draw.diff().abs() + c.p_away.diff().abs()) / 2
+    top = c.nlargest(top_n, "swing")
+    top = top.assign(event=[label_event(m, match, shots, red_cards) for m in top.minute])
+    return top[["minute", "swing", "p_home", "p_draw", "p_away", "event"]]
