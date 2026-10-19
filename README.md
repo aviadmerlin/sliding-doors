@@ -19,15 +19,20 @@ src/
   season_generator.py     # schedules and simulates multiple seasons
   trait_estimation.py     # recovers each club's hidden traits from the generated data (Poisson regression)
   win_probability.py      # vectorized Monte Carlo re-simulation -> win/draw/loss probability from any match state
+  counterfactual.py       # re-simulates a match with one real event changed (shot/goal/red card)
 scripts/
   generate_season.py      # entry point: builds a league + squads, generates seasons, saves + summarizes
   estimate_traits.py       # estimates current traits, sweeps recency half-lives, validates, plots
   win_probability.py       # picks the most dramatic match, plots its win-probability curve + turning points
+  calibration.py            # checks predicted win probabilities against actual outcomes
+  counterfactual_demo.py    # demos the counterfactual engine on 3 "what if" scenarios
 data/
   *.csv                   # generated season data (matches, shots, goals, red cards, players, true/estimated traits)
 assets/
   trait_validation.png     # estimated vs. true traits scatter (see below)
   win_probability.png      # win probability chart for the most dramatic match (see below)
+  calibration.png           # predicted vs. actual win rates (see below)
+  counterfactual_demo.png   # actual vs. counterfactual curves for 3 "what if" scenarios (see below)
 ```
 
 ## Setup
@@ -119,3 +124,78 @@ Turning points are ranked by total movement across all three outcome
 probabilities (home/draw/away), not just the home-win number — otherwise
 a goal that mainly makes a draw likely wouldn't register as pivotal even
 though it clearly is.
+
+**The uncertainty bands reflect two different things stacked together.**
+Early versions only captured simulation noise — "if I replay this 3000
+times, how much does the result wobble just from randomness?" That
+understates the real uncertainty, because it treats the club traits as
+if we knew them exactly, and we don't (see the correlations above). Now
+each batch of replays uses a different set of traits, sampled from the
+regression's own fitted uncertainty (`trait_estimation.sample_trait_draws`,
+using the GLM's coefficient covariance — much cheaper than bootstrapping
+by refitting, which would take minutes instead of seconds). Pooling
+across batches means the spread captures "we're not sure Silverlake's
+attack is exactly 1.3" on top of ordinary match randomness. At matched
+trial budgets, bands come out roughly 50% wider during the uncertain
+middle of a match than simulation noise alone would give — and converge
+to the same tight band simulation-only bands give once the outcome is
+essentially decided, which is the expected behavior.
+
+## Calibration
+
+```bash
+python scripts/calibration.py
+```
+
+A win probability number is only useful if it means what it says: among
+all the times the model said "70% chance of a home win," did the home
+team actually win about 70% of the time? This checks exactly that, across
+2,280 (match, minute) checkpoints from every match in the latest season
+(stopping at minute 75, since predictions right before full time are
+nearly trivial and wouldn't be a fair test).
+
+![Calibration](assets/calibration.png)
+
+Expected calibration error (the average gap between predicted and actual,
+weighted by bucket size) is 0.020 — buckets sit right on the diagonal
+within their error bars. This is a reassuring sign that the estimated
+traits, even with the noise discussed above, combine into well-calibrated
+match-level predictions.
+
+## Counterfactual engine
+
+```bash
+python scripts/counterfactual_demo.py
+```
+
+A clean, reusable building block (no AI yet — this is what an agent will
+call as a tool in a later step): given a real match and ONE change —
+a missed shot/penalty becomes a goal, a goal is cancelled, or a red card
+didn't happen — it re-simulates forward from that exact moment and
+returns both the actual and counterfactual win-probability curves plus
+final outcome probabilities. See `Counterfactual` / `CounterfactualResult`
+in `src/counterfactual.py` for the exact (documented) input/output shapes.
+
+Internally, the counterfactual branch is simulated as one coherent
+imagined continuation (a single forward pass per sampled trait draw,
+snapshotted at every minute) rather than independently re-guessing at
+each checkpoint — the real match's continuation is known, so
+`win_probability_curve` can afford to restart from the real state each
+time, but a hypothetical future isn't known and has to be one consistent
+storyline.
+
+![Counterfactual demo](assets/counterfactual_demo.png)
+
+Three examples, two on the win-probability match above and one on a
+different match that actually had a red card (the first one didn't):
+
+- **Cancel the 87th-minute equalizer** — the match was actually won 100%
+  (it happened). Without it, the chance of anything but an away win drops
+  to 5%: there wouldn't have been time left to recover.
+- **Make the 38th-minute big chance a goal instead** — much less decisive:
+  with 52 minutes still to play, the outcome becomes close to a
+  three-way toss-up (29% / 28% / 44%), unlike the late equalizer.
+- **Undo a 17th-minute red card** (different match, actually lost 1-5) —
+  flips the predicted outcome entirely, from 100% away win to a 51%
+  home-win favorite. That sending-off looks like the single biggest
+  factor in the result.

@@ -164,18 +164,14 @@ def build_design_matrix(df: pd.DataFrame, teams: list[str]) -> pd.DataFrame:
     ], axis=1)
 
 
-def fit_traits(df: pd.DataFrame, teams: list[str], weights: np.ndarray) -> pd.DataFrame:
-    """Fits the Poisson GLM and converts coefficients back into traits on
+def _traits_from_params(params: pd.Series, teams: list[str]) -> pd.DataFrame:
+    """Converts one regression coefficient vector into per-team traits, on
     the same scale as the true traits (attack/defense centered so the
     league average is 1.0; the rest read directly off their coefficient,
-    since they're not relative to an arbitrary reference team)."""
-    X = build_design_matrix(df, teams)
-    y = df.xg_sum.to_numpy()
-    offset = np.log(df.exposure.to_numpy())
-
-    model = sm.GLM(y, X.to_numpy(), family=sm.families.Poisson(), offset=offset, freq_weights=weights)
-    result = model.fit()
-    params = pd.Series(result.params, index=X.columns)
+    since they're not relative to an arbitrary reference team). Used both
+    for the point estimate (coefficients = GLM fit) and for each sampled
+    draw when propagating parameter uncertainty (coefficients = one draw
+    from the fit's sampling distribution)."""
 
     def coef(prefix: str, team: str) -> float:
         col = f"{prefix}_{team}"
@@ -213,6 +209,41 @@ def fit_traits(df: pd.DataFrame, teams: list[str], weights: np.ndarray) -> pd.Da
     for col in ("attack", "defense"):  # recenter: remove the arbitrary reference-team baseline
         traits[col] /= np.exp(np.log(traits[col]).mean())
     return traits
+
+
+def fit_traits_distribution(df: pd.DataFrame, teams: list[str], weights: np.ndarray):
+    """Fits the Poisson GLM once. Returns (point_estimate_traits, params,
+    cov_params) — the mean and covariance of the coefficients' fitted
+    sampling distribution, for propagating parameter uncertainty (see
+    sample_trait_draws) without the cost of refitting via bootstrap."""
+    X = build_design_matrix(df, teams)
+    y = df.xg_sum.to_numpy()
+    offset = np.log(df.exposure.to_numpy())
+
+    model = sm.GLM(y, X.to_numpy(), family=sm.families.Poisson(), offset=offset, freq_weights=weights)
+    result = model.fit()
+    params = pd.Series(result.params, index=X.columns)
+    cov = pd.DataFrame(result.cov_params(), index=X.columns, columns=X.columns)
+
+    return _traits_from_params(params, teams), params, cov
+
+
+def fit_traits(df: pd.DataFrame, teams: list[str], weights: np.ndarray) -> pd.DataFrame:
+    """Point-estimate traits only (see fit_traits_distribution for the
+    full fit with uncertainty)."""
+    point_estimate, _, _ = fit_traits_distribution(df, teams, weights)
+    return point_estimate
+
+
+def sample_trait_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], n_draws: int,
+                        rng: np.random.Generator) -> list[pd.DataFrame]:
+    """Draws n_draws alternate coefficient vectors from the GLM's
+    asymptotic sampling distribution ~ N(params, cov), and converts each
+    into a full set of per-team traits. These represent plausible
+    "parallel leagues" consistent with the regression's own uncertainty —
+    more spread out for traits the model is less sure about."""
+    samples = rng.multivariate_normal(params.to_numpy(), cov.to_numpy(), size=n_draws)
+    return [_traits_from_params(pd.Series(sample, index=params.index), teams) for sample in samples]
 
 
 def compute_state_exposure(table: pd.DataFrame, teams: list[str]) -> pd.DataFrame:
