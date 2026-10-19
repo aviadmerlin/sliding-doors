@@ -1,13 +1,22 @@
 """Sliding Doors — interactive counterfactual match intelligence.
 
 Pick a match, see its win-probability story, and ask "what if" about any
-goal, missed chance, or red card. Heavy computation (fitting the trait
-regression, simulating win probability) is cached so only the very first
-load is slow; everything after that is instant.
+goal, missed chance, or red card.
+
+Cold-start performance: fitting the trait regression from 5 seasons of
+shot-level data takes ~25-30s, and simulating one match's win-probability
+curve takes another ~5-10s -- too slow to make a judge stare at a blank
+page on first load. A shortlist of ~11 "featured" matches (the most
+dramatic one, plus other high-swing games) is precomputed offline by
+scripts/precompute_featured_matches.py and loads here instantly, with no
+simulation at all. Any other match -- and any counterfactual, on any
+match -- still works, but triggers the trait-model fit (once, cached
+after that) and/or that match's simulation on demand, with a clear
+progress indicator.
 """
 
+import json
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -21,17 +30,16 @@ from src.counterfactual import Counterfactual, CounterfactualResult, apply_count
 from src.league import Club
 from src.trait_estimation import (build_regression_table, compute_state_exposure, compute_weights,
                                    fit_traits_distribution, match_real_states)
-from src.win_probability import (clubs_from_traits, find_most_dramatic_match, rank_turning_points,
-                                  sample_team_draws, win_probability_curve_with_uncertainty)
+from src.win_probability import rank_turning_points, sample_team_draws, win_probability_curve_with_uncertainty
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
+# Must match scripts/precompute_featured_matches.py so on-demand curves are
+# directly comparable to the precomputed featured ones.
 N_TRAIT_DRAWS = 18
 TRIALS_PER_DRAW = 120
 SHRINK_COLS = ["comeback_factor", "ten_men_resilience"]
 CHECKPOINTS = list(range(0, 91))
-COARSE_TRIALS = 150
-COARSE_CHECKPOINTS = list(range(0, 91, 10))
 
 COLOR_HOME = "#22C55E"
 COLOR_DRAW = "#9CA3AF"
@@ -50,30 +58,46 @@ KIND_BADGE = {"goal": ("Goal", "green"), "missed_penalty": ("Penalty missed", "r
 st.set_page_config(page_title="Sliding Doors", page_icon=":material/sports_soccer:", layout="wide")
 
 
-@dataclass
-class Engine:
-    matches: pd.DataFrame
-    shots: pd.DataFrame
-    red_cards: pd.DataFrame
-    teams: list[str]
-    latest_season: int
-    season_matches: pd.DataFrame
-    point_clubs: dict[str, Club]
-    team_draws: list[dict[str, Club]]
-    default_match_id: int
+# --- Fast, always-cheap data: plain CSV/JSON reads, no simulation ---
+
+@st.cache_data(show_spinner=False)
+def load_matches() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "matches.csv")
 
 
-@st.cache_resource(show_spinner="Fitting the trait model from 5 seasons of data (first load only, ~30s)...")
-def load_engine() -> Engine:
-    matches = pd.read_csv(DATA_DIR / "matches.csv")
-    shots = pd.read_csv(DATA_DIR / "shots.csv")
-    red_cards = pd.read_csv(DATA_DIR / "red_cards.csv")
-    estimated_traits = pd.read_csv(DATA_DIR / "estimated_traits.csv").set_index("team")
+@st.cache_data(show_spinner=False)
+def load_shots() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "shots.csv")
 
+
+@st.cache_data(show_spinner=False)
+def load_red_cards() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "red_cards.csv")
+
+
+@st.cache_data(show_spinner=False)
+def load_season_matches() -> pd.DataFrame:
+    matches = load_matches()
+    return matches[matches.season == matches.season.max()].reset_index(drop=True)
+
+
+@st.cache_data(show_spinner=False)
+def load_featured() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """Precomputed curves/turning points for the featured shortlist (see
+    scripts/precompute_featured_matches.py) -- instant, no model fit."""
+    curves = pd.read_csv(DATA_DIR / "featured_curves.csv")
+    turning_points = pd.read_csv(DATA_DIR / "featured_turning_points.csv")
+    meta = json.loads((DATA_DIR / "featured_matches.json").read_text())
+    return curves, turning_points, meta
+
+
+# --- Slow, lazily-loaded model: only fit when something actually needs to simulate ---
+
+@st.cache_resource(show_spinner="Loading the trait model to simulate this match (one-time, ~30s)...")
+def load_team_draws() -> list[dict[str, Club]]:
+    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
     teams = sorted(matches.home_team.unique())
     latest_season = int(matches.season.max())
-    season_matches = matches[matches.season == latest_season].reset_index(drop=True)
-    point_clubs = clubs_from_traits(estimated_traits)
 
     table = build_regression_table(matches, shots, red_cards)
     weights = compute_weights(table.season, None, latest_season)
@@ -81,51 +105,60 @@ def load_engine() -> Engine:
     exposure = compute_state_exposure(table, teams)
 
     rng = np.random.default_rng(42)
-    team_draws = sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS, rng)
-
-    screen_rng = np.random.default_rng(0)
-    dramatic_match, _ = find_most_dramatic_match(season_matches, shots, red_cards, point_clubs,
-                                                   screen_rng, COARSE_TRIALS, COARSE_CHECKPOINTS)
-
-    return Engine(matches=matches, shots=shots, red_cards=red_cards, teams=teams,
-                  latest_season=latest_season, season_matches=season_matches, point_clubs=point_clubs,
-                  team_draws=team_draws, default_match_id=int(dramatic_match.match_id))
+    return sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS, rng)
 
 
-@st.cache_data(show_spinner="Simulating thousands of replays...", max_entries=50)
-def get_actual_curve(match_id: int, _engine: Engine) -> pd.DataFrame:
-    match = _engine.matches[_engine.matches.match_id == match_id].iloc[0]
-    states = match_real_states(match, _engine.shots, _engine.red_cards)
+@st.cache_data(show_spinner="Simulating thousands of replays for this match...", max_entries=50)
+def simulate_curve(match_id: int, _team_draws: list[dict[str, Club]]) -> pd.DataFrame:
+    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
+    match = matches[matches.match_id == match_id].iloc[0]
+    states = match_real_states(match, shots, red_cards)
     rng = np.random.default_rng(1000 + match_id)
     return win_probability_curve_with_uncertainty(
-        _engine.team_draws, match.home_team, match.away_team, states,
+        _team_draws, match.home_team, match.away_team, states,
         (int(match.home_goals), int(match.away_goals)), rng, TRIALS_PER_DRAW, CHECKPOINTS)
 
 
-@st.cache_data(show_spinner=False, max_entries=50)
-def get_turning_points(match_id: int, _engine: Engine) -> pd.DataFrame:
-    match = _engine.matches[_engine.matches.match_id == match_id].iloc[0]
-    curve = get_actual_curve(match_id, _engine)
-    return rank_turning_points(curve, match, _engine.shots, _engine.red_cards, top_n=3)
-
-
 @st.cache_data(show_spinner="Re-simulating the counterfactual...", max_entries=100)
-def get_counterfactual(match_id: int, minute: int, change: str, team: str | None,
-                        _engine: Engine) -> CounterfactualResult:
+def compute_counterfactual(match_id: int, minute: int, change: str, team: str | None,
+                            _team_draws: list[dict[str, Club]],
+                            _actual_curve: pd.DataFrame) -> CounterfactualResult:
+    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
     cf = Counterfactual(match_id=match_id, minute=minute, change=change, team=team)
-    actual_curve = get_actual_curve(match_id, _engine)
     rng = np.random.default_rng(2000 + match_id * 97 + minute)
-    return apply_counterfactual(cf, _engine.matches, _engine.shots, _engine.red_cards, _engine.team_draws,
-                                 rng, TRIALS_PER_DRAW, CHECKPOINTS, actual_curve=actual_curve)
+    return apply_counterfactual(cf, matches, shots, red_cards, _team_draws, rng, TRIALS_PER_DRAW,
+                                 CHECKPOINTS, actual_curve=_actual_curve)
+
+
+def get_curve_and_turning_points(match_id: int, featured_curves: pd.DataFrame,
+                                  featured_turning_points: pd.DataFrame,
+                                  featured_ids: set[int]) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Instant for a featured match (precomputed). Simulates on demand --
+    triggering the one-time model fit first if needed -- for anything else."""
+    if match_id in featured_ids:
+        curve = (featured_curves[featured_curves.match_id == match_id]
+                 .drop(columns="match_id").reset_index(drop=True))
+        turning_points = (featured_turning_points[featured_turning_points.match_id == match_id]
+                           .drop(columns="match_id").reset_index(drop=True))
+        return curve, turning_points
+
+    team_draws = load_team_draws()
+    curve = simulate_curve(match_id, team_draws)
+    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
+    match = matches[matches.match_id == match_id].iloc[0]
+    turning_points = rank_turning_points(curve, match, shots, red_cards, top_n=3)
+    return curve, turning_points
 
 
 @st.cache_data(show_spinner=False, max_entries=50)
-def build_timeline(match_id: int, _engine: Engine) -> pd.DataFrame:
+def build_timeline(match_id: int) -> pd.DataFrame:
     """Notable events for the timeline and the What-if picker: goals,
-    missed penalties, missed big chances, and red cards."""
-    match = _engine.matches[_engine.matches.match_id == match_id].iloc[0]
-    shots = _engine.shots[_engine.shots.match_id == match_id]
-    cards = _engine.red_cards[_engine.red_cards.match_id == match_id]
+    missed penalties, missed big chances, and red cards. Cheap -- no
+    simulation needed, so this is always instant, featured or not."""
+    matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
+    match = matches[matches.match_id == match_id].iloc[0]
+    shots = shots[shots.match_id == match_id]
+    cards = red_cards[red_cards.match_id == match_id]
     notable = shots[shots.is_goal | shots.is_penalty | shots.is_big_chance].copy()
 
     rows = []
@@ -221,23 +254,29 @@ def main() -> None:
     st.title("Sliding Doors", icon=":material/sports_soccer:")
     st.caption("Counterfactual match intelligence for a fictional 20-club league")
 
-    engine = load_engine()
+    matches = load_matches()
+    season_matches = load_season_matches()
+    featured_curves, featured_turning_points, featured_meta = load_featured()
+    featured_ids = set(featured_meta["featured_match_ids"])
+    default_match_id = featured_meta["default_match_id"]
 
     with st.sidebar:
         st.markdown("**Match**")
-        match_ids = engine.season_matches.sort_values("matchday").match_id.tolist()
+        match_ids = season_matches.sort_values("matchday").match_id.tolist()
 
         def format_match(mid: int) -> str:
-            m = engine.season_matches[engine.season_matches.match_id == mid].iloc[0]
-            return f"MD{m.matchday}: {m.home_team} {m.home_goals}-{m.away_goals} {m.away_team}"
+            m = season_matches[season_matches.match_id == mid].iloc[0]
+            label = f"MD{m.matchday}: {m.home_team} {m.home_goals}-{m.away_goals} {m.away_team}"
+            return label + (" ⚡" if mid in featured_ids else "")
 
-        default_index = match_ids.index(engine.default_match_id)
+        default_index = match_ids.index(default_match_id)
         match_id = st.selectbox("Match", match_ids, index=default_index, format_func=format_match,
                                  label_visibility="collapsed")
-        st.caption(f"Season {engine.latest_season} · {len(match_ids)} matches. Defaults to the most "
-                   "dramatic match (largest win-probability swing).")
+        st.caption(f"Season {int(season_matches.season.iloc[0])} · {len(match_ids)} matches. "
+                   "⚡ matches load instantly (precomputed); others simulate on selection, "
+                   "~30-40s the first time.")
 
-    match = engine.matches[engine.matches.match_id == match_id].iloc[0]
+    match = matches[matches.match_id == match_id].iloc[0]
 
     # --- Header ---
     with st.container(border=True):
@@ -250,7 +289,7 @@ def main() -> None:
             st.subheader(match.away_team, text_alignment="left")
         st.caption(f"Season {match.season} · Matchday {match.matchday}", text_alignment="center")
 
-    timeline = build_timeline(match_id, engine)
+    timeline = build_timeline(match_id)
 
     # --- Event timeline ---
     st.subheader("Timeline", icon=":material/timeline:")
@@ -269,8 +308,8 @@ def main() -> None:
                         st.caption(ev.score_after)
 
     # --- Win probability chart ---
-    curve = get_actual_curve(match_id, engine)
-    turning_points = get_turning_points(match_id, engine)
+    curve, turning_points = get_curve_and_turning_points(match_id, featured_curves,
+                                                           featured_turning_points, featured_ids)
 
     st.subheader("Win probability", icon=":material/show_chart:")
     st.caption("Bands reflect both simulation randomness and uncertainty in the estimated club traits.")
@@ -324,8 +363,9 @@ def main() -> None:
                             disabled=not compatible)
 
         if run:
-            result = get_counterfactual(match_id, int(selected_event.minute), change,
-                                         selected_event.team, engine)
+            team_draws = load_team_draws()
+            result = compute_counterfactual(match_id, int(selected_event.minute), change,
+                                             selected_event.team, team_draws, curve)
 
             st.markdown(f"#### {result.description}")
             cf_fig = build_counterfactual_figure(result, int(selected_event.minute))

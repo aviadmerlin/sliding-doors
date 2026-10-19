@@ -228,21 +228,32 @@ def sample_team_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], ex
     return [clubs_from_traits(d) for d in shrunk_draws]
 
 
-def find_most_dramatic_match(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                              clubs: dict[str, Club], rng: np.random.Generator,
-                              n_trials: int = 150, checkpoints: list[int] | None = None) -> tuple[pd.Series, float]:
-    """Screens every match for the largest home-win-probability swing, using
-    a coarse (fast) point-estimate curve. Returns (match_row, swing)."""
+def rank_matches_by_drama(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
+                           clubs: dict[str, Club], rng: np.random.Generator, n_trials: int = 150,
+                           checkpoints: list[int] | None = None) -> pd.DataFrame:
+    """Coarse (fast) home-win-probability swing for every match, using
+    point-estimate traits, sorted most to least dramatic. Used both to
+    pick the single most dramatic match and to build a shortlist of
+    several interesting ones to precompute for instant loading."""
     checkpoints = checkpoints if checkpoints is not None else list(range(0, 91, 10))
-    best_match, best_swing = None, -1.0
+    rows = []
     for _, match in matches.iterrows():
         states = match_real_states(match, shots, red_cards)
         curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
                                        (match.home_goals, match.away_goals), rng, n_trials, checkpoints)
         swing = curve.p_home.max() - curve.p_home.min()
-        if swing > best_swing:
-            best_match, best_swing = match, swing
-    return best_match, best_swing
+        rows.append({"match_id": match.match_id, "swing": swing})
+    return pd.DataFrame(rows).sort_values("swing", ascending=False).reset_index(drop=True)
+
+
+def find_most_dramatic_match(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
+                              clubs: dict[str, Club], rng: np.random.Generator,
+                              n_trials: int = 150, checkpoints: list[int] | None = None) -> tuple[pd.Series, float]:
+    """Screens every match for the largest home-win-probability swing. Returns (match_row, swing)."""
+    ranked = rank_matches_by_drama(matches, shots, red_cards, clubs, rng, n_trials, checkpoints)
+    top = ranked.iloc[0]
+    best_match = matches[matches.match_id == top.match_id].iloc[0]
+    return best_match, float(top.swing)
 
 
 def label_event(minute: int, match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> str:

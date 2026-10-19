@@ -26,8 +26,10 @@ scripts/
   win_probability.py       # picks the most dramatic match, plots its win-probability curve + turning points
   calibration.py            # checks predicted win probabilities against actual outcomes (in- and out-of-sample)
   counterfactual_demo.py    # demos the counterfactual engine on 3 "what if" scenarios
+  precompute_featured_matches.py  # fits the model once, precomputes curves for ~11 matches so the app loads instantly
 data/
   *.csv                   # generated season data (matches, shots, goals, red cards, players, true/estimated traits)
+  featured_curves.csv, featured_turning_points.csv, featured_matches.json  # precomputed for instant loading
 assets/
   trait_validation.png     # estimated vs. true traits scatter (see below)
   win_probability.png      # win probability chart for the most dramatic match (see below)
@@ -221,6 +223,7 @@ different match that actually had a red card (the first one didn't):
 ## Interactive UI
 
 ```bash
+python scripts/precompute_featured_matches.py   # run once, before deploying/sharing the app
 streamlit run app.py
 ```
 
@@ -233,9 +236,20 @@ vs. counterfactual win probability side by side with the outcome deltas.
 A clearly-marked "coming soon" placeholder sits where a free-text
 natural-language question box will go once the Foundry agent is wired up.
 
-The trait regression only needs to be fit once per server process
-(`@st.cache_resource`), and each match's win-probability curve is cached
-by match id (`@st.cache_data`) — so the *first* match viewed takes
-~30-40 seconds (fitting the model from 5 seasons of shot-level data,
-then simulating thousands of replays), and every match after that,
-including re-visiting one already viewed, is instant.
+**Cold start.** Fitting the trait regression from 5 seasons of
+shot-level data takes ~25-30s, and simulating one match's win-probability
+curve takes another ~5-10s — far too slow for a judge's first click to
+sit on a blank page. `scripts/precompute_featured_matches.py` fits the
+model once offline, ranks every season-5 match by win-probability swing,
+and saves full curves + turning points for the most dramatic match plus
+10 other high-swing games to `data/featured_curves.csv` /
+`featured_turning_points.csv` / `featured_matches.json`. The app loads
+those with a plain CSV/JSON read — no simulation, no model fit — so the
+default view (and any of the 11 ⚡-marked matches in the picker) appears
+in about a second.
+
+Any *other* match, or a counterfactual on *any* match, still works — it
+just triggers the trait-model fit on first use (`@st.cache_resource`,
+so it only ever happens once per server process) and that match's
+simulation (`@st.cache_data`, so revisiting it later is instant), both
+with a clear spinner message rather than a silent wait.
