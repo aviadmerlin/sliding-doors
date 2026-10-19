@@ -1,0 +1,1901 @@
+season,match_id,matchday,home_team,away_team,home_goals,away_goals
+1,1,1,Northgate United,Blackthorn Rovers,1,1
+1,2,1,Port Albion,Riversedge United,2,0
+1,3,1,Red Valley FC,Castlebay FC,1,1
+1,4,1,Stonebridge Town,Dunmore Town,1,3
+1,5,1,Ashford Rovers,Harrow Vale,1,1
+1,6,1,West Harbor City,Fenwick United,1,0
+1,7,1,Kingswell Athletic,Greymoor Athletic,0,2
+1,8,1,Millbrook Town,Silverlake FC,1,2
+1,9,1,Eastcliff FC,Oakhaven City,1,3
+1,10,1,Thornfield United,Bridgeport Rovers,0,0
+1,11,2,Northgate United,Riversedge United,1,2
+1,12,2,Blackthorn Rovers,Castlebay FC,2,1
+1,13,2,Port Albion,Dunmore Town,3,0
+1,14,2,Red Valley FC,Harrow Vale,2,1
+1,15,2,Stonebridge Town,Fenwick United,3,1
+1,16,2,Ashford Rovers,Greymoor Athletic,1,2
+1,17,2,West Harbor City,Silverlake FC,3,2
+1,18,2,Kingswell Athletic,Oakhaven City,3,0
+1,19,2,Millbrook Town,Bridgeport Rovers,1,0
+1,20,2,Eastcliff FC,Thornfield United,1,0
+1,21,3,Northgate United,Castlebay FC,2,1
+1,22,3,Riversedge United,Dunmore Town,1,1
+1,23,3,Blackthorn Rovers,Harrow Vale,2,0
+1,24,3,Port Albion,Fenwick United,3,4
+1,25,3,Red Valley FC,Greymoor Athletic,2,1
+1,26,3,Stonebridge Town,Silverlake FC,5,1
+1,27,3,Ashford Rovers,Oakhaven City,2,0
+1,28,3,West Harbor City,Bridgeport Rovers,3,0
+1,29,3,Kingswell Athletic,Thornfield United,0,3
+1,30,3,Millbrook Town,Eastcliff FC,0,1
+1,31,4,Northgate United,Dunmore Town,3,1
+1,32,4,Castlebay FC,Harrow Vale,1,1
+1,33,4,Riversedge United,Fenwick United,1,1
+1,34,4,Blackthorn Rovers,Greymoor Athletic,1,0
+1,35,4,Port Albion,Silverlake FC,2,1
+1,36,4,Red Valley FC,Oakhaven City,1,1
+1,37,4,Stonebridge Town,Bridgeport Rovers,0,0
+1,38,4,Ashford Rovers,Thornfield United,1,0
+1,39,4,West Harbor City,Eastcliff FC,5,3
+1,40,4,Kingswell Athletic,Millbrook Town,0,0
+1,41,5,Northgate United,Harrow Vale,2,1
+1,42,5,Dunmore Town,Fenwick United,0,0
+1,43,5,Castlebay FC,Greymoor Athletic,0,1
+1,44,5,Riversedge United,Silverlake FC,1,0
+1,45,5,Blackthorn Rovers,Oakhaven City,1,1
+1,46,5,Port Albion,Bridgeport Rovers,0,0
+1,47,5,Red Valley FC,Thornfield United,2,1
+1,48,5,Stonebridge Town,Eastcliff FC,3,1
+1,49,5,Ashford Rovers,Millbrook Town,4,0
+1,50,5,West Harbor City,Kingswell Athletic,3,2
+1,51,6,Northgate United,Fenwick United,0,3
+1,52,6,Harrow Vale,Greymoor Athletic,2,2
+1,53,6,Dunmore Town,Silverlake FC,1,1
+1,54,6,Castlebay FC,Oakhaven City,1,1
+1,55,6,Riversedge United,Bridgeport Rovers,2,2
+1,56,6,Blackthorn Rovers,Thornfield United,0,1
+1,57,6,Port Albion,Eastcliff FC,1,0
+1,58,6,Red Valley FC,Millbrook Town,1,2
+1,59,6,Stonebridge Town,Kingswell Athletic,2,1
+1,60,6,Ashford Rovers,West Harbor City,1,3
+1,61,7,Northgate United,Greymoor Athletic,2,3
+1,62,7,Fenwick United,Silverlake FC,0,0
+1,63,7,Harrow Vale,Oakhaven City,0,3
+1,64,7,Dunmore Town,Bridgeport Rovers,1,0
+1,65,7,Castlebay FC,Thornfield United,2,0
+1,66,7,Riversedge United,Eastcliff FC,2,1
+1,67,7,Blackthorn Rovers,Millbrook Town,2,0
+1,68,7,Port Albion,Kingswell Athletic,3,0
+1,69,7,Red Valley FC,West Harbor City,2,1
+1,70,7,Stonebridge Town,Ashford Rovers,3,1
+1,71,8,Northgate United,Silverlake FC,2,0
+1,72,8,Greymoor Athletic,Oakhaven City,1,1
+1,73,8,Fenwick United,Bridgeport Rovers,1,3
+1,74,8,Harrow Vale,Thornfield United,1,1
+1,75,8,Dunmore Town,Eastcliff FC,2,2
+1,76,8,Castlebay FC,Millbrook Town,3,1
+1,77,8,Riversedge United,Kingswell Athletic,2,3
+1,78,8,Blackthorn Rovers,West Harbor City,1,0
+1,79,8,Port Albion,Ashford Rovers,4,2
+1,80,8,Red Valley FC,Stonebridge Town,2,1
+1,81,9,Northgate United,Oakhaven City,1,2
+1,82,9,Silverlake FC,Bridgeport Rovers,1,4
+1,83,9,Greymoor Athletic,Thornfield United,2,2
+1,84,9,Fenwick United,Eastcliff FC,0,0
+1,85,9,Harrow Vale,Millbrook Town,1,1
+1,86,9,Dunmore Town,Kingswell Athletic,1,0
+1,87,9,Castlebay FC,West Harbor City,1,0
+1,88,9,Riversedge United,Ashford Rovers,2,1
+1,89,9,Blackthorn Rovers,Stonebridge Town,1,0
+1,90,9,Port Albion,Red Valley FC,1,3
+1,91,10,Northgate United,Bridgeport Rovers,5,1
+1,92,10,Oakhaven City,Thornfield United,2,2
+1,93,10,Silverlake FC,Eastcliff FC,3,3
+1,94,10,Greymoor Athletic,Millbrook Town,2,1
+1,95,10,Fenwick United,Kingswell Athletic,0,2
+1,96,10,Harrow Vale,West Harbor City,1,1
+1,97,10,Dunmore Town,Ashford Rovers,1,4
+1,98,10,Castlebay FC,Stonebridge Town,1,0
+1,99,10,Riversedge United,Red Valley FC,2,2
+1,100,10,Blackthorn Rovers,Port Albion,1,0
+1,101,11,Northgate United,Thornfield United,0,2
+1,102,11,Bridgeport Rovers,Eastcliff FC,1,0
+1,103,11,Oakhaven City,Millbrook Town,1,3
+1,104,11,Silverlake FC,Kingswell Athletic,1,2
+1,105,11,Greymoor Athletic,West Harbor City,2,3
+1,106,11,Fenwick United,Ashford Rovers,3,1
+1,107,11,Harrow Vale,Stonebridge Town,0,0
+1,108,11,Dunmore Town,Red Valley FC,2,1
+1,109,11,Castlebay FC,Port Albion,2,0
+1,110,11,Riversedge United,Blackthorn Rovers,1,1
+1,111,12,Northgate United,Eastcliff FC,4,2
+1,112,12,Thornfield United,Millbrook Town,1,1
+1,113,12,Bridgeport Rovers,Kingswell Athletic,3,1
+1,114,12,Oakhaven City,West Harbor City,1,2
+1,115,12,Silverlake FC,Ashford Rovers,0,1
+1,116,12,Greymoor Athletic,Stonebridge Town,0,3
+1,117,12,Fenwick United,Red Valley FC,2,1
+1,118,12,Harrow Vale,Port Albion,0,4
+1,119,12,Dunmore Town,Blackthorn Rovers,2,0
+1,120,12,Castlebay FC,Riversedge United,2,2
+1,121,13,Northgate United,Millbrook Town,2,2
+1,122,13,Eastcliff FC,Kingswell Athletic,0,0
+1,123,13,Thornfield United,West Harbor City,1,1
+1,124,13,Bridgeport Rovers,Ashford Rovers,0,0
+1,125,13,Oakhaven City,Stonebridge Town,0,5
+1,126,13,Silverlake FC,Red Valley FC,1,2
+1,127,13,Greymoor Athletic,Port Albion,2,2
+1,128,13,Fenwick United,Blackthorn Rovers,0,0
+1,129,13,Harrow Vale,Riversedge United,2,1
+1,130,13,Dunmore Town,Castlebay FC,1,3
+1,131,14,Northgate United,Kingswell Athletic,2,0
+1,132,14,Millbrook Town,West Harbor City,1,1
+1,133,14,Eastcliff FC,Ashford Rovers,1,4
+1,134,14,Thornfield United,Stonebridge Town,3,1
+1,135,14,Bridgeport Rovers,Red Valley FC,0,1
+1,136,14,Oakhaven City,Port Albion,1,2
+1,137,14,Silverlake FC,Blackthorn Rovers,1,1
+1,138,14,Greymoor Athletic,Riversedge United,1,2
+1,139,14,Fenwick United,Castlebay FC,1,0
+1,140,14,Harrow Vale,Dunmore Town,2,2
+1,141,15,Northgate United,West Harbor City,0,0
+1,142,15,Kingswell Athletic,Ashford Rovers,0,0
+1,143,15,Millbrook Town,Stonebridge Town,1,2
+1,144,15,Eastcliff FC,Red Valley FC,1,0
+1,145,15,Thornfield United,Port Albion,0,0
+1,146,15,Bridgeport Rovers,Blackthorn Rovers,1,1
+1,147,15,Oakhaven City,Riversedge United,2,2
+1,148,15,Silverlake FC,Castlebay FC,0,2
+1,149,15,Greymoor Athletic,Dunmore Town,1,0
+1,150,15,Fenwick United,Harrow Vale,6,1
+1,151,16,Northgate United,Ashford Rovers,1,0
+1,152,16,West Harbor City,Stonebridge Town,1,1
+1,153,16,Kingswell Athletic,Red Valley FC,0,0
+1,154,16,Millbrook Town,Port Albion,1,1
+1,155,16,Eastcliff FC,Blackthorn Rovers,2,1
+1,156,16,Thornfield United,Riversedge United,2,0
+1,157,16,Bridgeport Rovers,Castlebay FC,2,1
+1,158,16,Oakhaven City,Dunmore Town,1,2
+1,159,16,Silverlake FC,Harrow Vale,1,2
+1,160,16,Greymoor Athletic,Fenwick United,1,1
+1,161,17,Northgate United,Stonebridge Town,2,0
+1,162,17,Ashford Rovers,Red Valley FC,0,6
+1,163,17,West Harbor City,Port Albion,2,0
+1,164,17,Kingswell Athletic,Blackthorn Rovers,0,2
+1,165,17,Millbrook Town,Riversedge United,1,2
+1,166,17,Eastcliff FC,Castlebay FC,2,1
+1,167,17,Thornfield United,Dunmore Town,0,0
+1,168,17,Bridgeport Rovers,Harrow Vale,1,0
+1,169,17,Oakhaven City,Fenwick United,2,3
+1,170,17,Silverlake FC,Greymoor Athletic,2,2
+1,171,18,Northgate United,Red Valley FC,5,1
+1,172,18,Stonebridge Town,Port Albion,4,1
+1,173,18,Ashford Rovers,Blackthorn Rovers,3,2
+1,174,18,West Harbor City,Riversedge United,2,0
+1,175,18,Kingswell Athletic,Castlebay FC,0,0
+1,176,18,Millbrook Town,Dunmore Town,1,3
+1,177,18,Eastcliff FC,Harrow Vale,1,2
+1,178,18,Thornfield United,Fenwick United,7,2
+1,179,18,Bridgeport Rovers,Greymoor Athletic,2,0
+1,180,18,Oakhaven City,Silverlake FC,1,1
+1,181,19,Northgate United,Port Albion,4,0
+1,182,19,Red Valley FC,Blackthorn Rovers,0,1
+1,183,19,Stonebridge Town,Riversedge United,2,1
+1,184,19,Ashford Rovers,Castlebay FC,2,2
+1,185,19,West Harbor City,Dunmore Town,0,0
+1,186,19,Kingswell Athletic,Harrow Vale,1,4
+1,187,19,Millbrook Town,Fenwick United,2,1
+1,188,19,Eastcliff FC,Greymoor Athletic,1,2
+1,189,19,Thornfield United,Silverlake FC,3,0
+1,190,19,Bridgeport Rovers,Oakhaven City,3,2
+1,191,20,Blackthorn Rovers,Northgate United,1,0
+1,192,20,Riversedge United,Port Albion,0,2
+1,193,20,Castlebay FC,Red Valley FC,1,4
+1,194,20,Dunmore Town,Stonebridge Town,0,5
+1,195,20,Harrow Vale,Ashford Rovers,2,2
+1,196,20,Fenwick United,West Harbor City,1,3
+1,197,20,Greymoor Athletic,Kingswell Athletic,0,0
+1,198,20,Silverlake FC,Millbrook Town,3,0
+1,199,20,Oakhaven City,Eastcliff FC,3,1
+1,200,20,Bridgeport Rovers,Thornfield United,0,3
+1,201,21,Riversedge United,Northgate United,2,0
+1,202,21,Castlebay FC,Blackthorn Rovers,1,0
+1,203,21,Dunmore Town,Port Albion,0,1
+1,204,21,Harrow Vale,Red Valley FC,2,1
+1,205,21,Fenwick United,Stonebridge Town,0,0
+1,206,21,Greymoor Athletic,Ashford Rovers,0,3
+1,207,21,Silverlake FC,West Harbor City,0,2
+1,208,21,Oakhaven City,Kingswell Athletic,1,0
+1,209,21,Bridgeport Rovers,Millbrook Town,2,1
+1,210,21,Thornfield United,Eastcliff FC,3,1
+1,211,22,Castlebay FC,Northgate United,3,3
+1,212,22,Dunmore Town,Riversedge United,3,0
+1,213,22,Harrow Vale,Blackthorn Rovers,4,1
+1,214,22,Fenwick United,Port Albion,2,0
+1,215,22,Greymoor Athletic,Red Valley FC,0,1
+1,216,22,Silverlake FC,Stonebridge Town,4,1
+1,217,22,Oakhaven City,Ashford Rovers,0,2
+1,218,22,Bridgeport Rovers,West Harbor City,5,1
+1,219,22,Thornfield United,Kingswell Athletic,0,1
+1,220,22,Eastcliff FC,Millbrook Town,1,1
+1,221,23,Dunmore Town,Northgate United,2,5
+1,222,23,Harrow Vale,Castlebay FC,2,0
+1,223,23,Fenwick United,Riversedge United,1,0
+1,224,23,Greymoor Athletic,Blackthorn Rovers,1,0
+1,225,23,Silverlake FC,Port Albion,3,0
+1,226,23,Oakhaven City,Red Valley FC,2,2
+1,227,23,Bridgeport Rovers,Stonebridge Town,0,0
+1,228,23,Thornfield United,Ashford Rovers,6,2
+1,229,23,Eastcliff FC,West Harbor City,0,4
+1,230,23,Millbrook Town,Kingswell Athletic,2,0
+1,231,24,Harrow Vale,Northgate United,2,1
+1,232,24,Fenwick United,Dunmore Town,1,0
+1,233,24,Greymoor Athletic,Castlebay FC,1,0
+1,234,24,Silverlake FC,Riversedge United,0,1
+1,235,24,Oakhaven City,Blackthorn Rovers,2,5
+1,236,24,Bridgeport Rovers,Port Albion,2,0
+1,237,24,Thornfield United,Red Valley FC,0,3
+1,238,24,Eastcliff FC,Stonebridge Town,1,1
+1,239,24,Millbrook Town,Ashford Rovers,0,1
+1,240,24,Kingswell Athletic,West Harbor City,1,0
+1,241,25,Fenwick United,Northgate United,2,3
+1,242,25,Greymoor Athletic,Harrow Vale,2,2
+1,243,25,Silverlake FC,Dunmore Town,2,0
+1,244,25,Oakhaven City,Castlebay FC,1,1
+1,245,25,Bridgeport Rovers,Riversedge United,2,0
+1,246,25,Thornfield United,Blackthorn Rovers,1,0
+1,247,25,Eastcliff FC,Port Albion,1,3
+1,248,25,Millbrook Town,Red Valley FC,0,0
+1,249,25,Kingswell Athletic,Stonebridge Town,0,1
+1,250,25,West Harbor City,Ashford Rovers,3,2
+1,251,26,Greymoor Athletic,Northgate United,1,1
+1,252,26,Silverlake FC,Fenwick United,2,4
+1,253,26,Oakhaven City,Harrow Vale,3,1
+1,254,26,Bridgeport Rovers,Dunmore Town,3,1
+1,255,26,Thornfield United,Castlebay FC,1,0
+1,256,26,Eastcliff FC,Riversedge United,2,1
+1,257,26,Millbrook Town,Blackthorn Rovers,1,2
+1,258,26,Kingswell Athletic,Port Albion,1,0
+1,259,26,West Harbor City,Red Valley FC,2,0
+1,260,26,Ashford Rovers,Stonebridge Town,0,3
+1,261,27,Silverlake FC,Northgate United,2,0
+1,262,27,Oakhaven City,Greymoor Athletic,3,0
+1,263,27,Bridgeport Rovers,Fenwick United,0,3
+1,264,27,Thornfield United,Harrow Vale,3,0
+1,265,27,Eastcliff FC,Dunmore Town,1,3
+1,266,27,Millbrook Town,Castlebay FC,1,2
+1,267,27,Kingswell Athletic,Riversedge United,2,0
+1,268,27,West Harbor City,Blackthorn Rovers,2,1
+1,269,27,Ashford Rovers,Port Albion,1,0
+1,270,27,Stonebridge Town,Red Valley FC,1,2
+1,271,28,Oakhaven City,Northgate United,0,1
+1,272,28,Bridgeport Rovers,Silverlake FC,1,1
+1,273,28,Thornfield United,Greymoor Athletic,1,1
+1,274,28,Eastcliff FC,Fenwick United,0,1
+1,275,28,Millbrook Town,Harrow Vale,0,0
+1,276,28,Kingswell Athletic,Dunmore Town,4,1
+1,277,28,West Harbor City,Castlebay FC,0,2
+1,278,28,Ashford Rovers,Riversedge United,0,1
+1,279,28,Stonebridge Town,Blackthorn Rovers,0,0
+1,280,28,Red Valley FC,Port Albion,1,1
+1,281,29,Bridgeport Rovers,Northgate United,2,1
+1,282,29,Thornfield United,Oakhaven City,0,0
+1,283,29,Eastcliff FC,Silverlake FC,1,0
+1,284,29,Millbrook Town,Greymoor Athletic,1,1
+1,285,29,Kingswell Athletic,Fenwick United,1,0
+1,286,29,West Harbor City,Harrow Vale,2,0
+1,287,29,Ashford Rovers,Dunmore Town,1,2
+1,288,29,Stonebridge Town,Castlebay FC,2,0
+1,289,29,Red Valley FC,Riversedge United,2,1
+1,290,29,Port Albion,Blackthorn Rovers,3,0
+1,291,30,Thornfield United,Northgate United,1,1
+1,292,30,Eastcliff FC,Bridgeport Rovers,1,3
+1,293,30,Millbrook Town,Oakhaven City,1,1
+1,294,30,Kingswell Athletic,Silverlake FC,0,1
+1,295,30,West Harbor City,Greymoor Athletic,1,0
+1,296,30,Ashford Rovers,Fenwick United,2,1
+1,297,30,Stonebridge Town,Harrow Vale,3,1
+1,298,30,Red Valley FC,Dunmore Town,0,0
+1,299,30,Port Albion,Castlebay FC,3,1
+1,300,30,Blackthorn Rovers,Riversedge United,1,2
+1,301,31,Eastcliff FC,Northgate United,1,2
+1,302,31,Millbrook Town,Thornfield United,0,1
+1,303,31,Kingswell Athletic,Bridgeport Rovers,0,1
+1,304,31,West Harbor City,Oakhaven City,1,1
+1,305,31,Ashford Rovers,Silverlake FC,2,2
+1,306,31,Stonebridge Town,Greymoor Athletic,3,0
+1,307,31,Red Valley FC,Fenwick United,0,2
+1,308,31,Port Albion,Harrow Vale,0,2
+1,309,31,Blackthorn Rovers,Dunmore Town,3,1
+1,310,31,Riversedge United,Castlebay FC,0,1
+1,311,32,Millbrook Town,Northgate United,1,1
+1,312,32,Kingswell Athletic,Eastcliff FC,3,0
+1,313,32,West Harbor City,Thornfield United,0,0
+1,314,32,Ashford Rovers,Bridgeport Rovers,1,2
+1,315,32,Stonebridge Town,Oakhaven City,2,1
+1,316,32,Red Valley FC,Silverlake FC,2,0
+1,317,32,Port Albion,Greymoor Athletic,0,2
+1,318,32,Blackthorn Rovers,Fenwick United,3,0
+1,319,32,Riversedge United,Harrow Vale,0,0
+1,320,32,Castlebay FC,Dunmore Town,3,1
+1,321,33,Kingswell Athletic,Northgate United,3,3
+1,322,33,West Harbor City,Millbrook Town,1,1
+1,323,33,Ashford Rovers,Eastcliff FC,2,2
+1,324,33,Stonebridge Town,Thornfield United,1,0
+1,325,33,Red Valley FC,Bridgeport Rovers,0,2
+1,326,33,Port Albion,Oakhaven City,1,1
+1,327,33,Blackthorn Rovers,Silverlake FC,1,2
+1,328,33,Riversedge United,Greymoor Athletic,0,1
+1,329,33,Castlebay FC,Fenwick United,1,1
+1,330,33,Dunmore Town,Harrow Vale,2,3
+1,331,34,West Harbor City,Northgate United,0,0
+1,332,34,Ashford Rovers,Kingswell Athletic,0,1
+1,333,34,Stonebridge Town,Millbrook Town,4,0
+1,334,34,Red Valley FC,Eastcliff FC,2,1
+1,335,34,Port Albion,Thornfield United,2,1
+1,336,34,Blackthorn Rovers,Bridgeport Rovers,1,0
+1,337,34,Riversedge United,Oakhaven City,1,2
+1,338,34,Castlebay FC,Silverlake FC,1,0
+1,339,34,Dunmore Town,Greymoor Athletic,1,1
+1,340,34,Harrow Vale,Fenwick United,1,1
+1,341,35,Ashford Rovers,Northgate United,2,4
+1,342,35,Stonebridge Town,West Harbor City,1,2
+1,343,35,Red Valley FC,Kingswell Athletic,1,3
+1,344,35,Port Albion,Millbrook Town,4,2
+1,345,35,Blackthorn Rovers,Eastcliff FC,1,1
+1,346,35,Riversedge United,Thornfield United,2,0
+1,347,35,Castlebay FC,Bridgeport Rovers,2,1
+1,348,35,Dunmore Town,Oakhaven City,1,2
+1,349,35,Harrow Vale,Silverlake FC,2,1
+1,350,35,Fenwick United,Greymoor Athletic,3,1
+1,351,36,Stonebridge Town,Northgate United,2,1
+1,352,36,Red Valley FC,Ashford Rovers,1,0
+1,353,36,Port Albion,West Harbor City,2,1
+1,354,36,Blackthorn Rovers,Kingswell Athletic,0,3
+1,355,36,Riversedge United,Millbrook Town,3,1
+1,356,36,Castlebay FC,Eastcliff FC,1,2
+1,357,36,Dunmore Town,Thornfield United,1,4
+1,358,36,Harrow Vale,Bridgeport Rovers,1,0
+1,359,36,Fenwick United,Oakhaven City,3,2
+1,360,36,Greymoor Athletic,Silverlake FC,1,1
+1,361,37,Red Valley FC,Northgate United,1,2
+1,362,37,Port Albion,Stonebridge Town,0,0
+1,363,37,Blackthorn Rovers,Ashford Rovers,1,1
+1,364,37,Riversedge United,West Harbor City,0,5
+1,365,37,Castlebay FC,Kingswell Athletic,0,0
+1,366,37,Dunmore Town,Millbrook Town,2,3
+1,367,37,Harrow Vale,Eastcliff FC,0,3
+1,368,37,Fenwick United,Thornfield United,1,0
+1,369,37,Greymoor Athletic,Bridgeport Rovers,1,0
+1,370,37,Silverlake FC,Oakhaven City,3,2
+1,371,38,Port Albion,Northgate United,0,2
+1,372,38,Blackthorn Rovers,Red Valley FC,1,0
+1,373,38,Riversedge United,Stonebridge Town,4,0
+1,374,38,Castlebay FC,Ashford Rovers,3,0
+1,375,38,Dunmore Town,West Harbor City,1,3
+1,376,38,Harrow Vale,Kingswell Athletic,0,2
+1,377,38,Fenwick United,Millbrook Town,1,1
+1,378,38,Greymoor Athletic,Eastcliff FC,4,1
+1,379,38,Silverlake FC,Thornfield United,1,5
+1,380,38,Oakhaven City,Bridgeport Rovers,4,0
+2,381,1,Northgate United,Blackthorn Rovers,1,2
+2,382,1,Port Albion,Riversedge United,0,0
+2,383,1,Red Valley FC,Castlebay FC,0,2
+2,384,1,Stonebridge Town,Dunmore Town,2,0
+2,385,1,Ashford Rovers,Harrow Vale,3,3
+2,386,1,West Harbor City,Fenwick United,2,0
+2,387,1,Kingswell Athletic,Greymoor Athletic,4,1
+2,388,1,Millbrook Town,Silverlake FC,0,1
+2,389,1,Eastcliff FC,Oakhaven City,2,4
+2,390,1,Thornfield United,Bridgeport Rovers,1,0
+2,391,2,Northgate United,Riversedge United,4,1
+2,392,2,Blackthorn Rovers,Castlebay FC,2,2
+2,393,2,Port Albion,Dunmore Town,1,2
+2,394,2,Red Valley FC,Harrow Vale,3,1
+2,395,2,Stonebridge Town,Fenwick United,3,2
+2,396,2,Ashford Rovers,Greymoor Athletic,2,3
+2,397,2,West Harbor City,Silverlake FC,1,2
+2,398,2,Kingswell Athletic,Oakhaven City,0,2
+2,399,2,Millbrook Town,Bridgeport Rovers,1,4
+2,400,2,Eastcliff FC,Thornfield United,2,0
+2,401,3,Northgate United,Castlebay FC,3,0
+2,402,3,Riversedge United,Dunmore Town,0,1
+2,403,3,Blackthorn Rovers,Harrow Vale,2,0
+2,404,3,Port Albion,Fenwick United,3,1
+2,405,3,Red Valley FC,Greymoor Athletic,2,3
+2,406,3,Stonebridge Town,Silverlake FC,1,1
+2,407,3,Ashford Rovers,Oakhaven City,2,2
+2,408,3,West Harbor City,Bridgeport Rovers,2,0
+2,409,3,Kingswell Athletic,Thornfield United,3,0
+2,410,3,Millbrook Town,Eastcliff FC,2,2
+2,411,4,Northgate United,Dunmore Town,2,1
+2,412,4,Castlebay FC,Harrow Vale,1,0
+2,413,4,Riversedge United,Fenwick United,1,2
+2,414,4,Blackthorn Rovers,Greymoor Athletic,1,0
+2,415,4,Port Albion,Silverlake FC,4,0
+2,416,4,Red Valley FC,Oakhaven City,2,2
+2,417,4,Stonebridge Town,Bridgeport Rovers,1,1
+2,418,4,Ashford Rovers,Thornfield United,2,3
+2,419,4,West Harbor City,Eastcliff FC,1,0
+2,420,4,Kingswell Athletic,Millbrook Town,4,1
+2,421,5,Northgate United,Harrow Vale,1,1
+2,422,5,Dunmore Town,Fenwick United,3,2
+2,423,5,Castlebay FC,Greymoor Athletic,0,2
+2,424,5,Riversedge United,Silverlake FC,1,1
+2,425,5,Blackthorn Rovers,Oakhaven City,0,1
+2,426,5,Port Albion,Bridgeport Rovers,2,0
+2,427,5,Red Valley FC,Thornfield United,2,3
+2,428,5,Stonebridge Town,Eastcliff FC,2,1
+2,429,5,Ashford Rovers,Millbrook Town,3,1
+2,430,5,West Harbor City,Kingswell Athletic,1,2
+2,431,6,Northgate United,Fenwick United,2,0
+2,432,6,Harrow Vale,Greymoor Athletic,1,3
+2,433,6,Dunmore Town,Silverlake FC,1,1
+2,434,6,Castlebay FC,Oakhaven City,4,1
+2,435,6,Riversedge United,Bridgeport Rovers,1,2
+2,436,6,Blackthorn Rovers,Thornfield United,0,1
+2,437,6,Port Albion,Eastcliff FC,1,1
+2,438,6,Red Valley FC,Millbrook Town,3,1
+2,439,6,Stonebridge Town,Kingswell Athletic,1,0
+2,440,6,Ashford Rovers,West Harbor City,1,0
+2,441,7,Northgate United,Greymoor Athletic,1,1
+2,442,7,Fenwick United,Silverlake FC,0,0
+2,443,7,Harrow Vale,Oakhaven City,1,0
+2,444,7,Dunmore Town,Bridgeport Rovers,3,2
+2,445,7,Castlebay FC,Thornfield United,1,1
+2,446,7,Riversedge United,Eastcliff FC,2,0
+2,447,7,Blackthorn Rovers,Millbrook Town,1,0
+2,448,7,Port Albion,Kingswell Athletic,2,0
+2,449,7,Red Valley FC,West Harbor City,0,0
+2,450,7,Stonebridge Town,Ashford Rovers,1,0
+2,451,8,Northgate United,Silverlake FC,3,0
+2,452,8,Greymoor Athletic,Oakhaven City,1,2
+2,453,8,Fenwick United,Bridgeport Rovers,1,2
+2,454,8,Harrow Vale,Thornfield United,1,1
+2,455,8,Dunmore Town,Eastcliff FC,4,3
+2,456,8,Castlebay FC,Millbrook Town,0,1
+2,457,8,Riversedge United,Kingswell Athletic,1,2
+2,458,8,Blackthorn Rovers,West Harbor City,0,0
+2,459,8,Port Albion,Ashford Rovers,1,4
+2,460,8,Red Valley FC,Stonebridge Town,2,2
+2,461,9,Northgate United,Oakhaven City,1,2
+2,462,9,Silverlake FC,Bridgeport Rovers,1,3
+2,463,9,Greymoor Athletic,Thornfield United,2,2
+2,464,9,Fenwick United,Eastcliff FC,0,2
+2,465,9,Harrow Vale,Millbrook Town,1,1
+2,466,9,Dunmore Town,Kingswell Athletic,0,1
+2,467,9,Castlebay FC,West Harbor City,1,0
+2,468,9,Riversedge United,Ashford Rovers,1,3
+2,469,9,Blackthorn Rovers,Stonebridge Town,1,1
+2,470,9,Port Albion,Red Valley FC,1,1
+2,471,10,Northgate United,Bridgeport Rovers,3,2
+2,472,10,Oakhaven City,Thornfield United,3,3
+2,473,10,Silverlake FC,Eastcliff FC,1,1
+2,474,10,Greymoor Athletic,Millbrook Town,2,1
+2,475,10,Fenwick United,Kingswell Athletic,0,2
+2,476,10,Harrow Vale,West Harbor City,0,1
+2,477,10,Dunmore Town,Ashford Rovers,1,2
+2,478,10,Castlebay FC,Stonebridge Town,4,1
+2,479,10,Riversedge United,Red Valley FC,1,2
+2,480,10,Blackthorn Rovers,Port Albion,0,0
+2,481,11,Northgate United,Thornfield United,3,1
+2,482,11,Bridgeport Rovers,Eastcliff FC,1,3
+2,483,11,Oakhaven City,Millbrook Town,1,1
+2,484,11,Silverlake FC,Kingswell Athletic,2,4
+2,485,11,Greymoor Athletic,West Harbor City,0,0
+2,486,11,Fenwick United,Ashford Rovers,0,4
+2,487,11,Harrow Vale,Stonebridge Town,3,0
+2,488,11,Dunmore Town,Red Valley FC,1,1
+2,489,11,Castlebay FC,Port Albion,1,1
+2,490,11,Riversedge United,Blackthorn Rovers,1,1
+2,491,12,Northgate United,Eastcliff FC,1,2
+2,492,12,Thornfield United,Millbrook Town,2,1
+2,493,12,Bridgeport Rovers,Kingswell Athletic,0,1
+2,494,12,Oakhaven City,West Harbor City,1,1
+2,495,12,Silverlake FC,Ashford Rovers,1,0
+2,496,12,Greymoor Athletic,Stonebridge Town,3,2
+2,497,12,Fenwick United,Red Valley FC,0,0
+2,498,12,Harrow Vale,Port Albion,1,0
+2,499,12,Dunmore Town,Blackthorn Rovers,2,3
+2,500,12,Castlebay FC,Riversedge United,0,2
+2,501,13,Northgate United,Millbrook Town,0,2
+2,502,13,Eastcliff FC,Kingswell Athletic,0,0
+2,503,13,Thornfield United,West Harbor City,2,5
+2,504,13,Bridgeport Rovers,Ashford Rovers,0,1
+2,505,13,Oakhaven City,Stonebridge Town,1,2
+2,506,13,Silverlake FC,Red Valley FC,2,1
+2,507,13,Greymoor Athletic,Port Albion,2,2
+2,508,13,Fenwick United,Blackthorn Rovers,0,0
+2,509,13,Harrow Vale,Riversedge United,1,1
+2,510,13,Dunmore Town,Castlebay FC,0,1
+2,511,14,Northgate United,Kingswell Athletic,1,2
+2,512,14,Millbrook Town,West Harbor City,1,1
+2,513,14,Eastcliff FC,Ashford Rovers,1,0
+2,514,14,Thornfield United,Stonebridge Town,5,2
+2,515,14,Bridgeport Rovers,Red Valley FC,2,1
+2,516,14,Oakhaven City,Port Albion,2,1
+2,517,14,Silverlake FC,Blackthorn Rovers,1,2
+2,518,14,Greymoor Athletic,Riversedge United,1,0
+2,519,14,Fenwick United,Castlebay FC,0,1
+2,520,14,Harrow Vale,Dunmore Town,2,0
+2,521,15,Northgate United,West Harbor City,1,2
+2,522,15,Kingswell Athletic,Ashford Rovers,2,0
+2,523,15,Millbrook Town,Stonebridge Town,1,1
+2,524,15,Eastcliff FC,Red Valley FC,1,0
+2,525,15,Thornfield United,Port Albion,0,0
+2,526,15,Bridgeport Rovers,Blackthorn Rovers,1,2
+2,527,15,Oakhaven City,Riversedge United,1,2
+2,528,15,Silverlake FC,Castlebay FC,1,2
+2,529,15,Greymoor Athletic,Dunmore Town,1,0
+2,530,15,Fenwick United,Harrow Vale,1,1
+2,531,16,Northgate United,Ashford Rovers,0,2
+2,532,16,West Harbor City,Stonebridge Town,1,1
+2,533,16,Kingswell Athletic,Red Valley FC,0,3
+2,534,16,Millbrook Town,Port Albion,1,0
+2,535,16,Eastcliff FC,Blackthorn Rovers,0,2
+2,536,16,Thornfield United,Riversedge United,2,1
+2,537,16,Bridgeport Rovers,Castlebay FC,1,0
+2,538,16,Oakhaven City,Dunmore Town,2,1
+2,539,16,Silverlake FC,Harrow Vale,1,0
+2,540,16,Greymoor Athletic,Fenwick United,3,2
+2,541,17,Northgate United,Stonebridge Town,0,0
+2,542,17,Ashford Rovers,Red Valley FC,0,3
+2,543,17,West Harbor City,Port Albion,0,3
+2,544,17,Kingswell Athletic,Blackthorn Rovers,0,0
+2,545,17,Millbrook Town,Riversedge United,0,1
+2,546,17,Eastcliff FC,Castlebay FC,1,2
+2,547,17,Thornfield United,Dunmore Town,2,2
+2,548,17,Bridgeport Rovers,Harrow Vale,1,1
+2,549,17,Oakhaven City,Fenwick United,2,1
+2,550,17,Silverlake FC,Greymoor Athletic,1,2
+2,551,18,Northgate United,Red Valley FC,1,0
+2,552,18,Stonebridge Town,Port Albion,2,0
+2,553,18,Ashford Rovers,Blackthorn Rovers,4,1
+2,554,18,West Harbor City,Riversedge United,0,0
+2,555,18,Kingswell Athletic,Castlebay FC,2,0
+2,556,18,Millbrook Town,Dunmore Town,4,2
+2,557,18,Eastcliff FC,Harrow Vale,1,0
+2,558,18,Thornfield United,Fenwick United,1,1
+2,559,18,Bridgeport Rovers,Greymoor Athletic,3,4
+2,560,18,Oakhaven City,Silverlake FC,1,2
+2,561,19,Northgate United,Port Albion,3,1
+2,562,19,Red Valley FC,Blackthorn Rovers,3,0
+2,563,19,Stonebridge Town,Riversedge United,1,0
+2,564,19,Ashford Rovers,Castlebay FC,0,0
+2,565,19,West Harbor City,Dunmore Town,2,2
+2,566,19,Kingswell Athletic,Harrow Vale,1,2
+2,567,19,Millbrook Town,Fenwick United,1,0
+2,568,19,Eastcliff FC,Greymoor Athletic,1,1
+2,569,19,Thornfield United,Silverlake FC,0,1
+2,570,19,Bridgeport Rovers,Oakhaven City,2,1
+2,571,20,Blackthorn Rovers,Northgate United,0,1
+2,572,20,Riversedge United,Port Albion,1,2
+2,573,20,Castlebay FC,Red Valley FC,2,1
+2,574,20,Dunmore Town,Stonebridge Town,2,1
+2,575,20,Harrow Vale,Ashford Rovers,1,0
+2,576,20,Fenwick United,West Harbor City,2,1
+2,577,20,Greymoor Athletic,Kingswell Athletic,2,2
+2,578,20,Silverlake FC,Millbrook Town,2,0
+2,579,20,Oakhaven City,Eastcliff FC,3,2
+2,580,20,Bridgeport Rovers,Thornfield United,1,1
+2,581,21,Riversedge United,Northgate United,0,1
+2,582,21,Castlebay FC,Blackthorn Rovers,0,1
+2,583,21,Dunmore Town,Port Albion,2,0
+2,584,21,Harrow Vale,Red Valley FC,1,2
+2,585,21,Fenwick United,Stonebridge Town,1,1
+2,586,21,Greymoor Athletic,Ashford Rovers,0,1
+2,587,21,Silverlake FC,West Harbor City,2,1
+2,588,21,Oakhaven City,Kingswell Athletic,0,1
+2,589,21,Bridgeport Rovers,Millbrook Town,1,4
+2,590,21,Thornfield United,Eastcliff FC,2,3
+2,591,22,Castlebay FC,Northgate United,1,2
+2,592,22,Dunmore Town,Riversedge United,1,0
+2,593,22,Harrow Vale,Blackthorn Rovers,2,3
+2,594,22,Fenwick United,Port Albion,1,1
+2,595,22,Greymoor Athletic,Red Valley FC,0,0
+2,596,22,Silverlake FC,Stonebridge Town,2,1
+2,597,22,Oakhaven City,Ashford Rovers,3,2
+2,598,22,Bridgeport Rovers,West Harbor City,0,0
+2,599,22,Thornfield United,Kingswell Athletic,0,0
+2,600,22,Eastcliff FC,Millbrook Town,3,2
+2,601,23,Dunmore Town,Northgate United,1,0
+2,602,23,Harrow Vale,Castlebay FC,0,1
+2,603,23,Fenwick United,Riversedge United,2,3
+2,604,23,Greymoor Athletic,Blackthorn Rovers,3,1
+2,605,23,Silverlake FC,Port Albion,0,2
+2,606,23,Oakhaven City,Red Valley FC,1,1
+2,607,23,Bridgeport Rovers,Stonebridge Town,0,2
+2,608,23,Thornfield United,Ashford Rovers,2,1
+2,609,23,Eastcliff FC,West Harbor City,0,2
+2,610,23,Millbrook Town,Kingswell Athletic,1,0
+2,611,24,Harrow Vale,Northgate United,0,2
+2,612,24,Fenwick United,Dunmore Town,1,2
+2,613,24,Greymoor Athletic,Castlebay FC,1,1
+2,614,24,Silverlake FC,Riversedge United,2,2
+2,615,24,Oakhaven City,Blackthorn Rovers,0,3
+2,616,24,Bridgeport Rovers,Port Albion,1,0
+2,617,24,Thornfield United,Red Valley FC,1,1
+2,618,24,Eastcliff FC,Stonebridge Town,2,3
+2,619,24,Millbrook Town,Ashford Rovers,0,1
+2,620,24,Kingswell Athletic,West Harbor City,1,0
+2,621,25,Fenwick United,Northgate United,1,1
+2,622,25,Greymoor Athletic,Harrow Vale,1,0
+2,623,25,Silverlake FC,Dunmore Town,2,0
+2,624,25,Oakhaven City,Castlebay FC,3,2
+2,625,25,Bridgeport Rovers,Riversedge United,2,1
+2,626,25,Thornfield United,Blackthorn Rovers,2,2
+2,627,25,Eastcliff FC,Port Albion,2,0
+2,628,25,Millbrook Town,Red Valley FC,2,4
+2,629,25,Kingswell Athletic,Stonebridge Town,2,0
+2,630,25,West Harbor City,Ashford Rovers,4,1
+2,631,26,Greymoor Athletic,Northgate United,1,1
+2,632,26,Silverlake FC,Fenwick United,2,0
+2,633,26,Oakhaven City,Harrow Vale,1,1
+2,634,26,Bridgeport Rovers,Dunmore Town,1,3
+2,635,26,Thornfield United,Castlebay FC,1,1
+2,636,26,Eastcliff FC,Riversedge United,2,3
+2,637,26,Millbrook Town,Blackthorn Rovers,1,2
+2,638,26,Kingswell Athletic,Port Albion,1,0
+2,639,26,West Harbor City,Red Valley FC,1,1
+2,640,26,Ashford Rovers,Stonebridge Town,0,0
+2,641,27,Silverlake FC,Northgate United,1,3
+2,642,27,Oakhaven City,Greymoor Athletic,3,7
+2,643,27,Bridgeport Rovers,Fenwick United,3,1
+2,644,27,Thornfield United,Harrow Vale,2,0
+2,645,27,Eastcliff FC,Dunmore Town,2,3
+2,646,27,Millbrook Town,Castlebay FC,2,0
+2,647,27,Kingswell Athletic,Riversedge United,2,1
+2,648,27,West Harbor City,Blackthorn Rovers,2,2
+2,649,27,Ashford Rovers,Port Albion,2,2
+2,650,27,Stonebridge Town,Red Valley FC,1,2
+2,651,28,Oakhaven City,Northgate United,0,3
+2,652,28,Bridgeport Rovers,Silverlake FC,3,2
+2,653,28,Thornfield United,Greymoor Athletic,0,1
+2,654,28,Eastcliff FC,Fenwick United,1,0
+2,655,28,Millbrook Town,Harrow Vale,2,1
+2,656,28,Kingswell Athletic,Dunmore Town,1,2
+2,657,28,West Harbor City,Castlebay FC,0,0
+2,658,28,Ashford Rovers,Riversedge United,1,2
+2,659,28,Stonebridge Town,Blackthorn Rovers,2,0
+2,660,28,Red Valley FC,Port Albion,2,0
+2,661,29,Bridgeport Rovers,Northgate United,1,1
+2,662,29,Thornfield United,Oakhaven City,0,1
+2,663,29,Eastcliff FC,Silverlake FC,0,2
+2,664,29,Millbrook Town,Greymoor Athletic,2,1
+2,665,29,Kingswell Athletic,Fenwick United,0,0
+2,666,29,West Harbor City,Harrow Vale,1,1
+2,667,29,Ashford Rovers,Dunmore Town,0,4
+2,668,29,Stonebridge Town,Castlebay FC,1,1
+2,669,29,Red Valley FC,Riversedge United,2,1
+2,670,29,Port Albion,Blackthorn Rovers,0,1
+2,671,30,Thornfield United,Northgate United,0,5
+2,672,30,Eastcliff FC,Bridgeport Rovers,1,1
+2,673,30,Millbrook Town,Oakhaven City,3,1
+2,674,30,Kingswell Athletic,Silverlake FC,0,1
+2,675,30,West Harbor City,Greymoor Athletic,0,2
+2,676,30,Ashford Rovers,Fenwick United,4,1
+2,677,30,Stonebridge Town,Harrow Vale,0,1
+2,678,30,Red Valley FC,Dunmore Town,1,2
+2,679,30,Port Albion,Castlebay FC,0,0
+2,680,30,Blackthorn Rovers,Riversedge United,0,0
+2,681,31,Eastcliff FC,Northgate United,0,0
+2,682,31,Millbrook Town,Thornfield United,1,2
+2,683,31,Kingswell Athletic,Bridgeport Rovers,0,1
+2,684,31,West Harbor City,Oakhaven City,1,2
+2,685,31,Ashford Rovers,Silverlake FC,3,0
+2,686,31,Stonebridge Town,Greymoor Athletic,3,1
+2,687,31,Red Valley FC,Fenwick United,2,2
+2,688,31,Port Albion,Harrow Vale,1,0
+2,689,31,Blackthorn Rovers,Dunmore Town,6,2
+2,690,31,Riversedge United,Castlebay FC,2,0
+2,691,32,Millbrook Town,Northgate United,1,0
+2,692,32,Kingswell Athletic,Eastcliff FC,1,2
+2,693,32,West Harbor City,Thornfield United,1,2
+2,694,32,Ashford Rovers,Bridgeport Rovers,1,1
+2,695,32,Stonebridge Town,Oakhaven City,1,1
+2,696,32,Red Valley FC,Silverlake FC,1,0
+2,697,32,Port Albion,Greymoor Athletic,1,0
+2,698,32,Blackthorn Rovers,Fenwick United,1,2
+2,699,32,Riversedge United,Harrow Vale,1,0
+2,700,32,Castlebay FC,Dunmore Town,0,0
+2,701,33,Kingswell Athletic,Northgate United,1,0
+2,702,33,West Harbor City,Millbrook Town,1,2
+2,703,33,Ashford Rovers,Eastcliff FC,2,1
+2,704,33,Stonebridge Town,Thornfield United,1,1
+2,705,33,Red Valley FC,Bridgeport Rovers,0,0
+2,706,33,Port Albion,Oakhaven City,1,1
+2,707,33,Blackthorn Rovers,Silverlake FC,2,0
+2,708,33,Riversedge United,Greymoor Athletic,0,0
+2,709,33,Castlebay FC,Fenwick United,3,1
+2,710,33,Dunmore Town,Harrow Vale,1,0
+2,711,34,West Harbor City,Northgate United,1,3
+2,712,34,Ashford Rovers,Kingswell Athletic,2,1
+2,713,34,Stonebridge Town,Millbrook Town,3,3
+2,714,34,Red Valley FC,Eastcliff FC,2,1
+2,715,34,Port Albion,Thornfield United,1,1
+2,716,34,Blackthorn Rovers,Bridgeport Rovers,2,0
+2,717,34,Riversedge United,Oakhaven City,2,0
+2,718,34,Castlebay FC,Silverlake FC,2,0
+2,719,34,Dunmore Town,Greymoor Athletic,2,2
+2,720,34,Harrow Vale,Fenwick United,0,1
+2,721,35,Ashford Rovers,Northgate United,1,2
+2,722,35,Stonebridge Town,West Harbor City,1,1
+2,723,35,Red Valley FC,Kingswell Athletic,3,1
+2,724,35,Port Albion,Millbrook Town,1,2
+2,725,35,Blackthorn Rovers,Eastcliff FC,0,3
+2,726,35,Riversedge United,Thornfield United,0,1
+2,727,35,Castlebay FC,Bridgeport Rovers,0,2
+2,728,35,Dunmore Town,Oakhaven City,1,0
+2,729,35,Harrow Vale,Silverlake FC,1,4
+2,730,35,Fenwick United,Greymoor Athletic,1,4
+2,731,36,Stonebridge Town,Northgate United,3,2
+2,732,36,Red Valley FC,Ashford Rovers,3,2
+2,733,36,Port Albion,West Harbor City,3,0
+2,734,36,Blackthorn Rovers,Kingswell Athletic,0,0
+2,735,36,Riversedge United,Millbrook Town,1,3
+2,736,36,Castlebay FC,Eastcliff FC,1,1
+2,737,36,Dunmore Town,Thornfield United,1,3
+2,738,36,Harrow Vale,Bridgeport Rovers,2,3
+2,739,36,Fenwick United,Oakhaven City,4,0
+2,740,36,Greymoor Athletic,Silverlake FC,1,1
+2,741,37,Red Valley FC,Northgate United,1,2
+2,742,37,Port Albion,Stonebridge Town,0,2
+2,743,37,Blackthorn Rovers,Ashford Rovers,2,2
+2,744,37,Riversedge United,West Harbor City,1,0
+2,745,37,Castlebay FC,Kingswell Athletic,1,0
+2,746,37,Dunmore Town,Millbrook Town,2,2
+2,747,37,Harrow Vale,Eastcliff FC,1,1
+2,748,37,Fenwick United,Thornfield United,1,0
+2,749,37,Greymoor Athletic,Bridgeport Rovers,0,2
+2,750,37,Silverlake FC,Oakhaven City,1,1
+2,751,38,Port Albion,Northgate United,4,2
+2,752,38,Blackthorn Rovers,Red Valley FC,0,3
+2,753,38,Riversedge United,Stonebridge Town,0,1
+2,754,38,Castlebay FC,Ashford Rovers,1,0
+2,755,38,Dunmore Town,West Harbor City,1,5
+2,756,38,Harrow Vale,Kingswell Athletic,1,2
+2,757,38,Fenwick United,Millbrook Town,0,0
+2,758,38,Greymoor Athletic,Eastcliff FC,3,1
+2,759,38,Silverlake FC,Thornfield United,0,0
+2,760,38,Oakhaven City,Bridgeport Rovers,2,2
+3,761,1,Northgate United,Blackthorn Rovers,1,1
+3,762,1,Port Albion,Riversedge United,3,1
+3,763,1,Red Valley FC,Castlebay FC,1,1
+3,764,1,Stonebridge Town,Dunmore Town,1,3
+3,765,1,Ashford Rovers,Harrow Vale,0,1
+3,766,1,West Harbor City,Fenwick United,3,3
+3,767,1,Kingswell Athletic,Greymoor Athletic,2,3
+3,768,1,Millbrook Town,Silverlake FC,2,1
+3,769,1,Eastcliff FC,Oakhaven City,2,1
+3,770,1,Thornfield United,Bridgeport Rovers,1,0
+3,771,2,Northgate United,Riversedge United,4,0
+3,772,2,Blackthorn Rovers,Castlebay FC,2,2
+3,773,2,Port Albion,Dunmore Town,3,1
+3,774,2,Red Valley FC,Harrow Vale,1,3
+3,775,2,Stonebridge Town,Fenwick United,3,2
+3,776,2,Ashford Rovers,Greymoor Athletic,0,1
+3,777,2,West Harbor City,Silverlake FC,4,1
+3,778,2,Kingswell Athletic,Oakhaven City,1,2
+3,779,2,Millbrook Town,Bridgeport Rovers,1,2
+3,780,2,Eastcliff FC,Thornfield United,0,3
+3,781,3,Northgate United,Castlebay FC,0,1
+3,782,3,Riversedge United,Dunmore Town,0,2
+3,783,3,Blackthorn Rovers,Harrow Vale,1,1
+3,784,3,Port Albion,Fenwick United,2,2
+3,785,3,Red Valley FC,Greymoor Athletic,4,0
+3,786,3,Stonebridge Town,Silverlake FC,0,2
+3,787,3,Ashford Rovers,Oakhaven City,2,1
+3,788,3,West Harbor City,Bridgeport Rovers,0,3
+3,789,3,Kingswell Athletic,Thornfield United,2,3
+3,790,3,Millbrook Town,Eastcliff FC,2,0
+3,791,4,Northgate United,Dunmore Town,2,2
+3,792,4,Castlebay FC,Harrow Vale,1,2
+3,793,4,Riversedge United,Fenwick United,1,1
+3,794,4,Blackthorn Rovers,Greymoor Athletic,2,4
+3,795,4,Port Albion,Silverlake FC,1,3
+3,796,4,Red Valley FC,Oakhaven City,3,1
+3,797,4,Stonebridge Town,Bridgeport Rovers,3,1
+3,798,4,Ashford Rovers,Thornfield United,1,2
+3,799,4,West Harbor City,Eastcliff FC,1,2
+3,800,4,Kingswell Athletic,Millbrook Town,4,1
+3,801,5,Northgate United,Harrow Vale,0,0
+3,802,5,Dunmore Town,Fenwick United,0,0
+3,803,5,Castlebay FC,Greymoor Athletic,1,1
+3,804,5,Riversedge United,Silverlake FC,0,2
+3,805,5,Blackthorn Rovers,Oakhaven City,4,1
+3,806,5,Port Albion,Bridgeport Rovers,3,0
+3,807,5,Red Valley FC,Thornfield United,1,0
+3,808,5,Stonebridge Town,Eastcliff FC,3,1
+3,809,5,Ashford Rovers,Millbrook Town,3,1
+3,810,5,West Harbor City,Kingswell Athletic,1,0
+3,811,6,Northgate United,Fenwick United,1,1
+3,812,6,Harrow Vale,Greymoor Athletic,3,2
+3,813,6,Dunmore Town,Silverlake FC,0,1
+3,814,6,Castlebay FC,Oakhaven City,1,5
+3,815,6,Riversedge United,Bridgeport Rovers,2,2
+3,816,6,Blackthorn Rovers,Thornfield United,0,8
+3,817,6,Port Albion,Eastcliff FC,3,0
+3,818,6,Red Valley FC,Millbrook Town,0,1
+3,819,6,Stonebridge Town,Kingswell Athletic,1,1
+3,820,6,Ashford Rovers,West Harbor City,2,1
+3,821,7,Northgate United,Greymoor Athletic,2,1
+3,822,7,Fenwick United,Silverlake FC,3,3
+3,823,7,Harrow Vale,Oakhaven City,1,3
+3,824,7,Dunmore Town,Bridgeport Rovers,1,0
+3,825,7,Castlebay FC,Thornfield United,1,0
+3,826,7,Riversedge United,Eastcliff FC,1,1
+3,827,7,Blackthorn Rovers,Millbrook Town,1,1
+3,828,7,Port Albion,Kingswell Athletic,1,0
+3,829,7,Red Valley FC,West Harbor City,1,4
+3,830,7,Stonebridge Town,Ashford Rovers,2,0
+3,831,8,Northgate United,Silverlake FC,2,0
+3,832,8,Greymoor Athletic,Oakhaven City,3,2
+3,833,8,Fenwick United,Bridgeport Rovers,2,1
+3,834,8,Harrow Vale,Thornfield United,0,0
+3,835,8,Dunmore Town,Eastcliff FC,4,0
+3,836,8,Castlebay FC,Millbrook Town,1,0
+3,837,8,Riversedge United,Kingswell Athletic,2,0
+3,838,8,Blackthorn Rovers,West Harbor City,0,2
+3,839,8,Port Albion,Ashford Rovers,1,0
+3,840,8,Red Valley FC,Stonebridge Town,0,1
+3,841,9,Northgate United,Oakhaven City,2,3
+3,842,9,Silverlake FC,Bridgeport Rovers,2,0
+3,843,9,Greymoor Athletic,Thornfield United,3,2
+3,844,9,Fenwick United,Eastcliff FC,3,1
+3,845,9,Harrow Vale,Millbrook Town,0,1
+3,846,9,Dunmore Town,Kingswell Athletic,2,2
+3,847,9,Castlebay FC,West Harbor City,1,1
+3,848,9,Riversedge United,Ashford Rovers,0,2
+3,849,9,Blackthorn Rovers,Stonebridge Town,0,2
+3,850,9,Port Albion,Red Valley FC,0,1
+3,851,10,Northgate United,Bridgeport Rovers,0,1
+3,852,10,Oakhaven City,Thornfield United,1,4
+3,853,10,Silverlake FC,Eastcliff FC,1,3
+3,854,10,Greymoor Athletic,Millbrook Town,0,2
+3,855,10,Fenwick United,Kingswell Athletic,0,1
+3,856,10,Harrow Vale,West Harbor City,5,0
+3,857,10,Dunmore Town,Ashford Rovers,3,1
+3,858,10,Castlebay FC,Stonebridge Town,0,3
+3,859,10,Riversedge United,Red Valley FC,0,2
+3,860,10,Blackthorn Rovers,Port Albion,1,2
+3,861,11,Northgate United,Thornfield United,1,1
+3,862,11,Bridgeport Rovers,Eastcliff FC,1,0
+3,863,11,Oakhaven City,Millbrook Town,2,1
+3,864,11,Silverlake FC,Kingswell Athletic,2,0
+3,865,11,Greymoor Athletic,West Harbor City,1,3
+3,866,11,Fenwick United,Ashford Rovers,1,1
+3,867,11,Harrow Vale,Stonebridge Town,1,1
+3,868,11,Dunmore Town,Red Valley FC,1,2
+3,869,11,Castlebay FC,Port Albion,0,2
+3,870,11,Riversedge United,Blackthorn Rovers,2,2
+3,871,12,Northgate United,Eastcliff FC,3,1
+3,872,12,Thornfield United,Millbrook Town,3,0
+3,873,12,Bridgeport Rovers,Kingswell Athletic,0,2
+3,874,12,Oakhaven City,West Harbor City,2,2
+3,875,12,Silverlake FC,Ashford Rovers,0,1
+3,876,12,Greymoor Athletic,Stonebridge Town,1,2
+3,877,12,Fenwick United,Red Valley FC,0,2
+3,878,12,Harrow Vale,Port Albion,1,0
+3,879,12,Dunmore Town,Blackthorn Rovers,2,2
+3,880,12,Castlebay FC,Riversedge United,0,3
+3,881,13,Northgate United,Millbrook Town,6,2
+3,882,13,Eastcliff FC,Kingswell Athletic,2,0
+3,883,13,Thornfield United,West Harbor City,0,2
+3,884,13,Bridgeport Rovers,Ashford Rovers,1,1
+3,885,13,Oakhaven City,Stonebridge Town,0,1
+3,886,13,Silverlake FC,Red Valley FC,0,0
+3,887,13,Greymoor Athletic,Port Albion,1,1
+3,888,13,Fenwick United,Blackthorn Rovers,2,1
+3,889,13,Harrow Vale,Riversedge United,1,0
+3,890,13,Dunmore Town,Castlebay FC,2,0
+3,891,14,Northgate United,Kingswell Athletic,0,1
+3,892,14,Millbrook Town,West Harbor City,1,1
+3,893,14,Eastcliff FC,Ashford Rovers,2,1
+3,894,14,Thornfield United,Stonebridge Town,1,2
+3,895,14,Bridgeport Rovers,Red Valley FC,1,2
+3,896,14,Oakhaven City,Port Albion,3,3
+3,897,14,Silverlake FC,Blackthorn Rovers,1,2
+3,898,14,Greymoor Athletic,Riversedge United,1,0
+3,899,14,Fenwick United,Castlebay FC,0,1
+3,900,14,Harrow Vale,Dunmore Town,2,0
+3,901,15,Northgate United,West Harbor City,0,1
+3,902,15,Kingswell Athletic,Ashford Rovers,4,1
+3,903,15,Millbrook Town,Stonebridge Town,0,0
+3,904,15,Eastcliff FC,Red Valley FC,2,3
+3,905,15,Thornfield United,Port Albion,3,0
+3,906,15,Bridgeport Rovers,Blackthorn Rovers,1,2
+3,907,15,Oakhaven City,Riversedge United,2,0
+3,908,15,Silverlake FC,Castlebay FC,2,1
+3,909,15,Greymoor Athletic,Dunmore Town,2,3
+3,910,15,Fenwick United,Harrow Vale,1,2
+3,911,16,Northgate United,Ashford Rovers,3,1
+3,912,16,West Harbor City,Stonebridge Town,4,0
+3,913,16,Kingswell Athletic,Red Valley FC,0,1
+3,914,16,Millbrook Town,Port Albion,0,2
+3,915,16,Eastcliff FC,Blackthorn Rovers,1,2
+3,916,16,Thornfield United,Riversedge United,0,1
+3,917,16,Bridgeport Rovers,Castlebay FC,1,0
+3,918,16,Oakhaven City,Dunmore Town,2,1
+3,919,16,Silverlake FC,Harrow Vale,1,0
+3,920,16,Greymoor Athletic,Fenwick United,1,2
+3,921,17,Northgate United,Stonebridge Town,0,2
+3,922,17,Ashford Rovers,Red Valley FC,1,3
+3,923,17,West Harbor City,Port Albion,1,1
+3,924,17,Kingswell Athletic,Blackthorn Rovers,1,1
+3,925,17,Millbrook Town,Riversedge United,2,1
+3,926,17,Eastcliff FC,Castlebay FC,1,0
+3,927,17,Thornfield United,Dunmore Town,1,2
+3,928,17,Bridgeport Rovers,Harrow Vale,2,2
+3,929,17,Oakhaven City,Fenwick United,2,1
+3,930,17,Silverlake FC,Greymoor Athletic,1,1
+3,931,18,Northgate United,Red Valley FC,1,0
+3,932,18,Stonebridge Town,Port Albion,1,2
+3,933,18,Ashford Rovers,Blackthorn Rovers,0,1
+3,934,18,West Harbor City,Riversedge United,1,0
+3,935,18,Kingswell Athletic,Castlebay FC,1,2
+3,936,18,Millbrook Town,Dunmore Town,2,1
+3,937,18,Eastcliff FC,Harrow Vale,1,1
+3,938,18,Thornfield United,Fenwick United,5,0
+3,939,18,Bridgeport Rovers,Greymoor Athletic,1,1
+3,940,18,Oakhaven City,Silverlake FC,1,5
+3,941,19,Northgate United,Port Albion,1,2
+3,942,19,Red Valley FC,Blackthorn Rovers,1,0
+3,943,19,Stonebridge Town,Riversedge United,1,0
+3,944,19,Ashford Rovers,Castlebay FC,4,1
+3,945,19,West Harbor City,Dunmore Town,4,1
+3,946,19,Kingswell Athletic,Harrow Vale,0,3
+3,947,19,Millbrook Town,Fenwick United,1,1
+3,948,19,Eastcliff FC,Greymoor Athletic,0,3
+3,949,19,Thornfield United,Silverlake FC,4,2
+3,950,19,Bridgeport Rovers,Oakhaven City,1,0
+3,951,20,Blackthorn Rovers,Northgate United,0,2
+3,952,20,Riversedge United,Port Albion,2,1
+3,953,20,Castlebay FC,Red Valley FC,0,1
+3,954,20,Dunmore Town,Stonebridge Town,1,4
+3,955,20,Harrow Vale,Ashford Rovers,0,3
+3,956,20,Fenwick United,West Harbor City,2,1
+3,957,20,Greymoor Athletic,Kingswell Athletic,2,1
+3,958,20,Silverlake FC,Millbrook Town,0,0
+3,959,20,Oakhaven City,Eastcliff FC,0,2
+3,960,20,Bridgeport Rovers,Thornfield United,1,1
+3,961,21,Riversedge United,Northgate United,4,0
+3,962,21,Castlebay FC,Blackthorn Rovers,1,2
+3,963,21,Dunmore Town,Port Albion,1,2
+3,964,21,Harrow Vale,Red Valley FC,0,2
+3,965,21,Fenwick United,Stonebridge Town,3,2
+3,966,21,Greymoor Athletic,Ashford Rovers,1,2
+3,967,21,Silverlake FC,West Harbor City,1,0
+3,968,21,Oakhaven City,Kingswell Athletic,0,0
+3,969,21,Bridgeport Rovers,Millbrook Town,2,0
+3,970,21,Thornfield United,Eastcliff FC,2,0
+3,971,22,Castlebay FC,Northgate United,1,1
+3,972,22,Dunmore Town,Riversedge United,0,1
+3,973,22,Harrow Vale,Blackthorn Rovers,1,3
+3,974,22,Fenwick United,Port Albion,2,1
+3,975,22,Greymoor Athletic,Red Valley FC,1,1
+3,976,22,Silverlake FC,Stonebridge Town,2,1
+3,977,22,Oakhaven City,Ashford Rovers,4,0
+3,978,22,Bridgeport Rovers,West Harbor City,1,0
+3,979,22,Thornfield United,Kingswell Athletic,0,2
+3,980,22,Eastcliff FC,Millbrook Town,2,2
+3,981,23,Dunmore Town,Northgate United,0,1
+3,982,23,Harrow Vale,Castlebay FC,0,1
+3,983,23,Fenwick United,Riversedge United,0,4
+3,984,23,Greymoor Athletic,Blackthorn Rovers,1,1
+3,985,23,Silverlake FC,Port Albion,2,0
+3,986,23,Oakhaven City,Red Valley FC,1,4
+3,987,23,Bridgeport Rovers,Stonebridge Town,2,2
+3,988,23,Thornfield United,Ashford Rovers,1,1
+3,989,23,Eastcliff FC,West Harbor City,2,2
+3,990,23,Millbrook Town,Kingswell Athletic,3,1
+3,991,24,Harrow Vale,Northgate United,3,2
+3,992,24,Fenwick United,Dunmore Town,0,0
+3,993,24,Greymoor Athletic,Castlebay FC,0,1
+3,994,24,Silverlake FC,Riversedge United,3,0
+3,995,24,Oakhaven City,Blackthorn Rovers,0,2
+3,996,24,Bridgeport Rovers,Port Albion,1,3
+3,997,24,Thornfield United,Red Valley FC,0,2
+3,998,24,Eastcliff FC,Stonebridge Town,1,2
+3,999,24,Millbrook Town,Ashford Rovers,1,3
+3,1000,24,Kingswell Athletic,West Harbor City,0,1
+3,1001,25,Fenwick United,Northgate United,2,4
+3,1002,25,Greymoor Athletic,Harrow Vale,3,1
+3,1003,25,Silverlake FC,Dunmore Town,2,0
+3,1004,25,Oakhaven City,Castlebay FC,6,6
+3,1005,25,Bridgeport Rovers,Riversedge United,1,1
+3,1006,25,Thornfield United,Blackthorn Rovers,3,0
+3,1007,25,Eastcliff FC,Port Albion,1,3
+3,1008,25,Millbrook Town,Red Valley FC,1,0
+3,1009,25,Kingswell Athletic,Stonebridge Town,0,1
+3,1010,25,West Harbor City,Ashford Rovers,1,0
+3,1011,26,Greymoor Athletic,Northgate United,0,1
+3,1012,26,Silverlake FC,Fenwick United,1,0
+3,1013,26,Oakhaven City,Harrow Vale,1,1
+3,1014,26,Bridgeport Rovers,Dunmore Town,2,2
+3,1015,26,Thornfield United,Castlebay FC,1,1
+3,1016,26,Eastcliff FC,Riversedge United,1,1
+3,1017,26,Millbrook Town,Blackthorn Rovers,1,0
+3,1018,26,Kingswell Athletic,Port Albion,0,1
+3,1019,26,West Harbor City,Red Valley FC,0,3
+3,1020,26,Ashford Rovers,Stonebridge Town,4,3
+3,1021,27,Silverlake FC,Northgate United,0,2
+3,1022,27,Oakhaven City,Greymoor Athletic,1,1
+3,1023,27,Bridgeport Rovers,Fenwick United,0,1
+3,1024,27,Thornfield United,Harrow Vale,1,1
+3,1025,27,Eastcliff FC,Dunmore Town,0,2
+3,1026,27,Millbrook Town,Castlebay FC,1,2
+3,1027,27,Kingswell Athletic,Riversedge United,2,2
+3,1028,27,West Harbor City,Blackthorn Rovers,0,2
+3,1029,27,Ashford Rovers,Port Albion,1,1
+3,1030,27,Stonebridge Town,Red Valley FC,1,1
+3,1031,28,Oakhaven City,Northgate United,0,4
+3,1032,28,Bridgeport Rovers,Silverlake FC,2,0
+3,1033,28,Thornfield United,Greymoor Athletic,1,0
+3,1034,28,Eastcliff FC,Fenwick United,3,0
+3,1035,28,Millbrook Town,Harrow Vale,1,1
+3,1036,28,Kingswell Athletic,Dunmore Town,1,2
+3,1037,28,West Harbor City,Castlebay FC,3,0
+3,1038,28,Ashford Rovers,Riversedge United,1,0
+3,1039,28,Stonebridge Town,Blackthorn Rovers,2,0
+3,1040,28,Red Valley FC,Port Albion,2,3
+3,1041,29,Bridgeport Rovers,Northgate United,1,0
+3,1042,29,Thornfield United,Oakhaven City,6,2
+3,1043,29,Eastcliff FC,Silverlake FC,0,3
+3,1044,29,Millbrook Town,Greymoor Athletic,4,1
+3,1045,29,Kingswell Athletic,Fenwick United,1,1
+3,1046,29,West Harbor City,Harrow Vale,1,2
+3,1047,29,Ashford Rovers,Dunmore Town,1,2
+3,1048,29,Stonebridge Town,Castlebay FC,1,1
+3,1049,29,Red Valley FC,Riversedge United,1,0
+3,1050,29,Port Albion,Blackthorn Rovers,2,0
+3,1051,30,Thornfield United,Northgate United,0,1
+3,1052,30,Eastcliff FC,Bridgeport Rovers,3,2
+3,1053,30,Millbrook Town,Oakhaven City,5,0
+3,1054,30,Kingswell Athletic,Silverlake FC,2,0
+3,1055,30,West Harbor City,Greymoor Athletic,0,2
+3,1056,30,Ashford Rovers,Fenwick United,3,1
+3,1057,30,Stonebridge Town,Harrow Vale,1,0
+3,1058,30,Red Valley FC,Dunmore Town,0,0
+3,1059,30,Port Albion,Castlebay FC,8,2
+3,1060,30,Blackthorn Rovers,Riversedge United,0,1
+3,1061,31,Eastcliff FC,Northgate United,0,1
+3,1062,31,Millbrook Town,Thornfield United,0,2
+3,1063,31,Kingswell Athletic,Bridgeport Rovers,3,0
+3,1064,31,West Harbor City,Oakhaven City,0,0
+3,1065,31,Ashford Rovers,Silverlake FC,0,1
+3,1066,31,Stonebridge Town,Greymoor Athletic,3,4
+3,1067,31,Red Valley FC,Fenwick United,1,0
+3,1068,31,Port Albion,Harrow Vale,3,0
+3,1069,31,Blackthorn Rovers,Dunmore Town,0,0
+3,1070,31,Riversedge United,Castlebay FC,4,0
+3,1071,32,Millbrook Town,Northgate United,2,1
+3,1072,32,Kingswell Athletic,Eastcliff FC,1,3
+3,1073,32,West Harbor City,Thornfield United,1,0
+3,1074,32,Ashford Rovers,Bridgeport Rovers,1,3
+3,1075,32,Stonebridge Town,Oakhaven City,2,0
+3,1076,32,Red Valley FC,Silverlake FC,3,1
+3,1077,32,Port Albion,Greymoor Athletic,1,2
+3,1078,32,Blackthorn Rovers,Fenwick United,1,0
+3,1079,32,Riversedge United,Harrow Vale,2,2
+3,1080,32,Castlebay FC,Dunmore Town,1,2
+3,1081,33,Kingswell Athletic,Northgate United,1,1
+3,1082,33,West Harbor City,Millbrook Town,0,4
+3,1083,33,Ashford Rovers,Eastcliff FC,5,3
+3,1084,33,Stonebridge Town,Thornfield United,2,0
+3,1085,33,Red Valley FC,Bridgeport Rovers,1,3
+3,1086,33,Port Albion,Oakhaven City,2,0
+3,1087,33,Blackthorn Rovers,Silverlake FC,2,0
+3,1088,33,Riversedge United,Greymoor Athletic,1,1
+3,1089,33,Castlebay FC,Fenwick United,0,0
+3,1090,33,Dunmore Town,Harrow Vale,0,0
+3,1091,34,West Harbor City,Northgate United,3,2
+3,1092,34,Ashford Rovers,Kingswell Athletic,1,0
+3,1093,34,Stonebridge Town,Millbrook Town,0,1
+3,1094,34,Red Valley FC,Eastcliff FC,4,1
+3,1095,34,Port Albion,Thornfield United,1,2
+3,1096,34,Blackthorn Rovers,Bridgeport Rovers,2,0
+3,1097,34,Riversedge United,Oakhaven City,2,3
+3,1098,34,Castlebay FC,Silverlake FC,1,1
+3,1099,34,Dunmore Town,Greymoor Athletic,2,1
+3,1100,34,Harrow Vale,Fenwick United,3,1
+3,1101,35,Ashford Rovers,Northgate United,1,0
+3,1102,35,Stonebridge Town,West Harbor City,2,1
+3,1103,35,Red Valley FC,Kingswell Athletic,0,0
+3,1104,35,Port Albion,Millbrook Town,4,1
+3,1105,35,Blackthorn Rovers,Eastcliff FC,1,1
+3,1106,35,Riversedge United,Thornfield United,2,2
+3,1107,35,Castlebay FC,Bridgeport Rovers,0,1
+3,1108,35,Dunmore Town,Oakhaven City,1,2
+3,1109,35,Harrow Vale,Silverlake FC,1,1
+3,1110,35,Fenwick United,Greymoor Athletic,0,0
+3,1111,36,Stonebridge Town,Northgate United,0,2
+3,1112,36,Red Valley FC,Ashford Rovers,4,1
+3,1113,36,Port Albion,West Harbor City,1,2
+3,1114,36,Blackthorn Rovers,Kingswell Athletic,1,0
+3,1115,36,Riversedge United,Millbrook Town,1,1
+3,1116,36,Castlebay FC,Eastcliff FC,1,0
+3,1117,36,Dunmore Town,Thornfield United,0,4
+3,1118,36,Harrow Vale,Bridgeport Rovers,0,1
+3,1119,36,Fenwick United,Oakhaven City,1,3
+3,1120,36,Greymoor Athletic,Silverlake FC,1,0
+3,1121,37,Red Valley FC,Northgate United,0,0
+3,1122,37,Port Albion,Stonebridge Town,1,3
+3,1123,37,Blackthorn Rovers,Ashford Rovers,0,1
+3,1124,37,Riversedge United,West Harbor City,2,0
+3,1125,37,Castlebay FC,Kingswell Athletic,2,1
+3,1126,37,Dunmore Town,Millbrook Town,1,1
+3,1127,37,Harrow Vale,Eastcliff FC,3,1
+3,1128,37,Fenwick United,Thornfield United,0,2
+3,1129,37,Greymoor Athletic,Bridgeport Rovers,0,1
+3,1130,37,Silverlake FC,Oakhaven City,2,2
+3,1131,38,Port Albion,Northgate United,1,0
+3,1132,38,Blackthorn Rovers,Red Valley FC,0,1
+3,1133,38,Riversedge United,Stonebridge Town,3,2
+3,1134,38,Castlebay FC,Ashford Rovers,1,1
+3,1135,38,Dunmore Town,West Harbor City,0,2
+3,1136,38,Harrow Vale,Kingswell Athletic,1,2
+3,1137,38,Fenwick United,Millbrook Town,0,1
+3,1138,38,Greymoor Athletic,Eastcliff FC,3,2
+3,1139,38,Silverlake FC,Thornfield United,1,1
+3,1140,38,Oakhaven City,Bridgeport Rovers,0,3
+4,1141,1,Northgate United,Blackthorn Rovers,0,2
+4,1142,1,Port Albion,Riversedge United,1,0
+4,1143,1,Red Valley FC,Castlebay FC,3,3
+4,1144,1,Stonebridge Town,Dunmore Town,0,0
+4,1145,1,Ashford Rovers,Harrow Vale,1,2
+4,1146,1,West Harbor City,Fenwick United,1,0
+4,1147,1,Kingswell Athletic,Greymoor Athletic,1,4
+4,1148,1,Millbrook Town,Silverlake FC,1,2
+4,1149,1,Eastcliff FC,Oakhaven City,0,0
+4,1150,1,Thornfield United,Bridgeport Rovers,5,0
+4,1151,2,Northgate United,Riversedge United,1,0
+4,1152,2,Blackthorn Rovers,Castlebay FC,3,0
+4,1153,2,Port Albion,Dunmore Town,5,0
+4,1154,2,Red Valley FC,Harrow Vale,0,1
+4,1155,2,Stonebridge Town,Fenwick United,0,0
+4,1156,2,Ashford Rovers,Greymoor Athletic,1,1
+4,1157,2,West Harbor City,Silverlake FC,1,1
+4,1158,2,Kingswell Athletic,Oakhaven City,0,2
+4,1159,2,Millbrook Town,Bridgeport Rovers,2,2
+4,1160,2,Eastcliff FC,Thornfield United,0,1
+4,1161,3,Northgate United,Castlebay FC,2,1
+4,1162,3,Riversedge United,Dunmore Town,1,0
+4,1163,3,Blackthorn Rovers,Harrow Vale,4,4
+4,1164,3,Port Albion,Fenwick United,3,1
+4,1165,3,Red Valley FC,Greymoor Athletic,0,1
+4,1166,3,Stonebridge Town,Silverlake FC,3,0
+4,1167,3,Ashford Rovers,Oakhaven City,2,2
+4,1168,3,West Harbor City,Bridgeport Rovers,1,0
+4,1169,3,Kingswell Athletic,Thornfield United,1,0
+4,1170,3,Millbrook Town,Eastcliff FC,1,1
+4,1171,4,Northgate United,Dunmore Town,2,1
+4,1172,4,Castlebay FC,Harrow Vale,0,0
+4,1173,4,Riversedge United,Fenwick United,1,1
+4,1174,4,Blackthorn Rovers,Greymoor Athletic,1,1
+4,1175,4,Port Albion,Silverlake FC,2,3
+4,1176,4,Red Valley FC,Oakhaven City,2,0
+4,1177,4,Stonebridge Town,Bridgeport Rovers,1,1
+4,1178,4,Ashford Rovers,Thornfield United,0,0
+4,1179,4,West Harbor City,Eastcliff FC,0,1
+4,1180,4,Kingswell Athletic,Millbrook Town,3,1
+4,1181,5,Northgate United,Harrow Vale,0,3
+4,1182,5,Dunmore Town,Fenwick United,0,3
+4,1183,5,Castlebay FC,Greymoor Athletic,2,1
+4,1184,5,Riversedge United,Silverlake FC,2,2
+4,1185,5,Blackthorn Rovers,Oakhaven City,1,2
+4,1186,5,Port Albion,Bridgeport Rovers,0,1
+4,1187,5,Red Valley FC,Thornfield United,1,2
+4,1188,5,Stonebridge Town,Eastcliff FC,1,0
+4,1189,5,Ashford Rovers,Millbrook Town,4,3
+4,1190,5,West Harbor City,Kingswell Athletic,3,0
+4,1191,6,Northgate United,Fenwick United,4,0
+4,1192,6,Harrow Vale,Greymoor Athletic,1,1
+4,1193,6,Dunmore Town,Silverlake FC,0,3
+4,1194,6,Castlebay FC,Oakhaven City,4,2
+4,1195,6,Riversedge United,Bridgeport Rovers,0,1
+4,1196,6,Blackthorn Rovers,Thornfield United,0,1
+4,1197,6,Port Albion,Eastcliff FC,0,0
+4,1198,6,Red Valley FC,Millbrook Town,1,5
+4,1199,6,Stonebridge Town,Kingswell Athletic,1,0
+4,1200,6,Ashford Rovers,West Harbor City,3,0
+4,1201,7,Northgate United,Greymoor Athletic,1,2
+4,1202,7,Fenwick United,Silverlake FC,0,0
+4,1203,7,Harrow Vale,Oakhaven City,1,0
+4,1204,7,Dunmore Town,Bridgeport Rovers,1,1
+4,1205,7,Castlebay FC,Thornfield United,2,2
+4,1206,7,Riversedge United,Eastcliff FC,1,2
+4,1207,7,Blackthorn Rovers,Millbrook Town,2,0
+4,1208,7,Port Albion,Kingswell Athletic,1,0
+4,1209,7,Red Valley FC,West Harbor City,1,0
+4,1210,7,Stonebridge Town,Ashford Rovers,3,1
+4,1211,8,Northgate United,Silverlake FC,3,3
+4,1212,8,Greymoor Athletic,Oakhaven City,2,1
+4,1213,8,Fenwick United,Bridgeport Rovers,1,2
+4,1214,8,Harrow Vale,Thornfield United,0,3
+4,1215,8,Dunmore Town,Eastcliff FC,1,1
+4,1216,8,Castlebay FC,Millbrook Town,2,1
+4,1217,8,Riversedge United,Kingswell Athletic,2,2
+4,1218,8,Blackthorn Rovers,West Harbor City,0,2
+4,1219,8,Port Albion,Ashford Rovers,1,1
+4,1220,8,Red Valley FC,Stonebridge Town,2,1
+4,1221,9,Northgate United,Oakhaven City,1,3
+4,1222,9,Silverlake FC,Bridgeport Rovers,3,1
+4,1223,9,Greymoor Athletic,Thornfield United,1,2
+4,1224,9,Fenwick United,Eastcliff FC,2,2
+4,1225,9,Harrow Vale,Millbrook Town,3,2
+4,1226,9,Dunmore Town,Kingswell Athletic,1,0
+4,1227,9,Castlebay FC,West Harbor City,0,2
+4,1228,9,Riversedge United,Ashford Rovers,0,0
+4,1229,9,Blackthorn Rovers,Stonebridge Town,2,4
+4,1230,9,Port Albion,Red Valley FC,0,2
+4,1231,10,Northgate United,Bridgeport Rovers,3,0
+4,1232,10,Oakhaven City,Thornfield United,1,4
+4,1233,10,Silverlake FC,Eastcliff FC,1,1
+4,1234,10,Greymoor Athletic,Millbrook Town,2,1
+4,1235,10,Fenwick United,Kingswell Athletic,2,2
+4,1236,10,Harrow Vale,West Harbor City,3,0
+4,1237,10,Dunmore Town,Ashford Rovers,2,0
+4,1238,10,Castlebay FC,Stonebridge Town,1,0
+4,1239,10,Riversedge United,Red Valley FC,1,0
+4,1240,10,Blackthorn Rovers,Port Albion,3,3
+4,1241,11,Northgate United,Thornfield United,2,1
+4,1242,11,Bridgeport Rovers,Eastcliff FC,3,1
+4,1243,11,Oakhaven City,Millbrook Town,0,1
+4,1244,11,Silverlake FC,Kingswell Athletic,0,4
+4,1245,11,Greymoor Athletic,West Harbor City,1,1
+4,1246,11,Fenwick United,Ashford Rovers,1,2
+4,1247,11,Harrow Vale,Stonebridge Town,1,0
+4,1248,11,Dunmore Town,Red Valley FC,1,0
+4,1249,11,Castlebay FC,Port Albion,1,1
+4,1250,11,Riversedge United,Blackthorn Rovers,1,3
+4,1251,12,Northgate United,Eastcliff FC,3,1
+4,1252,12,Thornfield United,Millbrook Town,2,1
+4,1253,12,Bridgeport Rovers,Kingswell Athletic,2,0
+4,1254,12,Oakhaven City,West Harbor City,0,2
+4,1255,12,Silverlake FC,Ashford Rovers,0,2
+4,1256,12,Greymoor Athletic,Stonebridge Town,0,3
+4,1257,12,Fenwick United,Red Valley FC,1,1
+4,1258,12,Harrow Vale,Port Albion,0,1
+4,1259,12,Dunmore Town,Blackthorn Rovers,3,1
+4,1260,12,Castlebay FC,Riversedge United,1,0
+4,1261,13,Northgate United,Millbrook Town,1,2
+4,1262,13,Eastcliff FC,Kingswell Athletic,0,1
+4,1263,13,Thornfield United,West Harbor City,1,2
+4,1264,13,Bridgeport Rovers,Ashford Rovers,1,2
+4,1265,13,Oakhaven City,Stonebridge Town,3,3
+4,1266,13,Silverlake FC,Red Valley FC,1,1
+4,1267,13,Greymoor Athletic,Port Albion,1,3
+4,1268,13,Fenwick United,Blackthorn Rovers,0,3
+4,1269,13,Harrow Vale,Riversedge United,2,1
+4,1270,13,Dunmore Town,Castlebay FC,1,2
+4,1271,14,Northgate United,Kingswell Athletic,1,1
+4,1272,14,Millbrook Town,West Harbor City,2,2
+4,1273,14,Eastcliff FC,Ashford Rovers,5,1
+4,1274,14,Thornfield United,Stonebridge Town,2,2
+4,1275,14,Bridgeport Rovers,Red Valley FC,2,0
+4,1276,14,Oakhaven City,Port Albion,1,2
+4,1277,14,Silverlake FC,Blackthorn Rovers,3,1
+4,1278,14,Greymoor Athletic,Riversedge United,1,1
+4,1279,14,Fenwick United,Castlebay FC,1,1
+4,1280,14,Harrow Vale,Dunmore Town,4,1
+4,1281,15,Northgate United,West Harbor City,2,1
+4,1282,15,Kingswell Athletic,Ashford Rovers,3,2
+4,1283,15,Millbrook Town,Stonebridge Town,1,3
+4,1284,15,Eastcliff FC,Red Valley FC,1,0
+4,1285,15,Thornfield United,Port Albion,2,3
+4,1286,15,Bridgeport Rovers,Blackthorn Rovers,1,2
+4,1287,15,Oakhaven City,Riversedge United,1,3
+4,1288,15,Silverlake FC,Castlebay FC,0,1
+4,1289,15,Greymoor Athletic,Dunmore Town,2,3
+4,1290,15,Fenwick United,Harrow Vale,1,1
+4,1291,16,Northgate United,Ashford Rovers,0,0
+4,1292,16,West Harbor City,Stonebridge Town,1,2
+4,1293,16,Kingswell Athletic,Red Valley FC,2,2
+4,1294,16,Millbrook Town,Port Albion,1,0
+4,1295,16,Eastcliff FC,Blackthorn Rovers,0,2
+4,1296,16,Thornfield United,Riversedge United,0,2
+4,1297,16,Bridgeport Rovers,Castlebay FC,0,0
+4,1298,16,Oakhaven City,Dunmore Town,3,1
+4,1299,16,Silverlake FC,Harrow Vale,1,0
+4,1300,16,Greymoor Athletic,Fenwick United,1,4
+4,1301,17,Northgate United,Stonebridge Town,1,1
+4,1302,17,Ashford Rovers,Red Valley FC,0,2
+4,1303,17,West Harbor City,Port Albion,1,0
+4,1304,17,Kingswell Athletic,Blackthorn Rovers,1,1
+4,1305,17,Millbrook Town,Riversedge United,1,2
+4,1306,17,Eastcliff FC,Castlebay FC,1,1
+4,1307,17,Thornfield United,Dunmore Town,1,1
+4,1308,17,Bridgeport Rovers,Harrow Vale,3,0
+4,1309,17,Oakhaven City,Fenwick United,2,0
+4,1310,17,Silverlake FC,Greymoor Athletic,1,3
+4,1311,18,Northgate United,Red Valley FC,1,2
+4,1312,18,Stonebridge Town,Port Albion,1,2
+4,1313,18,Ashford Rovers,Blackthorn Rovers,1,3
+4,1314,18,West Harbor City,Riversedge United,0,0
+4,1315,18,Kingswell Athletic,Castlebay FC,0,1
+4,1316,18,Millbrook Town,Dunmore Town,1,2
+4,1317,18,Eastcliff FC,Harrow Vale,1,1
+4,1318,18,Thornfield United,Fenwick United,1,1
+4,1319,18,Bridgeport Rovers,Greymoor Athletic,2,1
+4,1320,18,Oakhaven City,Silverlake FC,3,2
+4,1321,19,Northgate United,Port Albion,3,1
+4,1322,19,Red Valley FC,Blackthorn Rovers,2,1
+4,1323,19,Stonebridge Town,Riversedge United,1,0
+4,1324,19,Ashford Rovers,Castlebay FC,0,0
+4,1325,19,West Harbor City,Dunmore Town,2,0
+4,1326,19,Kingswell Athletic,Harrow Vale,0,0
+4,1327,19,Millbrook Town,Fenwick United,2,2
+4,1328,19,Eastcliff FC,Greymoor Athletic,3,2
+4,1329,19,Thornfield United,Silverlake FC,2,0
+4,1330,19,Bridgeport Rovers,Oakhaven City,5,0
+4,1331,20,Blackthorn Rovers,Northgate United,2,3
+4,1332,20,Riversedge United,Port Albion,0,1
+4,1333,20,Castlebay FC,Red Valley FC,3,0
+4,1334,20,Dunmore Town,Stonebridge Town,1,4
+4,1335,20,Harrow Vale,Ashford Rovers,1,0
+4,1336,20,Fenwick United,West Harbor City,2,1
+4,1337,20,Greymoor Athletic,Kingswell Athletic,1,0
+4,1338,20,Silverlake FC,Millbrook Town,1,5
+4,1339,20,Oakhaven City,Eastcliff FC,2,2
+4,1340,20,Bridgeport Rovers,Thornfield United,5,3
+4,1341,21,Riversedge United,Northgate United,1,3
+4,1342,21,Castlebay FC,Blackthorn Rovers,0,2
+4,1343,21,Dunmore Town,Port Albion,0,1
+4,1344,21,Harrow Vale,Red Valley FC,0,1
+4,1345,21,Fenwick United,Stonebridge Town,3,0
+4,1346,21,Greymoor Athletic,Ashford Rovers,1,1
+4,1347,21,Silverlake FC,West Harbor City,1,1
+4,1348,21,Oakhaven City,Kingswell Athletic,2,2
+4,1349,21,Bridgeport Rovers,Millbrook Town,3,0
+4,1350,21,Thornfield United,Eastcliff FC,2,1
+4,1351,22,Castlebay FC,Northgate United,3,2
+4,1352,22,Dunmore Town,Riversedge United,1,2
+4,1353,22,Harrow Vale,Blackthorn Rovers,1,0
+4,1354,22,Fenwick United,Port Albion,1,2
+4,1355,22,Greymoor Athletic,Red Valley FC,1,1
+4,1356,22,Silverlake FC,Stonebridge Town,0,0
+4,1357,22,Oakhaven City,Ashford Rovers,2,3
+4,1358,22,Bridgeport Rovers,West Harbor City,3,0
+4,1359,22,Thornfield United,Kingswell Athletic,6,0
+4,1360,22,Eastcliff FC,Millbrook Town,2,1
+4,1361,23,Dunmore Town,Northgate United,1,0
+4,1362,23,Harrow Vale,Castlebay FC,2,0
+4,1363,23,Fenwick United,Riversedge United,0,2
+4,1364,23,Greymoor Athletic,Blackthorn Rovers,1,2
+4,1365,23,Silverlake FC,Port Albion,0,1
+4,1366,23,Oakhaven City,Red Valley FC,4,4
+4,1367,23,Bridgeport Rovers,Stonebridge Town,0,1
+4,1368,23,Thornfield United,Ashford Rovers,3,1
+4,1369,23,Eastcliff FC,West Harbor City,1,0
+4,1370,23,Millbrook Town,Kingswell Athletic,0,2
+4,1371,24,Harrow Vale,Northgate United,2,0
+4,1372,24,Fenwick United,Dunmore Town,2,0
+4,1373,24,Greymoor Athletic,Castlebay FC,6,3
+4,1374,24,Silverlake FC,Riversedge United,2,1
+4,1375,24,Oakhaven City,Blackthorn Rovers,1,1
+4,1376,24,Bridgeport Rovers,Port Albion,1,4
+4,1377,24,Thornfield United,Red Valley FC,0,2
+4,1378,24,Eastcliff FC,Stonebridge Town,2,3
+4,1379,24,Millbrook Town,Ashford Rovers,3,1
+4,1380,24,Kingswell Athletic,West Harbor City,0,1
+4,1381,25,Fenwick United,Northgate United,3,1
+4,1382,25,Greymoor Athletic,Harrow Vale,0,0
+4,1383,25,Silverlake FC,Dunmore Town,1,2
+4,1384,25,Oakhaven City,Castlebay FC,0,1
+4,1385,25,Bridgeport Rovers,Riversedge United,0,2
+4,1386,25,Thornfield United,Blackthorn Rovers,2,0
+4,1387,25,Eastcliff FC,Port Albion,1,2
+4,1388,25,Millbrook Town,Red Valley FC,2,2
+4,1389,25,Kingswell Athletic,Stonebridge Town,1,1
+4,1390,25,West Harbor City,Ashford Rovers,1,1
+4,1391,26,Greymoor Athletic,Northgate United,2,1
+4,1392,26,Silverlake FC,Fenwick United,0,2
+4,1393,26,Oakhaven City,Harrow Vale,1,4
+4,1394,26,Bridgeport Rovers,Dunmore Town,1,0
+4,1395,26,Thornfield United,Castlebay FC,0,0
+4,1396,26,Eastcliff FC,Riversedge United,1,1
+4,1397,26,Millbrook Town,Blackthorn Rovers,0,1
+4,1398,26,Kingswell Athletic,Port Albion,0,1
+4,1399,26,West Harbor City,Red Valley FC,2,0
+4,1400,26,Ashford Rovers,Stonebridge Town,4,2
+4,1401,27,Silverlake FC,Northgate United,2,3
+4,1402,27,Oakhaven City,Greymoor Athletic,1,0
+4,1403,27,Bridgeport Rovers,Fenwick United,1,0
+4,1404,27,Thornfield United,Harrow Vale,5,1
+4,1405,27,Eastcliff FC,Dunmore Town,0,0
+4,1406,27,Millbrook Town,Castlebay FC,3,1
+4,1407,27,Kingswell Athletic,Riversedge United,2,0
+4,1408,27,West Harbor City,Blackthorn Rovers,1,0
+4,1409,27,Ashford Rovers,Port Albion,2,1
+4,1410,27,Stonebridge Town,Red Valley FC,1,2
+4,1411,28,Oakhaven City,Northgate United,1,1
+4,1412,28,Bridgeport Rovers,Silverlake FC,1,3
+4,1413,28,Thornfield United,Greymoor Athletic,2,1
+4,1414,28,Eastcliff FC,Fenwick United,2,0
+4,1415,28,Millbrook Town,Harrow Vale,3,3
+4,1416,28,Kingswell Athletic,Dunmore Town,1,2
+4,1417,28,West Harbor City,Castlebay FC,0,1
+4,1418,28,Ashford Rovers,Riversedge United,1,1
+4,1419,28,Stonebridge Town,Blackthorn Rovers,0,0
+4,1420,28,Red Valley FC,Port Albion,4,0
+4,1421,29,Bridgeport Rovers,Northgate United,1,0
+4,1422,29,Thornfield United,Oakhaven City,1,4
+4,1423,29,Eastcliff FC,Silverlake FC,1,1
+4,1424,29,Millbrook Town,Greymoor Athletic,1,1
+4,1425,29,Kingswell Athletic,Fenwick United,1,1
+4,1426,29,West Harbor City,Harrow Vale,2,4
+4,1427,29,Ashford Rovers,Dunmore Town,2,3
+4,1428,29,Stonebridge Town,Castlebay FC,2,0
+4,1429,29,Red Valley FC,Riversedge United,1,0
+4,1430,29,Port Albion,Blackthorn Rovers,2,2
+4,1431,30,Thornfield United,Northgate United,4,3
+4,1432,30,Eastcliff FC,Bridgeport Rovers,3,5
+4,1433,30,Millbrook Town,Oakhaven City,1,0
+4,1434,30,Kingswell Athletic,Silverlake FC,0,2
+4,1435,30,West Harbor City,Greymoor Athletic,3,0
+4,1436,30,Ashford Rovers,Fenwick United,1,1
+4,1437,30,Stonebridge Town,Harrow Vale,1,1
+4,1438,30,Red Valley FC,Dunmore Town,3,3
+4,1439,30,Port Albion,Castlebay FC,0,0
+4,1440,30,Blackthorn Rovers,Riversedge United,0,0
+4,1441,31,Eastcliff FC,Northgate United,3,1
+4,1442,31,Millbrook Town,Thornfield United,0,1
+4,1443,31,Kingswell Athletic,Bridgeport Rovers,1,2
+4,1444,31,West Harbor City,Oakhaven City,2,0
+4,1445,31,Ashford Rovers,Silverlake FC,4,2
+4,1446,31,Stonebridge Town,Greymoor Athletic,1,1
+4,1447,31,Red Valley FC,Fenwick United,1,1
+4,1448,31,Port Albion,Harrow Vale,1,2
+4,1449,31,Blackthorn Rovers,Dunmore Town,0,0
+4,1450,31,Riversedge United,Castlebay FC,5,0
+4,1451,32,Millbrook Town,Northgate United,2,1
+4,1452,32,Kingswell Athletic,Eastcliff FC,0,0
+4,1453,32,West Harbor City,Thornfield United,1,1
+4,1454,32,Ashford Rovers,Bridgeport Rovers,1,3
+4,1455,32,Stonebridge Town,Oakhaven City,4,1
+4,1456,32,Red Valley FC,Silverlake FC,0,1
+4,1457,32,Port Albion,Greymoor Athletic,0,0
+4,1458,32,Blackthorn Rovers,Fenwick United,2,0
+4,1459,32,Riversedge United,Harrow Vale,2,2
+4,1460,32,Castlebay FC,Dunmore Town,0,0
+4,1461,33,Kingswell Athletic,Northgate United,0,1
+4,1462,33,West Harbor City,Millbrook Town,2,1
+4,1463,33,Ashford Rovers,Eastcliff FC,2,1
+4,1464,33,Stonebridge Town,Thornfield United,1,0
+4,1465,33,Red Valley FC,Bridgeport Rovers,0,2
+4,1466,33,Port Albion,Oakhaven City,4,0
+4,1467,33,Blackthorn Rovers,Silverlake FC,1,2
+4,1468,33,Riversedge United,Greymoor Athletic,2,2
+4,1469,33,Castlebay FC,Fenwick United,1,0
+4,1470,33,Dunmore Town,Harrow Vale,1,1
+4,1471,34,West Harbor City,Northgate United,0,1
+4,1472,34,Ashford Rovers,Kingswell Athletic,0,2
+4,1473,34,Stonebridge Town,Millbrook Town,2,2
+4,1474,34,Red Valley FC,Eastcliff FC,2,0
+4,1475,34,Port Albion,Thornfield United,3,0
+4,1476,34,Blackthorn Rovers,Bridgeport Rovers,0,0
+4,1477,34,Riversedge United,Oakhaven City,1,1
+4,1478,34,Castlebay FC,Silverlake FC,2,3
+4,1479,34,Dunmore Town,Greymoor Athletic,3,0
+4,1480,34,Harrow Vale,Fenwick United,1,2
+4,1481,35,Ashford Rovers,Northgate United,0,1
+4,1482,35,Stonebridge Town,West Harbor City,0,0
+4,1483,35,Red Valley FC,Kingswell Athletic,0,1
+4,1484,35,Port Albion,Millbrook Town,3,0
+4,1485,35,Blackthorn Rovers,Eastcliff FC,0,1
+4,1486,35,Riversedge United,Thornfield United,2,1
+4,1487,35,Castlebay FC,Bridgeport Rovers,1,0
+4,1488,35,Dunmore Town,Oakhaven City,4,2
+4,1489,35,Harrow Vale,Silverlake FC,2,0
+4,1490,35,Fenwick United,Greymoor Athletic,1,0
+4,1491,36,Stonebridge Town,Northgate United,1,1
+4,1492,36,Red Valley FC,Ashford Rovers,3,2
+4,1493,36,Port Albion,West Harbor City,2,1
+4,1494,36,Blackthorn Rovers,Kingswell Athletic,2,3
+4,1495,36,Riversedge United,Millbrook Town,1,2
+4,1496,36,Castlebay FC,Eastcliff FC,1,0
+4,1497,36,Dunmore Town,Thornfield United,1,2
+4,1498,36,Harrow Vale,Bridgeport Rovers,2,3
+4,1499,36,Fenwick United,Oakhaven City,0,1
+4,1500,36,Greymoor Athletic,Silverlake FC,4,2
+4,1501,37,Red Valley FC,Northgate United,0,2
+4,1502,37,Port Albion,Stonebridge Town,2,3
+4,1503,37,Blackthorn Rovers,Ashford Rovers,1,1
+4,1504,37,Riversedge United,West Harbor City,3,0
+4,1505,37,Castlebay FC,Kingswell Athletic,1,0
+4,1506,37,Dunmore Town,Millbrook Town,2,2
+4,1507,37,Harrow Vale,Eastcliff FC,0,1
+4,1508,37,Fenwick United,Thornfield United,1,4
+4,1509,37,Greymoor Athletic,Bridgeport Rovers,2,1
+4,1510,37,Silverlake FC,Oakhaven City,1,1
+4,1511,38,Port Albion,Northgate United,2,5
+4,1512,38,Blackthorn Rovers,Red Valley FC,2,1
+4,1513,38,Riversedge United,Stonebridge Town,3,0
+4,1514,38,Castlebay FC,Ashford Rovers,1,3
+4,1515,38,Dunmore Town,West Harbor City,0,2
+4,1516,38,Harrow Vale,Kingswell Athletic,4,0
+4,1517,38,Fenwick United,Millbrook Town,0,1
+4,1518,38,Greymoor Athletic,Eastcliff FC,1,1
+4,1519,38,Silverlake FC,Thornfield United,3,2
+4,1520,38,Oakhaven City,Bridgeport Rovers,3,1
+5,1521,1,Northgate United,Blackthorn Rovers,0,2
+5,1522,1,Port Albion,Riversedge United,2,1
+5,1523,1,Red Valley FC,Castlebay FC,1,0
+5,1524,1,Stonebridge Town,Dunmore Town,2,1
+5,1525,1,Ashford Rovers,Harrow Vale,1,2
+5,1526,1,West Harbor City,Fenwick United,1,2
+5,1527,1,Kingswell Athletic,Greymoor Athletic,2,0
+5,1528,1,Millbrook Town,Silverlake FC,0,3
+5,1529,1,Eastcliff FC,Oakhaven City,5,0
+5,1530,1,Thornfield United,Bridgeport Rovers,1,3
+5,1531,2,Northgate United,Riversedge United,0,1
+5,1532,2,Blackthorn Rovers,Castlebay FC,1,0
+5,1533,2,Port Albion,Dunmore Town,1,1
+5,1534,2,Red Valley FC,Harrow Vale,0,0
+5,1535,2,Stonebridge Town,Fenwick United,1,0
+5,1536,2,Ashford Rovers,Greymoor Athletic,1,1
+5,1537,2,West Harbor City,Silverlake FC,0,3
+5,1538,2,Kingswell Athletic,Oakhaven City,1,2
+5,1539,2,Millbrook Town,Bridgeport Rovers,1,0
+5,1540,2,Eastcliff FC,Thornfield United,1,2
+5,1541,3,Northgate United,Castlebay FC,0,2
+5,1542,3,Riversedge United,Dunmore Town,4,2
+5,1543,3,Blackthorn Rovers,Harrow Vale,0,3
+5,1544,3,Port Albion,Fenwick United,2,0
+5,1545,3,Red Valley FC,Greymoor Athletic,0,1
+5,1546,3,Stonebridge Town,Silverlake FC,2,4
+5,1547,3,Ashford Rovers,Oakhaven City,2,2
+5,1548,3,West Harbor City,Bridgeport Rovers,1,1
+5,1549,3,Kingswell Athletic,Thornfield United,1,2
+5,1550,3,Millbrook Town,Eastcliff FC,0,1
+5,1551,4,Northgate United,Dunmore Town,0,0
+5,1552,4,Castlebay FC,Harrow Vale,0,2
+5,1553,4,Riversedge United,Fenwick United,0,1
+5,1554,4,Blackthorn Rovers,Greymoor Athletic,2,0
+5,1555,4,Port Albion,Silverlake FC,3,2
+5,1556,4,Red Valley FC,Oakhaven City,0,1
+5,1557,4,Stonebridge Town,Bridgeport Rovers,0,1
+5,1558,4,Ashford Rovers,Thornfield United,3,2
+5,1559,4,West Harbor City,Eastcliff FC,7,0
+5,1560,4,Kingswell Athletic,Millbrook Town,2,1
+5,1561,5,Northgate United,Harrow Vale,4,0
+5,1562,5,Dunmore Town,Fenwick United,2,2
+5,1563,5,Castlebay FC,Greymoor Athletic,1,1
+5,1564,5,Riversedge United,Silverlake FC,2,1
+5,1565,5,Blackthorn Rovers,Oakhaven City,4,0
+5,1566,5,Port Albion,Bridgeport Rovers,0,0
+5,1567,5,Red Valley FC,Thornfield United,3,1
+5,1568,5,Stonebridge Town,Eastcliff FC,2,0
+5,1569,5,Ashford Rovers,Millbrook Town,3,0
+5,1570,5,West Harbor City,Kingswell Athletic,0,1
+5,1571,6,Northgate United,Fenwick United,1,1
+5,1572,6,Harrow Vale,Greymoor Athletic,2,1
+5,1573,6,Dunmore Town,Silverlake FC,0,2
+5,1574,6,Castlebay FC,Oakhaven City,2,4
+5,1575,6,Riversedge United,Bridgeport Rovers,0,0
+5,1576,6,Blackthorn Rovers,Thornfield United,1,2
+5,1577,6,Port Albion,Eastcliff FC,1,0
+5,1578,6,Red Valley FC,Millbrook Town,1,0
+5,1579,6,Stonebridge Town,Kingswell Athletic,0,0
+5,1580,6,Ashford Rovers,West Harbor City,2,0
+5,1581,7,Northgate United,Greymoor Athletic,0,4
+5,1582,7,Fenwick United,Silverlake FC,1,3
+5,1583,7,Harrow Vale,Oakhaven City,2,1
+5,1584,7,Dunmore Town,Bridgeport Rovers,0,4
+5,1585,7,Castlebay FC,Thornfield United,0,1
+5,1586,7,Riversedge United,Eastcliff FC,1,1
+5,1587,7,Blackthorn Rovers,Millbrook Town,1,1
+5,1588,7,Port Albion,Kingswell Athletic,3,1
+5,1589,7,Red Valley FC,West Harbor City,0,1
+5,1590,7,Stonebridge Town,Ashford Rovers,3,1
+5,1591,8,Northgate United,Silverlake FC,4,0
+5,1592,8,Greymoor Athletic,Oakhaven City,2,1
+5,1593,8,Fenwick United,Bridgeport Rovers,2,4
+5,1594,8,Harrow Vale,Thornfield United,0,1
+5,1595,8,Dunmore Town,Eastcliff FC,1,0
+5,1596,8,Castlebay FC,Millbrook Town,0,0
+5,1597,8,Riversedge United,Kingswell Athletic,0,1
+5,1598,8,Blackthorn Rovers,West Harbor City,1,1
+5,1599,8,Port Albion,Ashford Rovers,2,1
+5,1600,8,Red Valley FC,Stonebridge Town,1,4
+5,1601,9,Northgate United,Oakhaven City,1,1
+5,1602,9,Silverlake FC,Bridgeport Rovers,4,1
+5,1603,9,Greymoor Athletic,Thornfield United,2,3
+5,1604,9,Fenwick United,Eastcliff FC,0,3
+5,1605,9,Harrow Vale,Millbrook Town,1,0
+5,1606,9,Dunmore Town,Kingswell Athletic,0,3
+5,1607,9,Castlebay FC,West Harbor City,0,0
+5,1608,9,Riversedge United,Ashford Rovers,0,3
+5,1609,9,Blackthorn Rovers,Stonebridge Town,2,0
+5,1610,9,Port Albion,Red Valley FC,1,1
+5,1611,10,Northgate United,Bridgeport Rovers,0,1
+5,1612,10,Oakhaven City,Thornfield United,1,5
+5,1613,10,Silverlake FC,Eastcliff FC,3,3
+5,1614,10,Greymoor Athletic,Millbrook Town,4,0
+5,1615,10,Fenwick United,Kingswell Athletic,2,3
+5,1616,10,Harrow Vale,West Harbor City,0,2
+5,1617,10,Dunmore Town,Ashford Rovers,0,1
+5,1618,10,Castlebay FC,Stonebridge Town,1,1
+5,1619,10,Riversedge United,Red Valley FC,0,0
+5,1620,10,Blackthorn Rovers,Port Albion,1,2
+5,1621,11,Northgate United,Thornfield United,1,1
+5,1622,11,Bridgeport Rovers,Eastcliff FC,1,3
+5,1623,11,Oakhaven City,Millbrook Town,2,2
+5,1624,11,Silverlake FC,Kingswell Athletic,0,3
+5,1625,11,Greymoor Athletic,West Harbor City,3,0
+5,1626,11,Fenwick United,Ashford Rovers,2,6
+5,1627,11,Harrow Vale,Stonebridge Town,3,1
+5,1628,11,Dunmore Town,Red Valley FC,1,3
+5,1629,11,Castlebay FC,Port Albion,2,1
+5,1630,11,Riversedge United,Blackthorn Rovers,2,1
+5,1631,12,Northgate United,Eastcliff FC,1,2
+5,1632,12,Thornfield United,Millbrook Town,0,1
+5,1633,12,Bridgeport Rovers,Kingswell Athletic,1,0
+5,1634,12,Oakhaven City,West Harbor City,1,3
+5,1635,12,Silverlake FC,Ashford Rovers,1,1
+5,1636,12,Greymoor Athletic,Stonebridge Town,1,3
+5,1637,12,Fenwick United,Red Valley FC,1,1
+5,1638,12,Harrow Vale,Port Albion,1,2
+5,1639,12,Dunmore Town,Blackthorn Rovers,0,1
+5,1640,12,Castlebay FC,Riversedge United,1,0
+5,1641,13,Northgate United,Millbrook Town,3,1
+5,1642,13,Eastcliff FC,Kingswell Athletic,2,0
+5,1643,13,Thornfield United,West Harbor City,0,4
+5,1644,13,Bridgeport Rovers,Ashford Rovers,1,1
+5,1645,13,Oakhaven City,Stonebridge Town,1,4
+5,1646,13,Silverlake FC,Red Valley FC,0,2
+5,1647,13,Greymoor Athletic,Port Albion,2,2
+5,1648,13,Fenwick United,Blackthorn Rovers,0,2
+5,1649,13,Harrow Vale,Riversedge United,0,0
+5,1650,13,Dunmore Town,Castlebay FC,1,0
+5,1651,14,Northgate United,Kingswell Athletic,0,0
+5,1652,14,Millbrook Town,West Harbor City,0,1
+5,1653,14,Eastcliff FC,Ashford Rovers,2,3
+5,1654,14,Thornfield United,Stonebridge Town,1,0
+5,1655,14,Bridgeport Rovers,Red Valley FC,0,1
+5,1656,14,Oakhaven City,Port Albion,3,2
+5,1657,14,Silverlake FC,Blackthorn Rovers,1,2
+5,1658,14,Greymoor Athletic,Riversedge United,0,2
+5,1659,14,Fenwick United,Castlebay FC,2,1
+5,1660,14,Harrow Vale,Dunmore Town,1,0
+5,1661,15,Northgate United,West Harbor City,1,0
+5,1662,15,Kingswell Athletic,Ashford Rovers,2,2
+5,1663,15,Millbrook Town,Stonebridge Town,0,2
+5,1664,15,Eastcliff FC,Red Valley FC,1,1
+5,1665,15,Thornfield United,Port Albion,1,2
+5,1666,15,Bridgeport Rovers,Blackthorn Rovers,0,0
+5,1667,15,Oakhaven City,Riversedge United,3,1
+5,1668,15,Silverlake FC,Castlebay FC,3,1
+5,1669,15,Greymoor Athletic,Dunmore Town,3,1
+5,1670,15,Fenwick United,Harrow Vale,2,2
+5,1671,16,Northgate United,Ashford Rovers,0,0
+5,1672,16,West Harbor City,Stonebridge Town,1,2
+5,1673,16,Kingswell Athletic,Red Valley FC,1,1
+5,1674,16,Millbrook Town,Port Albion,3,3
+5,1675,16,Eastcliff FC,Blackthorn Rovers,3,2
+5,1676,16,Thornfield United,Riversedge United,2,3
+5,1677,16,Bridgeport Rovers,Castlebay FC,1,0
+5,1678,16,Oakhaven City,Dunmore Town,1,0
+5,1679,16,Silverlake FC,Harrow Vale,3,1
+5,1680,16,Greymoor Athletic,Fenwick United,4,0
+5,1681,17,Northgate United,Stonebridge Town,3,0
+5,1682,17,Ashford Rovers,Red Valley FC,3,2
+5,1683,17,West Harbor City,Port Albion,2,1
+5,1684,17,Kingswell Athletic,Blackthorn Rovers,3,2
+5,1685,17,Millbrook Town,Riversedge United,2,2
+5,1686,17,Eastcliff FC,Castlebay FC,3,0
+5,1687,17,Thornfield United,Dunmore Town,0,1
+5,1688,17,Bridgeport Rovers,Harrow Vale,0,1
+5,1689,17,Oakhaven City,Fenwick United,2,2
+5,1690,17,Silverlake FC,Greymoor Athletic,0,4
+5,1691,18,Northgate United,Red Valley FC,1,0
+5,1692,18,Stonebridge Town,Port Albion,2,2
+5,1693,18,Ashford Rovers,Blackthorn Rovers,3,1
+5,1694,18,West Harbor City,Riversedge United,1,2
+5,1695,18,Kingswell Athletic,Castlebay FC,1,0
+5,1696,18,Millbrook Town,Dunmore Town,4,0
+5,1697,18,Eastcliff FC,Harrow Vale,4,3
+5,1698,18,Thornfield United,Fenwick United,0,0
+5,1699,18,Bridgeport Rovers,Greymoor Athletic,1,0
+5,1700,18,Oakhaven City,Silverlake FC,1,3
+5,1701,19,Northgate United,Port Albion,0,1
+5,1702,19,Red Valley FC,Blackthorn Rovers,2,3
+5,1703,19,Stonebridge Town,Riversedge United,0,1
+5,1704,19,Ashford Rovers,Castlebay FC,1,0
+5,1705,19,West Harbor City,Dunmore Town,3,1
+5,1706,19,Kingswell Athletic,Harrow Vale,0,2
+5,1707,19,Millbrook Town,Fenwick United,0,1
+5,1708,19,Eastcliff FC,Greymoor Athletic,5,4
+5,1709,19,Thornfield United,Silverlake FC,3,2
+5,1710,19,Bridgeport Rovers,Oakhaven City,4,1
+5,1711,20,Blackthorn Rovers,Northgate United,2,4
+5,1712,20,Riversedge United,Port Albion,2,2
+5,1713,20,Castlebay FC,Red Valley FC,1,2
+5,1714,20,Dunmore Town,Stonebridge Town,1,1
+5,1715,20,Harrow Vale,Ashford Rovers,2,2
+5,1716,20,Fenwick United,West Harbor City,0,3
+5,1717,20,Greymoor Athletic,Kingswell Athletic,0,1
+5,1718,20,Silverlake FC,Millbrook Town,0,3
+5,1719,20,Oakhaven City,Eastcliff FC,1,1
+5,1720,20,Bridgeport Rovers,Thornfield United,1,1
+5,1721,21,Riversedge United,Northgate United,1,1
+5,1722,21,Castlebay FC,Blackthorn Rovers,4,1
+5,1723,21,Dunmore Town,Port Albion,1,1
+5,1724,21,Harrow Vale,Red Valley FC,1,1
+5,1725,21,Fenwick United,Stonebridge Town,1,2
+5,1726,21,Greymoor Athletic,Ashford Rovers,2,1
+5,1727,21,Silverlake FC,West Harbor City,3,1
+5,1728,21,Oakhaven City,Kingswell Athletic,0,1
+5,1729,21,Bridgeport Rovers,Millbrook Town,2,1
+5,1730,21,Thornfield United,Eastcliff FC,3,4
+5,1731,22,Castlebay FC,Northgate United,1,0
+5,1732,22,Dunmore Town,Riversedge United,2,0
+5,1733,22,Harrow Vale,Blackthorn Rovers,0,1
+5,1734,22,Fenwick United,Port Albion,0,1
+5,1735,22,Greymoor Athletic,Red Valley FC,3,2
+5,1736,22,Silverlake FC,Stonebridge Town,1,0
+5,1737,22,Oakhaven City,Ashford Rovers,2,0
+5,1738,22,Bridgeport Rovers,West Harbor City,1,0
+5,1739,22,Thornfield United,Kingswell Athletic,1,1
+5,1740,22,Eastcliff FC,Millbrook Town,1,1
+5,1741,23,Dunmore Town,Northgate United,2,1
+5,1742,23,Harrow Vale,Castlebay FC,2,2
+5,1743,23,Fenwick United,Riversedge United,0,3
+5,1744,23,Greymoor Athletic,Blackthorn Rovers,0,1
+5,1745,23,Silverlake FC,Port Albion,2,0
+5,1746,23,Oakhaven City,Red Valley FC,3,3
+5,1747,23,Bridgeport Rovers,Stonebridge Town,4,0
+5,1748,23,Thornfield United,Ashford Rovers,0,0
+5,1749,23,Eastcliff FC,West Harbor City,2,1
+5,1750,23,Millbrook Town,Kingswell Athletic,1,0
+5,1751,24,Harrow Vale,Northgate United,1,1
+5,1752,24,Fenwick United,Dunmore Town,2,1
+5,1753,24,Greymoor Athletic,Castlebay FC,2,2
+5,1754,24,Silverlake FC,Riversedge United,2,3
+5,1755,24,Oakhaven City,Blackthorn Rovers,0,3
+5,1756,24,Bridgeport Rovers,Port Albion,2,2
+5,1757,24,Thornfield United,Red Valley FC,0,0
+5,1758,24,Eastcliff FC,Stonebridge Town,0,2
+5,1759,24,Millbrook Town,Ashford Rovers,2,1
+5,1760,24,Kingswell Athletic,West Harbor City,0,1
+5,1761,25,Fenwick United,Northgate United,0,1
+5,1762,25,Greymoor Athletic,Harrow Vale,2,1
+5,1763,25,Silverlake FC,Dunmore Town,2,2
+5,1764,25,Oakhaven City,Castlebay FC,1,2
+5,1765,25,Bridgeport Rovers,Riversedge United,1,2
+5,1766,25,Thornfield United,Blackthorn Rovers,2,0
+5,1767,25,Eastcliff FC,Port Albion,3,5
+5,1768,25,Millbrook Town,Red Valley FC,1,3
+5,1769,25,Kingswell Athletic,Stonebridge Town,0,0
+5,1770,25,West Harbor City,Ashford Rovers,3,2
+5,1771,26,Greymoor Athletic,Northgate United,1,2
+5,1772,26,Silverlake FC,Fenwick United,0,1
+5,1773,26,Oakhaven City,Harrow Vale,2,3
+5,1774,26,Bridgeport Rovers,Dunmore Town,2,3
+5,1775,26,Thornfield United,Castlebay FC,5,1
+5,1776,26,Eastcliff FC,Riversedge United,1,0
+5,1777,26,Millbrook Town,Blackthorn Rovers,0,3
+5,1778,26,Kingswell Athletic,Port Albion,0,2
+5,1779,26,West Harbor City,Red Valley FC,1,0
+5,1780,26,Ashford Rovers,Stonebridge Town,2,2
+5,1781,27,Silverlake FC,Northgate United,1,4
+5,1782,27,Oakhaven City,Greymoor Athletic,0,0
+5,1783,27,Bridgeport Rovers,Fenwick United,2,1
+5,1784,27,Thornfield United,Harrow Vale,0,0
+5,1785,27,Eastcliff FC,Dunmore Town,0,1
+5,1786,27,Millbrook Town,Castlebay FC,2,1
+5,1787,27,Kingswell Athletic,Riversedge United,1,3
+5,1788,27,West Harbor City,Blackthorn Rovers,0,0
+5,1789,27,Ashford Rovers,Port Albion,2,0
+5,1790,27,Stonebridge Town,Red Valley FC,3,0
+5,1791,28,Oakhaven City,Northgate United,1,0
+5,1792,28,Bridgeport Rovers,Silverlake FC,1,1
+5,1793,28,Thornfield United,Greymoor Athletic,3,1
+5,1794,28,Eastcliff FC,Fenwick United,4,0
+5,1795,28,Millbrook Town,Harrow Vale,1,1
+5,1796,28,Kingswell Athletic,Dunmore Town,2,0
+5,1797,28,West Harbor City,Castlebay FC,0,0
+5,1798,28,Ashford Rovers,Riversedge United,0,1
+5,1799,28,Stonebridge Town,Blackthorn Rovers,1,0
+5,1800,28,Red Valley FC,Port Albion,1,1
+5,1801,29,Bridgeport Rovers,Northgate United,3,0
+5,1802,29,Thornfield United,Oakhaven City,1,1
+5,1803,29,Eastcliff FC,Silverlake FC,0,2
+5,1804,29,Millbrook Town,Greymoor Athletic,1,1
+5,1805,29,Kingswell Athletic,Fenwick United,1,1
+5,1806,29,West Harbor City,Harrow Vale,1,1
+5,1807,29,Ashford Rovers,Dunmore Town,0,2
+5,1808,29,Stonebridge Town,Castlebay FC,1,2
+5,1809,29,Red Valley FC,Riversedge United,1,0
+5,1810,29,Port Albion,Blackthorn Rovers,3,2
+5,1811,30,Thornfield United,Northgate United,1,2
+5,1812,30,Eastcliff FC,Bridgeport Rovers,2,3
+5,1813,30,Millbrook Town,Oakhaven City,2,5
+5,1814,30,Kingswell Athletic,Silverlake FC,3,0
+5,1815,30,West Harbor City,Greymoor Athletic,0,0
+5,1816,30,Ashford Rovers,Fenwick United,0,1
+5,1817,30,Stonebridge Town,Harrow Vale,2,1
+5,1818,30,Red Valley FC,Dunmore Town,2,0
+5,1819,30,Port Albion,Castlebay FC,3,1
+5,1820,30,Blackthorn Rovers,Riversedge United,0,3
+5,1821,31,Eastcliff FC,Northgate United,4,1
+5,1822,31,Millbrook Town,Thornfield United,3,1
+5,1823,31,Kingswell Athletic,Bridgeport Rovers,0,0
+5,1824,31,West Harbor City,Oakhaven City,1,2
+5,1825,31,Ashford Rovers,Silverlake FC,2,1
+5,1826,31,Stonebridge Town,Greymoor Athletic,3,0
+5,1827,31,Red Valley FC,Fenwick United,2,0
+5,1828,31,Port Albion,Harrow Vale,2,2
+5,1829,31,Blackthorn Rovers,Dunmore Town,3,0
+5,1830,31,Riversedge United,Castlebay FC,0,1
+5,1831,32,Millbrook Town,Northgate United,3,1
+5,1832,32,Kingswell Athletic,Eastcliff FC,4,0
+5,1833,32,West Harbor City,Thornfield United,3,0
+5,1834,32,Ashford Rovers,Bridgeport Rovers,1,1
+5,1835,32,Stonebridge Town,Oakhaven City,3,2
+5,1836,32,Red Valley FC,Silverlake FC,3,1
+5,1837,32,Port Albion,Greymoor Athletic,2,2
+5,1838,32,Blackthorn Rovers,Fenwick United,2,0
+5,1839,32,Riversedge United,Harrow Vale,2,3
+5,1840,32,Castlebay FC,Dunmore Town,2,1
+5,1841,33,Kingswell Athletic,Northgate United,1,1
+5,1842,33,West Harbor City,Millbrook Town,0,1
+5,1843,33,Ashford Rovers,Eastcliff FC,1,2
+5,1844,33,Stonebridge Town,Thornfield United,0,1
+5,1845,33,Red Valley FC,Bridgeport Rovers,2,0
+5,1846,33,Port Albion,Oakhaven City,1,1
+5,1847,33,Blackthorn Rovers,Silverlake FC,0,1
+5,1848,33,Riversedge United,Greymoor Athletic,1,1
+5,1849,33,Castlebay FC,Fenwick United,2,0
+5,1850,33,Dunmore Town,Harrow Vale,0,1
+5,1851,34,West Harbor City,Northgate United,0,2
+5,1852,34,Ashford Rovers,Kingswell Athletic,0,1
+5,1853,34,Stonebridge Town,Millbrook Town,1,0
+5,1854,34,Red Valley FC,Eastcliff FC,2,1
+5,1855,34,Port Albion,Thornfield United,2,4
+5,1856,34,Blackthorn Rovers,Bridgeport Rovers,0,2
+5,1857,34,Riversedge United,Oakhaven City,0,1
+5,1858,34,Castlebay FC,Silverlake FC,2,2
+5,1859,34,Dunmore Town,Greymoor Athletic,1,1
+5,1860,34,Harrow Vale,Fenwick United,2,0
+5,1861,35,Ashford Rovers,Northgate United,0,1
+5,1862,35,Stonebridge Town,West Harbor City,1,2
+5,1863,35,Red Valley FC,Kingswell Athletic,0,1
+5,1864,35,Port Albion,Millbrook Town,4,5
+5,1865,35,Blackthorn Rovers,Eastcliff FC,1,0
+5,1866,35,Riversedge United,Thornfield United,1,3
+5,1867,35,Castlebay FC,Bridgeport Rovers,0,3
+5,1868,35,Dunmore Town,Oakhaven City,0,3
+5,1869,35,Harrow Vale,Silverlake FC,2,1
+5,1870,35,Fenwick United,Greymoor Athletic,2,4
+5,1871,36,Stonebridge Town,Northgate United,2,3
+5,1872,36,Red Valley FC,Ashford Rovers,2,1
+5,1873,36,Port Albion,West Harbor City,1,0
+5,1874,36,Blackthorn Rovers,Kingswell Athletic,2,1
+5,1875,36,Riversedge United,Millbrook Town,2,1
+5,1876,36,Castlebay FC,Eastcliff FC,1,0
+5,1877,36,Dunmore Town,Thornfield United,0,5
+5,1878,36,Harrow Vale,Bridgeport Rovers,2,0
+5,1879,36,Fenwick United,Oakhaven City,2,2
+5,1880,36,Greymoor Athletic,Silverlake FC,1,0
+5,1881,37,Red Valley FC,Northgate United,1,2
+5,1882,37,Port Albion,Stonebridge Town,1,2
+5,1883,37,Blackthorn Rovers,Ashford Rovers,1,1
+5,1884,37,Riversedge United,West Harbor City,0,4
+5,1885,37,Castlebay FC,Kingswell Athletic,0,2
+5,1886,37,Dunmore Town,Millbrook Town,2,2
+5,1887,37,Harrow Vale,Eastcliff FC,1,0
+5,1888,37,Fenwick United,Thornfield United,1,3
+5,1889,37,Greymoor Athletic,Bridgeport Rovers,1,3
+5,1890,37,Silverlake FC,Oakhaven City,4,1
+5,1891,38,Port Albion,Northgate United,2,0
+5,1892,38,Blackthorn Rovers,Red Valley FC,0,1
+5,1893,38,Riversedge United,Stonebridge Town,0,1
+5,1894,38,Castlebay FC,Ashford Rovers,0,0
+5,1895,38,Dunmore Town,West Harbor City,1,3
+5,1896,38,Harrow Vale,Kingswell Athletic,2,0
+5,1897,38,Fenwick United,Millbrook Town,3,2
+5,1898,38,Greymoor Athletic,Eastcliff FC,4,1
+5,1899,38,Silverlake FC,Thornfield United,3,4
+5,1900,38,Oakhaven City,Bridgeport Rovers,0,4
