@@ -11,8 +11,11 @@ Each minute, each team has a small chance of taking a shot. That chance
     generates and the rate it concedes
 
 Once a shot happens, it's classified as a penalty, a "big chance", or a
-normal shot — each with its own xG range — and it's a goal if a random
-draw lands below that xG.
+normal shot — each with its own xG range — and a player from the
+shooting team's squad is picked (weighted by their shot_share). The shot
+is a goal if a random draw lands below xG adjusted by that player's
+hidden finishing skill. Red cards are likewise assigned to a player,
+weighted by card_share.
 
 The engine can start from any game state (minute, score, red cards), so
 later we can re-simulate a match from a specific moment with one thing
@@ -22,6 +25,7 @@ changed.
 import numpy as np
 
 from src.league import Club
+from src.squad import Player, pick_player
 
 BASE_SHOT_RATE_PER_90 = 11.0  # expected shots per team per 90 min, at attack = defense = 1.0
 HOME_ADVANTAGE = 1.1
@@ -36,8 +40,8 @@ NORMAL_XG_RANGE = (0.02, 0.14)
 
 
 def simulate_match(
-    home: Club, away: Club, rng: np.random.Generator,
-    start_minute: int = 0, home_goals: int = 0, away_goals: int = 0,
+    home: Club, away: Club, home_squad: list[Player], away_squad: list[Player],
+    rng: np.random.Generator, start_minute: int = 0, home_goals: int = 0, away_goals: int = 0,
     home_red_card_minute: int | None = None, away_red_card_minute: int | None = None,
 ) -> dict:
     """Simulates from start_minute+1 to 90, given the state at start_minute.
@@ -47,15 +51,17 @@ def simulate_match(
     red_card_events = []
 
     for minute in range(start_minute + 1, 91):
-        for team in (home, away):
+        for team, squad in ((home, home_squad), (away, away_squad)):
             if red_card_minute[team.name] is None and rng.random() < RED_CARD_CHANCE_PER_MINUTE:
                 red_card_minute[team.name] = minute
-                red_card_events.append({"minute": minute, "team": team.name})
+                carded = pick_player(rng, squad, "card_share")
+                red_card_events.append({"minute": minute, "team": team.name,
+                                         "player": carded.name, "position": carded.position})
 
         home_has_card = red_card_minute[home.name] is not None
         away_has_card = red_card_minute[away.name] is not None
 
-        shot = _maybe_shot(rng, home, away, home_goals, away_goals, minute, True,
+        shot = _maybe_shot(rng, home, away, home_squad, home_goals, away_goals, minute, True,
                             home_has_card, away_has_card)
         if shot is not None:
             shots.append({"minute": minute, "team": home.name,
@@ -63,7 +69,7 @@ def simulate_match(
             if shot["is_goal"]:
                 home_goals += 1
 
-        shot = _maybe_shot(rng, away, home, away_goals, home_goals, minute, False,
+        shot = _maybe_shot(rng, away, home, away_squad, away_goals, home_goals, minute, False,
                             away_has_card, home_has_card)
         if shot is not None:
             shots.append({"minute": minute, "team": away.name,
@@ -81,16 +87,21 @@ def simulate_match(
     }
 
 
-def _maybe_shot(rng: np.random.Generator, team: Club, opponent: Club, own_score: int,
-                 opp_score: int, minute: int, is_home: bool,
+def _maybe_shot(rng: np.random.Generator, team: Club, opponent: Club, squad: list[Player],
+                 own_score: int, opp_score: int, minute: int, is_home: bool,
                  team_has_red_card: bool, opp_has_red_card: bool) -> dict | None:
     rate = _shot_rate(team, opponent, own_score, opp_score, minute, is_home,
                        team_has_red_card, opp_has_red_card)
     if rng.random() >= rate:
         return None
+
     xg, is_penalty, is_big_chance = _draw_shot(rng)
+    shooter = pick_player(rng, squad, "shot_share")
+    effective_xg = float(np.clip(xg * shooter.finishing_skill, 0.01, 0.99))
+
     return {"xg": xg, "is_penalty": is_penalty, "is_big_chance": is_big_chance,
-            "is_goal": rng.random() < xg}
+            "is_goal": rng.random() < effective_xg,
+            "player": shooter.name, "position": shooter.position}
 
 
 def _shot_rate(team: Club, opponent: Club, own_score: int, opp_score: int, minute: int,

@@ -1,256 +1,227 @@
-season,match_id,minute,team
-1,1,57,Blackthorn Rovers
-1,6,3,Fenwick United
-1,14,17,Harrow Vale
-1,21,64,Castlebay FC
-1,25,22,Red Valley FC
-1,29,64,Kingswell Athletic
-1,33,49,Riversedge United
-1,46,49,Port Albion
-1,48,2,Stonebridge Town
-1,51,61,Northgate United
-1,57,61,Eastcliff FC
-1,65,39,Thornfield United
-1,104,70,Silverlake FC
-1,105,19,Greymoor Athletic
-1,111,1,Eastcliff FC
-1,125,19,Oakhaven City
-1,129,27,Riversedge United
-1,130,89,Dunmore Town
-1,143,23,Millbrook Town
-1,156,33,Thornfield United
-1,174,76,West Harbor City
-1,178,3,Fenwick United
-1,191,81,Blackthorn Rovers
-1,194,36,Dunmore Town
-1,204,67,Harrow Vale
-1,205,66,Fenwick United
-1,207,85,Silverlake FC
-1,208,40,Oakhaven City
-1,231,82,Northgate United
-1,240,44,West Harbor City
-1,245,22,Riversedge United
-1,252,65,Silverlake FC
-1,259,7,Red Valley FC
-1,263,2,Bridgeport Rovers
-1,263,43,Fenwick United
-1,269,9,Port Albion
-1,281,69,Northgate United
-1,285,38,Fenwick United
-1,285,68,Kingswell Athletic
-1,289,31,Riversedge United
-1,298,79,Dunmore Town
-1,303,89,Kingswell Athletic
-1,310,4,Riversedge United
-1,319,17,Riversedge United
-1,321,21,Northgate United
-1,350,85,Fenwick United
-1,351,81,Stonebridge Town
-1,352,10,Red Valley FC
-1,353,8,Port Albion
-1,353,86,West Harbor City
-1,358,68,Bridgeport Rovers
-1,359,87,Fenwick United
-1,364,28,Riversedge United
-1,369,53,Bridgeport Rovers
-1,372,16,Blackthorn Rovers
-1,378,7,Eastcliff FC
-2,385,36,Ashford Rovers
-2,395,87,Stonebridge Town
-2,405,30,Greymoor Athletic
-2,421,58,Northgate United
-2,430,53,West Harbor City
-2,440,48,West Harbor City
-2,443,32,Harrow Vale
-2,454,48,Thornfield United
-2,457,57,Riversedge United
-2,476,66,Harrow Vale
-2,479,81,Riversedge United
-2,492,9,Millbrook Town
-2,504,40,Bridgeport Rovers
-2,507,30,Port Albion
-2,516,13,Oakhaven City
-2,519,80,Castlebay FC
-2,524,29,Red Valley FC
-2,525,87,Thornfield United
-2,563,50,Riversedge United
-2,571,17,Blackthorn Rovers
-2,595,62,Greymoor Athletic
-2,595,78,Red Valley FC
-2,598,49,Bridgeport Rovers
-2,599,39,Kingswell Athletic
-2,599,78,Thornfield United
-2,607,2,Bridgeport Rovers
-2,608,48,Ashford Rovers
-2,609,26,Eastcliff FC
-2,621,62,Northgate United
-2,623,14,Silverlake FC
-2,634,27,Bridgeport Rovers
-2,637,18,Millbrook Town
-2,638,63,Kingswell Athletic
-2,653,30,Greymoor Athletic
-2,655,31,Millbrook Town
-2,656,77,Dunmore Town
-2,658,49,Ashford Rovers
-2,672,5,Bridgeport Rovers
-2,673,41,Oakhaven City
-2,691,76,Northgate United
-2,695,24,Oakhaven City
-2,696,89,Silverlake FC
-2,702,9,Millbrook Town
-2,705,66,Bridgeport Rovers
-2,742,11,Port Albion
-2,751,71,Port Albion
-2,752,73,Blackthorn Rovers
-2,756,11,Kingswell Athletic
-3,770,36,Thornfield United
-3,774,10,Red Valley FC
-3,778,21,Kingswell Athletic
-3,781,60,Northgate United
-3,782,84,Dunmore Town
-3,787,34,Ashford Rovers
-3,800,62,Kingswell Athletic
-3,803,89,Castlebay FC
-3,816,53,Thornfield United
-3,820,5,West Harbor City
-3,827,7,Millbrook Town
-3,836,48,Castlebay FC
-3,842,36,Bridgeport Rovers
-3,857,81,Ashford Rovers
-3,865,13,West Harbor City
-3,869,19,Castlebay FC
-3,880,43,Riversedge United
-3,884,81,Bridgeport Rovers
-3,895,16,Bridgeport Rovers
-3,923,77,Port Albion
-3,925,23,Millbrook Town
-3,935,15,Kingswell Athletic
-3,941,18,Port Albion
-3,949,23,Thornfield United
-3,954,64,Dunmore Town
-3,960,24,Bridgeport Rovers
-3,960,74,Thornfield United
-3,962,55,Blackthorn Rovers
-3,964,2,Harrow Vale
-3,974,15,Port Albion
-3,977,29,Ashford Rovers
-3,980,40,Eastcliff FC
-3,1001,34,Fenwick United
-3,1005,38,Bridgeport Rovers
-3,1018,28,Kingswell Athletic
-3,1020,78,Ashford Rovers
-3,1028,25,Blackthorn Rovers
-3,1031,62,Northgate United
-3,1035,76,Millbrook Town
-3,1043,58,Eastcliff FC
-3,1045,35,Kingswell Athletic
-3,1059,1,Castlebay FC
-3,1070,7,Castlebay FC
-3,1074,32,Ashford Rovers
-3,1081,63,Kingswell Athletic
-3,1103,45,Red Valley FC
-3,1106,33,Thornfield United
-3,1114,62,Blackthorn Rovers
-3,1127,8,Eastcliff FC
-3,1140,45,Oakhaven City
-4,1152,34,Castlebay FC
-4,1168,62,Bridgeport Rovers
-4,1171,32,Northgate United
-4,1173,79,Riversedge United
-4,1179,71,Eastcliff FC
-4,1185,81,Blackthorn Rovers
-4,1196,35,Blackthorn Rovers
-4,1206,57,Eastcliff FC
-4,1218,50,Blackthorn Rovers
-4,1226,37,Dunmore Town
-4,1256,11,Stonebridge Town
-4,1259,44,Blackthorn Rovers
-4,1265,38,Stonebridge Town
-4,1270,4,Dunmore Town
-4,1273,75,Ashford Rovers
-4,1286,66,Bridgeport Rovers
-4,1298,9,Dunmore Town
-4,1310,79,Greymoor Athletic
-4,1312,29,Port Albion
-4,1318,17,Thornfield United
-4,1321,70,Northgate United
-4,1328,2,Greymoor Athletic
-4,1334,40,Dunmore Town
-4,1336,81,Fenwick United
-4,1342,64,Blackthorn Rovers
-4,1349,4,Millbrook Town
-4,1351,66,Castlebay FC
-4,1352,18,Dunmore Town
-4,1353,88,Blackthorn Rovers
-4,1360,32,Eastcliff FC
-4,1368,79,Thornfield United
-4,1383,15,Silverlake FC
-4,1392,32,Fenwick United
-4,1395,15,Thornfield United
-4,1408,15,Blackthorn Rovers
-4,1418,69,Riversedge United
-4,1422,77,Oakhaven City
-4,1424,34,Millbrook Town
-4,1430,69,Blackthorn Rovers
-4,1431,87,Thornfield United
-4,1439,37,Port Albion
-4,1445,90,Ashford Rovers
-4,1449,45,Blackthorn Rovers
-4,1451,36,Northgate United
-4,1452,8,Kingswell Athletic
-4,1469,17,Fenwick United
-4,1482,28,Stonebridge Town
-4,1483,27,Red Valley FC
-4,1497,27,Dunmore Town
-4,1503,78,Ashford Rovers
-4,1513,5,Stonebridge Town
-4,1515,13,West Harbor City
-4,1516,75,Kingswell Athletic
-5,1524,66,Stonebridge Town
-5,1529,19,Oakhaven City
-5,1537,45,West Harbor City
-5,1541,2,Northgate United
-5,1549,15,Thornfield United
-5,1550,87,Millbrook Town
-5,1564,34,Silverlake FC
-5,1568,49,Stonebridge Town
-5,1586,87,Riversedge United
-5,1587,73,Blackthorn Rovers
-5,1589,69,West Harbor City
-5,1590,46,Stonebridge Town
-5,1595,26,Dunmore Town
-5,1604,20,Fenwick United
-5,1619,46,Riversedge United
-5,1627,56,Stonebridge Town
-5,1643,53,Thornfield United
-5,1644,19,Ashford Rovers
-5,1666,22,Blackthorn Rovers
-5,1668,39,Castlebay FC
-5,1679,56,Harrow Vale
-5,1683,33,West Harbor City
-5,1693,57,Ashford Rovers
-5,1707,76,Millbrook Town
-5,1711,66,Northgate United
-5,1718,5,Silverlake FC
-5,1722,22,Blackthorn Rovers
-5,1726,49,Greymoor Athletic
-5,1742,89,Castlebay FC
-5,1745,30,Port Albion
-5,1754,60,Riversedge United
-5,1760,47,Kingswell Athletic
-5,1762,4,Greymoor Athletic
-5,1777,19,Millbrook Town
-5,1799,2,Blackthorn Rovers
-5,1816,15,Fenwick United
-5,1821,29,Northgate United
-5,1828,52,Port Albion
-5,1836,40,Silverlake FC
-5,1836,46,Red Valley FC
-5,1837,84,Greymoor Athletic
-5,1844,9,Stonebridge Town
-5,1867,30,Castlebay FC
-5,1869,51,Harrow Vale
-5,1883,75,Blackthorn Rovers
-5,1885,45,Kingswell Athletic
-5,1895,53,Dunmore Town
-5,1898,49,Eastcliff FC
+season,match_id,minute,team,player,position
+1,6,61,West Harbor City,Hugo Bauer,DF
+1,8,87,Millbrook Town,Joao Marek,DF
+1,13,65,Port Albion,Enzo Vance,GK
+1,16,27,Ashford Rovers,Nico Bauer,MF
+1,45,20,Oakhaven City,Pavel Marek,DF
+1,61,88,Greymoor Athletic,Joao Mercer,FW
+1,80,18,Red Valley FC,Dario Stroud,MF
+1,94,38,Greymoor Athletic,Kwame Nowak,MF
+1,104,41,Silverlake FC,Luka Dubois,MF
+1,115,81,Ashford Rovers,Kwame Stroud,DF
+1,118,86,Port Albion,Tomas Osei,FW
+1,120,79,Castlebay FC,Luka Varga,MF
+1,146,79,Blackthorn Rovers,Nico Soto,DF
+1,158,23,Dunmore Town,Luka Delgado,FW
+1,167,23,Thornfield United,Lars Kovac,DF
+1,173,11,Ashford Rovers,Nico Lindqvist,MF
+1,193,11,Castlebay FC,Rafa Nowak,MF
+1,195,62,Harrow Vale,Milan Fontaine,FW
+1,199,87,Eastcliff FC,Edin Stroud,DF
+1,203,38,Dunmore Town,Luka Delgado,FW
+1,230,7,Millbrook Town,Joao Kovac,MF
+1,237,63,Red Valley FC,Dario Stroud,MF
+1,240,31,Kingswell Athletic,Remi Okafor,DF
+1,243,68,Silverlake FC,Gabo Novak,MF
+1,247,54,Port Albion,Theo Lindqvist,DF
+1,257,41,Millbrook Town,Joao Corbin,DF
+1,266,52,Millbrook Town,Viktor Novak,MF
+1,268,6,West Harbor City,Remi Stroud,DF
+1,287,4,Dunmore Town,Nico Palacios,MF
+1,287,56,Ashford Rovers,Luka Lund,MF
+1,298,71,Dunmore Town,Mateo Lindqvist,DF
+1,299,72,Port Albion,Aron Bauer,DF
+1,330,30,Harrow Vale,Dax Santos,MF
+1,330,40,Dunmore Town,Tomas Corbin,DF
+1,331,50,Northgate United,Lars Lund,MF
+1,332,15,Kingswell Athletic,Lars Delgado,GK
+1,336,64,Blackthorn Rovers,Mateo Mercer,DF
+1,337,40,Riversedge United,Dario Delgado,MF
+1,337,89,Oakhaven City,Aron Weiss,DF
+1,344,51,Port Albion,Aron Bauer,DF
+1,346,65,Riversedge United,Dario Delgado,MF
+1,354,47,Kingswell Athletic,Luka Kovac,MF
+1,361,54,Red Valley FC,Erik Lindqvist,MF
+1,369,22,Bridgeport Rovers,Edin Weiss,FW
+1,370,79,Oakhaven City,Noel Novak,FW
+1,372,19,Red Valley FC,Dario Stroud,MF
+1,380,56,Oakhaven City,Edin Dubois,MF
+2,381,36,Northgate United,Dario Castro,FW
+2,382,66,Port Albion,Remi Delgado,DF
+2,385,34,Ashford Rovers,Tomas Santos,FW
+2,391,35,Northgate United,Lars Corbin,FW
+2,413,17,Fenwick United,Hugo Bergman,MF
+2,416,48,Oakhaven City,Pavel Marek,DF
+2,429,5,Ashford Rovers,Joao Santos,FW
+2,447,4,Millbrook Town,Dion Nowak,MF
+2,459,1,Ashford Rovers,Nico Lindqvist,MF
+2,461,45,Northgate United,Theo Alvi,DF
+2,475,52,Fenwick United,Hugo Bergman,MF
+2,483,70,Oakhaven City,Pavel Brennan,GK
+2,487,11,Harrow Vale,Dax Bergman,FW
+2,492,83,Millbrook Town,Joao Marek,DF
+2,496,11,Stonebridge Town,Lars Dubois,DF
+2,513,26,Eastcliff FC,Omar Varga,MF
+2,524,21,Red Valley FC,Remi Marek,MF
+2,558,68,Fenwick United,Dax Marek,FW
+2,558,83,Thornfield United,Lars Delgado,MF
+2,562,20,Blackthorn Rovers,Dax Weiss,MF
+2,562,57,Red Valley FC,Erik Lindqvist,MF
+2,569,33,Thornfield United,Nico Alvi,DF
+2,573,15,Red Valley FC,Dion Novak,DF
+2,583,37,Port Albion,Hugo Osei,MF
+2,591,55,Castlebay FC,Kai Stroud,DF
+2,600,89,Millbrook Town,Marco Dubois,FW
+2,606,84,Red Valley FC,Dion Novak,DF
+2,612,44,Dunmore Town,Nico Palacios,MF
+2,614,16,Silverlake FC,Nico Palacios,MF
+2,617,24,Red Valley FC,Erik Lindqvist,MF
+2,630,18,Ashford Rovers,Luka Lund,MF
+2,631,41,Northgate United,Aron Riva,MF
+2,636,2,Riversedge United,Enzo Hartley,MF
+2,639,45,Red Valley FC,Theo Pires,DF
+2,649,26,Port Albion,Pavel Weiss,DF
+2,652,53,Silverlake FC,Gabo Novak,MF
+2,654,15,Eastcliff FC,Omar Varga,MF
+2,677,21,Stonebridge Town,Kai Lindqvist,DF
+2,680,63,Blackthorn Rovers,Marco Pires,DF
+2,697,69,Greymoor Athletic,Aron Bergman,DF
+2,698,65,Blackthorn Rovers,Idris Castro,DF
+2,704,89,Thornfield United,Erik Bergman,FW
+2,706,11,Port Albion,Theo Lindqvist,DF
+2,708,38,Riversedge United,Joao Brennan,MF
+2,709,64,Castlebay FC,Marco Lindqvist,DF
+2,723,52,Red Valley FC,Milan Santos,MF
+2,728,45,Dunmore Town,Idris Alvi,DF
+2,734,29,Blackthorn Rovers,Dario Lindqvist,GK
+2,737,83,Dunmore Town,Joao Dubois,MF
+2,739,10,Oakhaven City,Remi Lindqvist,DF
+2,749,7,Greymoor Athletic,Mateo Okafor,MF
+2,752,73,Blackthorn Rovers,Dario Delgado,MF
+2,755,87,West Harbor City,Edin Varga,MF
+2,757,83,Fenwick United,Dario Nowak,MF
+3,764,11,Stonebridge Town,Omar Delgado,DF
+3,767,89,Kingswell Athletic,Sami Alvi,DF
+3,770,81,Bridgeport Rovers,Rafa Stroud,MF
+3,791,74,Dunmore Town,Tomas Corbin,DF
+3,804,30,Silverlake FC,Dax Horvat,DF
+3,816,85,Blackthorn Rovers,Mateo Mercer,DF
+3,834,33,Thornfield United,Lars Kovac,DF
+3,835,22,Eastcliff FC,Edin Stroud,DF
+3,851,31,Northgate United,Dax Lindqvist,DF
+3,868,86,Red Valley FC,Nico Castro,GK
+3,869,49,Port Albion,Remi Soto,FW
+3,884,47,Bridgeport Rovers,Tomas Mercer,GK
+3,890,62,Dunmore Town,Luka Delgado,FW
+3,892,15,West Harbor City,Milan Stroud,MF
+3,894,65,Thornfield United,Hugo Alvi,DF
+3,902,10,Kingswell Athletic,Luka Pires,FW
+3,918,59,Oakhaven City,Aron Marek,MF
+3,926,78,Eastcliff FC,Jonas Okafor,MF
+3,957,33,Greymoor Athletic,Pavel Corbin,DF
+3,959,59,Eastcliff FC,Milan Bauer,DF
+3,981,4,Northgate United,Theo Alvi,DF
+3,982,74,Castlebay FC,Rafa Nowak,MF
+3,984,18,Blackthorn Rovers,Idris Castro,DF
+3,1006,45,Thornfield United,Nico Alvi,DF
+3,1017,5,Blackthorn Rovers,Marco Pires,DF
+3,1033,10,Greymoor Athletic,Felix Okafor,MF
+3,1040,11,Red Valley FC,Kai Fontaine,DF
+3,1041,46,Bridgeport Rovers,Viktor Soto,DF
+3,1046,83,Harrow Vale,Joao Dubois,DF
+3,1047,17,Ashford Rovers,Tomas Keita,DF
+3,1050,18,Blackthorn Rovers,Dax Weiss,MF
+3,1080,18,Dunmore Town,Luka Delgado,FW
+3,1100,44,Fenwick United,Dax Marek,FW
+3,1103,11,Red Valley FC,Marco Lund,FW
+3,1120,28,Silverlake FC,Dax Mercer,DF
+3,1122,24,Stonebridge Town,Pavel Palacios,DF
+3,1128,35,Fenwick United,Enzo Okafor,FW
+3,1129,33,Greymoor Athletic,Felix Okafor,MF
+4,1148,30,Silverlake FC,Viktor Fontaine,MF
+4,1167,50,Oakhaven City,Edin Dubois,MF
+4,1173,56,Fenwick United,Luka Stroud,DF
+4,1186,79,Bridgeport Rovers,Rafa Hartley,DF
+4,1196,37,Thornfield United,Kwame Keita,FW
+4,1200,26,West Harbor City,Joao Soto,MF
+4,1209,57,West Harbor City,Milan Alvi,DF
+4,1220,11,Red Valley FC,Remi Marek,MF
+4,1232,55,Thornfield United,Kwame Keita,FW
+4,1234,67,Greymoor Athletic,Pavel Corbin,DF
+4,1237,57,Ashford Rovers,Noel Corbin,DF
+4,1241,80,Northgate United,Luka Bauer,GK
+4,1256,60,Stonebridge Town,Mateo Varga,MF
+4,1257,14,Red Valley FC,Tomas Santos,DF
+4,1259,14,Blackthorn Rovers,Nico Soto,DF
+4,1261,11,Northgate United,Edin Fontaine,DF
+4,1264,86,Ashford Rovers,Kwame Stroud,DF
+4,1271,6,Northgate United,Edin Fontaine,DF
+4,1275,20,Bridgeport Rovers,Rafa Hartley,DF
+4,1281,28,West Harbor City,Gabo Varga,DF
+4,1289,47,Greymoor Athletic,Mateo Okafor,MF
+4,1298,64,Oakhaven City,Aron Weiss,DF
+4,1312,17,Port Albion,Aron Bauer,DF
+4,1318,38,Fenwick United,Hugo Bergman,MF
+4,1326,41,Harrow Vale,Erik Osei,MF
+4,1327,17,Millbrook Town,Milan Lindqvist,DF
+4,1333,61,Castlebay FC,Mateo Bergman,DF
+4,1341,66,Northgate United,Rafa Brennan,MF
+4,1344,68,Red Valley FC,Theo Pires,DF
+4,1349,62,Millbrook Town,Viktor Novak,MF
+4,1361,69,Northgate United,Edin Fontaine,DF
+4,1368,20,Ashford Rovers,Nico Bauer,MF
+4,1389,67,Kingswell Athletic,Viktor Delgado,MF
+4,1403,47,Bridgeport Rovers,Viktor Soto,DF
+4,1410,46,Stonebridge Town,Lars Castro,FW
+4,1428,50,Castlebay FC,Theo Brennan,DF
+4,1436,14,Fenwick United,Enzo Mercer,DF
+4,1437,58,Stonebridge Town,Kai Lindqvist,DF
+4,1448,8,Port Albion,Marco Castro,MF
+4,1451,63,Millbrook Town,Joao Marek,DF
+4,1451,73,Northgate United,Dax Lindqvist,DF
+4,1459,23,Riversedge United,Milan Keita,DF
+4,1464,63,Thornfield United,Kwame Keita,FW
+4,1467,38,Blackthorn Rovers,Theo Dubois,MF
+4,1472,67,Ashford Rovers,Tomas Fontaine,MF
+4,1477,89,Riversedge United,Mateo Corbin,FW
+4,1485,68,Eastcliff FC,Milan Bauer,DF
+4,1495,59,Riversedge United,Enzo Hartley,MF
+4,1498,74,Bridgeport Rovers,Rafa Stroud,MF
+4,1503,44,Blackthorn Rovers,Dario Osei,FW
+4,1505,81,Castlebay FC,Edin Osei,DF
+4,1509,16,Bridgeport Rovers,Rafa Hartley,DF
+4,1510,42,Oakhaven City,Noel Novak,FW
+5,1526,36,Fenwick United,Hugo Bergman,MF
+5,1563,70,Greymoor Athletic,Felix Okafor,MF
+5,1569,74,Millbrook Town,Joao Soto,DF
+5,1582,46,Fenwick United,Mateo Novak,DF
+5,1586,8,Riversedge United,Dario Delgado,MF
+5,1602,78,Bridgeport Rovers,Tomas Mercer,GK
+5,1607,32,Castlebay FC,Theo Brennan,DF
+5,1613,28,Silverlake FC,Nico Palacios,MF
+5,1660,17,Dunmore Town,Idris Weiss,MF
+5,1666,14,Blackthorn Rovers,Dario Delgado,MF
+5,1728,82,Kingswell Athletic,Sami Soto,DF
+5,1730,5,Eastcliff FC,Omar Varga,MF
+5,1731,22,Northgate United,Lars Corbin,FW
+5,1757,65,Thornfield United,Felix Brennan,MF
+5,1763,13,Dunmore Town,Idris Weiss,MF
+5,1766,32,Thornfield United,Nico Alvi,DF
+5,1774,64,Bridgeport Rovers,Viktor Okafor,FW
+5,1778,71,Kingswell Athletic,Marco Palacios,FW
+5,1780,81,Stonebridge Town,Gabo Santos,MF
+5,1803,26,Silverlake FC,Omar Dubois,FW
+5,1821,87,Northgate United,Lars Corbin,FW
+5,1825,58,Silverlake FC,Gabo Novak,MF
+5,1829,34,Dunmore Town,Tomas Corbin,DF
+5,1834,23,Ashford Rovers,Kwame Stroud,DF
+5,1848,64,Greymoor Athletic,Jonas Vance,DF
+5,1863,15,Red Valley FC,Milan Santos,MF
+5,1867,20,Castlebay FC,Edin Osei,DF
+5,1877,60,Dunmore Town,Jonas Okafor,DF
+5,1880,61,Silverlake FC,Theo Vance,FW
+5,1886,7,Dunmore Town,Idris Alvi,DF
+5,1887,59,Harrow Vale,Dax Delgado,FW
+5,1892,38,Blackthorn Rovers,Dario Osei,FW
+5,1897,67,Millbrook Town,Kai Dubois,MF
+5,1899,17,Silverlake FC,Viktor Fontaine,MF

@@ -37,8 +37,8 @@ CLUB_NAMES = [
 
 # Valid range for each trait, enforced after both initial creation and drift.
 TRAIT_BOUNDS = {
-    "attack": (0.6, 1.4),
-    "defense": (0.6, 1.4),
+    "attack": (0.35, 1.65),
+    "defense": (0.35, 1.65),
     "comeback_factor": (1.0, 1.5),
     "protect_lead_factor": (1.0, 1.5),
     "ten_men_resilience": (0.5, 0.98),
@@ -58,15 +58,15 @@ class Club:
 
 
 def create_league(seed: int = 42) -> list[Club]:
-    """Builds the 6 clubs with randomized hidden traits."""
+    """Builds the 20 clubs with randomized hidden traits."""
     rng = np.random.default_rng(seed)
     clubs = []
     for name in CLUB_NAMES:
         clubs.append(
             Club(
                 name=name,
-                attack=rng.uniform(0.8, 1.2),
-                defense=rng.uniform(0.8, 1.2),
+                attack=rng.uniform(0.6, 1.5),
+                defense=rng.uniform(0.6, 1.5),
                 comeback_factor=rng.uniform(1.0, 1.3),
                 protect_lead_factor=rng.uniform(1.0, 1.3),
                 ten_men_resilience=rng.uniform(0.6, 0.95),

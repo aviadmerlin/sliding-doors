@@ -11,6 +11,7 @@ import pandas as pd
 
 from src.league import Club, TRAIT_BOUNDS, drift_traits
 from src.match_engine import simulate_match
+from src.squad import Player
 
 
 def _round_robin_rounds(clubs: list[Club]) -> list[list[tuple[Club, Club]]]:
@@ -25,7 +26,7 @@ def _round_robin_rounds(clubs: list[Club]) -> list[list[tuple[Club, Club]]]:
     return rounds
 
 
-def generate_season(clubs: list[Club], rng: np.random.Generator,
+def generate_season(clubs: list[Club], squads: dict[str, list[Player]], rng: np.random.Generator,
                      start_match_id: int = 1) -> tuple[dict[str, pd.DataFrame], int]:
     """Simulates one double round-robin season. Returns (tables, next_match_id)."""
     rounds = _round_robin_rounds(clubs)
@@ -39,7 +40,7 @@ def generate_season(clubs: list[Club], rng: np.random.Generator,
             matchday = round_idx + 1 if leg == 1 else round_idx + 1 + num_rounds
             for team_a, team_b in pairs:
                 home, away = (team_a, team_b) if leg == 1 else (team_b, team_a)
-                result = simulate_match(home, away, rng)
+                result = simulate_match(home, away, squads[home.name], squads[away.name], rng)
 
                 matches.append({
                     "match_id": match_id,
@@ -64,9 +65,10 @@ def generate_season(clubs: list[Club], rng: np.random.Generator,
     return tables, match_id
 
 
-def generate_seasons(initial_clubs: list[Club], num_seasons: int = 10,
-                      seed: int = 0) -> dict[str, pd.DataFrame]:
+def generate_seasons(initial_clubs: list[Club], squads: dict[str, list[Player]],
+                      num_seasons: int = 10, seed: int = 0) -> dict[str, pd.DataFrame]:
     """Simulates several seasons back to back, drifting traits between them.
+    Squads are fixed for the whole history (no transfers yet).
 
     Returns matches/shots/goals/red_cards (each tagged with a 'season'
     column) plus true_traits: the hidden traits actually used in each
@@ -86,7 +88,7 @@ def generate_seasons(initial_clubs: list[Club], num_seasons: int = 10,
                 **{trait: getattr(club, trait) for trait in TRAIT_BOUNDS},
             })
 
-        tables, match_id = generate_season(clubs, rng, start_match_id=match_id)
+        tables, match_id = generate_season(clubs, squads, rng, start_match_id=match_id)
         for name, df in tables.items():
             df = df.copy()
             df.insert(0, "season", season)
