@@ -5,3 +5,4 @@ plotly
 python-dotenv
 statsmodels
 matplotlib
+pytest
