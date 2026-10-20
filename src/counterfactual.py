@@ -40,19 +40,34 @@ class Counterfactual:
 
 @dataclass
 class CounterfactualResult:
-    """actual_curve / counterfactual_curve: win probability per minute
-    (0-90), directly comparable/plottable side by side -- identical up to
-    `minute`, then diverging. actual_final / counterfactual_final: the
-    outcome distribution at full time for each ({p_home, p_draw, p_away}).
-    actual_final is the real, known result (so always exactly 0.0 or 1.0
-    on one outcome); counterfactual_final is a genuine simulated
-    distribution, since what happens after the change is no longer known.
+    """actual_curve: the real match's win probability per minute (0-90) --
+    a genuine forecast at every minute, re-simulated forward from the real
+    continuing match. counterfactual_curve: win probability from the fork
+    minute onward, identical to actual_curve before it, then an honest
+    FLAT line at the post-change forecast (there's no single counterfactual
+    trajectory to trace minute by minute -- only a distribution over what
+    might happen -- so this doesn't pretend to show one evolving).
+
+    fork_before / fork_after: the fair, apples-to-apples comparison for a
+    headline number -- both are FORECASTS at the exact same minute
+    ({p_home, p_draw, p_away}), one from the real state just before the
+    change, one from the hypothetical state just after it. Comparing
+    these (not the real final result) avoids mixing hindsight with a
+    forecast.
+
+    real_final_score / real_outcome: what actually happened in the match
+    (final score, and which side won/"draw") -- kept separate from the
+    forecast comparison and meant to be labeled as historical fact, not a
+    probability.
     """
     description: str
     actual_curve: pd.DataFrame
     counterfactual_curve: pd.DataFrame
-    actual_final: dict
-    counterfactual_final: dict
+    fork_minute: int
+    fork_before: dict
+    fork_after: dict
+    real_final_score: tuple[int, int]
+    real_outcome: str
 
 
 def _find_event(cf: Counterfactual, shots: pd.DataFrame, red_cards: pd.DataFrame) -> pd.Series:
@@ -149,11 +164,25 @@ def apply_counterfactual(cf: Counterfactual, matches: pd.DataFrame, shots: pd.Da
     before_fork = actual_curve[actual_curve.minute < cf.minute]
     counterfactual_curve = pd.concat([before_fork, continuation], ignore_index=True)
 
-    outcome_cols = ["p_home", "p_draw", "p_away"]
+    # Fair comparison: both sides are FORECASTS at the exact same minute (the
+    # fork), not the real curve's forecast against the hypothetical curve's
+    # known-certain final result. counterfactual_curve is flat from the fork
+    # onward, so its row at the fork minute already holds the one computed
+    # fork-forecast -- no need to resimulate it.
+    before_row = actual_curve[actual_curve.minute == cf.minute].iloc[0]
+    after_row = counterfactual_curve[counterfactual_curve.minute == cf.minute].iloc[0]
+    fork_before = {outcome: float(before_row[f"p_{outcome}"]) for outcome in ("home", "draw", "away")}
+    fork_after = {outcome: float(after_row[f"p_{outcome}"]) for outcome in ("home", "draw", "away")}
+
+    real_outcome = "draw" if final_score[0] == final_score[1] else ("home" if final_score[0] > final_score[1] else "away")
+
     return CounterfactualResult(
         description=_describe(cf, event),
         actual_curve=actual_curve,
         counterfactual_curve=counterfactual_curve,
-        actual_final=actual_curve.iloc[-1][outcome_cols].to_dict(),
-        counterfactual_final=counterfactual_curve.iloc[-1][outcome_cols].to_dict(),
+        fork_minute=cf.minute,
+        fork_before=fork_before,
+        fork_after=fork_after,
+        real_final_score=final_score,
+        real_outcome=real_outcome,
     )

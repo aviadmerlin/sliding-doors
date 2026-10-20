@@ -195,33 +195,53 @@ A clean, reusable building block (no AI yet — this is what an agent will
 call as a tool in a later step): given a real match and ONE change —
 a missed shot/penalty becomes a goal, a goal is cancelled, or a red card
 didn't happen — it re-simulates forward from that exact moment and
-returns both the actual and counterfactual win-probability curves plus
-final outcome probabilities. See `Counterfactual` / `CounterfactualResult`
-in `src/counterfactual.py` for the exact (documented) input/output shapes.
+returns the real match's win-probability curve, a counterfactual
+forecast, and a fair before/after comparison. See `Counterfactual` /
+`CounterfactualResult` in `src/counterfactual.py` for the exact
+(documented) input/output shapes.
 
-Internally, the counterfactual branch is simulated as one coherent
-imagined continuation (a single forward pass per sampled trait draw,
-snapshotted at every minute) rather than independently re-guessing at
-each checkpoint — the real match's continuation is known, so
-`win_probability_curve` can afford to restart from the real state each
-time, but a hypothetical future isn't known and has to be one consistent
-storyline.
+**Two things worth getting right, both of which an earlier version got
+wrong:**
+
+- **There's no single "counterfactual timeline."** Once a moment is
+  changed, the rest of the match isn't one knowable story — it's a
+  distribution over what might happen. An earlier version traced *one*
+  simulated path per trait draw and read off "share of replays currently
+  level or ahead" at each minute — which isn't win probability at all
+  (right after a goal that ties the score, it reads as ~0%, then climbs
+  only as that one path's noise happens to separate). The honest fix:
+  simulate forward from the fork once (many replays, pooled across trait
+  draws) to get the *one* well-defined number — probability of each
+  outcome by full time — and hold it flat from the fork onward, with its
+  uncertainty band. No fabricated trajectory.
+- **Comparing against the real final result is hindsight, not a fair
+  test.** The real result is certain (100%/0%/0%) because the match
+  already happened; the counterfactual is an honest forecast. Comparing
+  them makes every counterfactual look more dramatic than it is. The fix:
+  compare *forecast to forecast*, both at the exact same minute — the
+  real match's forecast right after what actually happened (e.g. right
+  after the miss) against the counterfactual's forecast right after the
+  hypothetical change (e.g. right after the goal). The real final score
+  is still shown, but clearly labeled as what actually happened, not a
+  number to compare against a forecast.
 
 ![Counterfactual demo](assets/counterfactual_demo.png)
 
 Three examples, two on the win-probability match above and one on a
-different match that actually had a red card (the first one didn't):
+different match that actually had a red card (the first one didn't) —
+each a same-minute, forecast-vs-forecast comparison:
 
-- **Cancel the 87th-minute equalizer** — the match was actually won 100%
-  (it happened). Without it, the chance of anything but an away win drops
-  to 5%: there wouldn't have been time left to recover.
-- **Make the 38th-minute big chance a goal instead** — much less decisive:
-  with 52 minutes still to play, the outcome becomes close to a
-  three-way toss-up (29% / 28% / 44%), unlike the late equalizer.
-- **Undo a 17th-minute red card** (different match, actually lost 1-5) —
-  flips the predicted outcome entirely, from 100% away win to a 51%
-  home-win favorite. That sending-off looks like the single biggest
-  factor in the result.
+- **Cancel the 87th-minute equalizer** — Northgate's win forecast right
+  after the real goal was 7%; without it (still 1-2 down with 3 minutes
+  left), it jumps to 97%.
+- **Make the 38th-minute big chance a goal instead** — right after the
+  real miss, Northgate was forecast at 72%; if Silverlake had equalized
+  there and then, with 52 minutes still to play, that drops to 43% —
+  much less decisive than the late equalizer, as expected.
+- **Undo a 17th-minute red card** (different match, lost 1-5) —
+  Thornfield's forecast right after the real sending-off was 48%;
+  without it, 27%. That card looks like a major factor, though not the
+  sole explanation for a 1-5 scoreline.
 
 ## Interactive UI
 
@@ -240,11 +260,12 @@ points marked, turning-point cards with a clear before → after
 (`Bridgeport win: 34% → 78%`) plus a one-line plain-English summary, and
 a "What if...?" section that runs the counterfactual engine live —
 pick an event from the match's timeline (the change dropdown only ever
-shows the one change that event actually supports) and it plots the
-actual vs. counterfactual win probability side by side with the outcome
-deltas. A clearly-marked "coming soon" placeholder sits where a
-free-text natural-language question box will go once the Foundry agent
-is wired up.
+shows the one change that event actually supports) and it shows a fair
+before → after at the fork minute (e.g. "Northgate United win: 72% →
+43%"), the real match's curve against the counterfactual's honest flat
+forecast + band, and the real final result in its own clearly-labeled
+panel. A clearly-marked "coming soon" placeholder sits where a free-text
+natural-language question box will go once the Foundry agent is wired up.
 
 **Cold start and the fitted model.** Fitting the trait regression from 5
 seasons of shot-level data takes ~15-20s — far too slow for a judge's

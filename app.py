@@ -40,6 +40,8 @@ CHECKPOINTS = list(range(0, 91))
 COLOR_HOME = "#22C55E"
 COLOR_DRAW = "#9CA3AF"
 COLOR_AWAY = "#EF4444"
+COLOR_REAL = "#3B82F6"
+COLOR_HYPOTHETICAL = "#F59E0B"
 
 CHANGE_LABELS = {
     "shot_becomes_goal": "Turn into a goal",
@@ -276,16 +278,34 @@ def build_win_prob_figure(curve: pd.DataFrame, match: pd.Series, turning_points:
     return fig
 
 
-def build_counterfactual_figure(result: CounterfactualResult, fork_minute: int) -> go.Figure:
+def build_counterfactual_figure(result: CounterfactualResult, outcome: str, match: pd.Series) -> go.Figure:
+    """Plots the headline outcome's probability: the real match (a genuine
+    forecast at every minute) vs. the counterfactual (identical up to the
+    fork, then an honest FLAT line + band at the single post-change
+    forecast -- there's no single counterfactual trajectory to trace
+    minute by minute, so this doesn't fabricate one)."""
+    y_col, se_col = f"p_{outcome}", f"se_{outcome}"
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=result.actual_curve.minute, y=result.actual_curve.p_home,
-                              mode="lines", name="Actual", line=dict(color=COLOR_HOME, width=2.5)))
-    fig.add_trace(go.Scatter(x=result.counterfactual_curve.minute, y=result.counterfactual_curve.p_home,
-                              mode="lines", name="Counterfactual",
-                              line=dict(color=COLOR_AWAY, width=2.5, dash="dash")))
-    add_minute_markers(fig, [fork_minute], [f"{fork_minute}' fork point"])
+    add_band(fig, result.actual_curve, y_col, se_col, COLOR_REAL, "Real match (forecast each minute)")
+    add_band(fig, result.counterfactual_curve, y_col, se_col, COLOR_HYPOTHETICAL,
+             "Counterfactual (forecast from the fork)")
+    add_minute_markers(fig, [result.fork_minute], [f"{result.fork_minute}' fork point"])
     style_figure(fig)
+    fig.update_layout(yaxis_title=f"{stat_label(outcome, match)} probability")
     return fig
+
+
+def counterfactual_headline_outcome(result: CounterfactualResult) -> str:
+    deltas = {o: result.fork_after[o] - result.fork_before[o] for o in ("home", "draw", "away")}
+    return max(deltas, key=lambda o: abs(deltas[o]))
+
+
+def counterfactual_headline_summary(result: CounterfactualResult, match: pd.Series, outcome: str) -> str:
+    before, after = result.fork_before[outcome], result.fork_after[outcome]
+    verb = "raises" if after > before else "lowers"
+    return (f"This change {verb} {prose_label(outcome, match)} from {before:.0%} to {after:.0%}, "
+            f"comparing forecasts right before vs. right after the {result.fork_minute}' mark "
+            f"(not the final result, which is already known).")
 
 
 def stat_label(outcome: str, match: pd.Series) -> str:
@@ -439,26 +459,39 @@ def main() -> None:
             team_draws = load_team_draws()
             result = compute_counterfactual(match_id, int(selected_event.minute), compatible_change,
                                              selected_event.team, team_draws, curve)
+            headline_outcome = counterfactual_headline_outcome(result)
 
             st.markdown(f"#### {result.description}")
-            cf_fig = build_counterfactual_figure(result, int(selected_event.minute))
+            st.markdown(f"**{stat_label(headline_outcome, match)}: "
+                        f"{result.fork_before[headline_outcome]:.0%} → {result.fork_after[headline_outcome]:.0%}**")
+            st.caption(counterfactual_headline_summary(result, match, headline_outcome))
+
+            cf_fig = build_counterfactual_figure(result, headline_outcome, match)
             st.plotly_chart(cf_fig, width="stretch",
-                             alt=f"Actual versus counterfactual win probability: {result.description}")
+                             alt=f"Real versus counterfactual {stat_label(headline_outcome, match)} "
+                                 f"probability: {result.description}")
 
             outcome_cols = st.columns(2)
             with outcome_cols[0], st.container(border=True, height="stretch"):
-                st.markdown("**Actual outcome**")
-                st.metric(f"{match.home_team} win", f"{result.actual_final['p_home']:.0%}")
-                st.metric("Draw", f"{result.actual_final['p_draw']:.0%}")
-                st.metric(f"{match.away_team} win", f"{result.actual_final['p_away']:.0%}")
+                st.markdown("**Forecast just before the change**")
+                st.metric(f"{match.home_team} win", f"{result.fork_before['home']:.0%}")
+                st.metric("Draw", f"{result.fork_before['draw']:.0%}")
+                st.metric(f"{match.away_team} win", f"{result.fork_before['away']:.0%}")
             with outcome_cols[1], st.container(border=True, height="stretch"):
-                st.markdown("**Counterfactual outcome**")
-                st.metric(f"{match.home_team} win", f"{result.counterfactual_final['p_home']:.0%}",
-                         delta=f"{result.counterfactual_final['p_home'] - result.actual_final['p_home']:+.0%}")
-                st.metric("Draw", f"{result.counterfactual_final['p_draw']:.0%}",
-                         delta=f"{result.counterfactual_final['p_draw'] - result.actual_final['p_draw']:+.0%}")
-                st.metric(f"{match.away_team} win", f"{result.counterfactual_final['p_away']:.0%}",
-                         delta=f"{result.counterfactual_final['p_away'] - result.actual_final['p_away']:+.0%}")
+                st.markdown("**Forecast just after the change**")
+                st.metric(f"{match.home_team} win", f"{result.fork_after['home']:.0%}",
+                         delta=f"{result.fork_after['home'] - result.fork_before['home']:+.0%}")
+                st.metric("Draw", f"{result.fork_after['draw']:.0%}",
+                         delta=f"{result.fork_after['draw'] - result.fork_before['draw']:+.0%}")
+                st.metric(f"{match.away_team} win", f"{result.fork_after['away']:.0%}",
+                         delta=f"{result.fork_after['away'] - result.fork_before['away']:+.0%}")
+
+            with st.container(border=True):
+                st.caption("What actually happened (not a forecast -- the real, known result)")
+                outcome_word = {"home": f"{match.home_team} won", "draw": "It was a draw",
+                                 "away": f"{match.away_team} won"}[result.real_outcome]
+                st.markdown(f"**{match.home_team} {result.real_final_score[0]}-{result.real_final_score[1]} "
+                            f"{match.away_team}** — {outcome_word}.")
 
     # --- AI placeholder ---
     st.subheader("Ask a what-if question", icon=":material/chat:")

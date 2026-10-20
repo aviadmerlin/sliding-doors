@@ -199,32 +199,49 @@ def win_probability_curve_with_uncertainty(team_draws: list[dict[str, Club]], ho
     return pd.DataFrame(rows)
 
 
+def counterfactual_fork_probabilities(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
+                                       seed: int, fork_minute: int, home_goals: int, away_goals: int,
+                                       home_has_card: bool, away_has_card: bool,
+                                       trials_per_batch: int) -> dict:
+    """The one well-defined number after a hypothetical change: probability
+    of each outcome by full time, simulated forward from the fork state,
+    pooled across trait draws. There is no single "counterfactual
+    timeline" beyond this -- only a distribution over what might happen --
+    so this is deliberately a single forecast, not a minute-by-minute
+    curve (see counterfactual_continuation_curve)."""
+    batch_probs = []
+    for i, draw in enumerate(team_draws):
+        rng = np.random.default_rng(seed + i)
+        final_home, final_away = simulate_forward(draw[home_name], draw[away_name], rng, fork_minute,
+                                                    home_goals, away_goals, home_has_card, away_has_card,
+                                                    trials_per_batch)
+        batch_probs.append(win_probabilities(final_home, final_away))
+    return _pool_batches(batch_probs)
+
+
 def counterfactual_continuation_curve(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
                                        seed: int, fork_minute: int, home_goals: int,
                                        away_goals: int, home_has_card: bool, away_has_card: bool,
                                        trials_per_batch: int, checkpoints: list[int]) -> pd.DataFrame:
-    """Win probability at each checkpoint >= fork_minute, following ONE
-    coherent imagined continuation from the fork state onward (a single
-    simulate_forward_snapshots pass per trait draw, snapshotted at every
-    checkpoint) -- for a counterfactual "what if" branch, rather than
-    independently re-simulating from a real known state each time. Already
-    free of the independent-checkpoint jitter problem by construction
-    (one continuous simulated path per draw), but still seeded
-    deterministically per draw for reproducibility."""
-    rows = []
-    batches_by_minute = {m: [] for m in checkpoints}
-    for i, draw in enumerate(team_draws):
-        rng = np.random.default_rng(seed + i)
-        snapshots = simulate_forward_snapshots(draw[home_name], draw[away_name], rng, fork_minute,
-                                                home_goals, away_goals, home_has_card, away_has_card,
-                                                trials_per_batch, checkpoints)
-        for minute, (final_home, final_away) in snapshots.items():
-            batches_by_minute[minute].append(win_probabilities(final_home, final_away))
+    """Win probability for every checkpoint >= fork_minute, as an honest
+    FLAT line at the single fork forecast (see
+    counterfactual_fork_probabilities), not a fabricated trajectory.
 
-    for minute in checkpoints:
-        rows.append({"minute": minute, **_pool_batches(batches_by_minute[minute])})
-
-    return pd.DataFrame(rows).sort_values("minute").reset_index(drop=True)
+    An earlier version traced one continuous simulated path per trait draw
+    and computed win_probabilities() from the CURRENT score at each
+    snapshot minute -- but that measures "share of replays currently level
+    or ahead at minute t", not "probability of winning by minute 90 given
+    this state", and is a different (and wrong) quantity: right after a
+    fork that ties the score, it reads as ~0% "ahead" and climbs only as
+    the single-path noise happens to separate, even though the real
+    full-time win probability jumps immediately. There is no single
+    well-defined counterfactual trajectory to trace minute by minute after
+    a fork -- only a distribution over what might happen -- so the honest
+    summary is one forecast, held flat, with its uncertainty band."""
+    probs = counterfactual_fork_probabilities(team_draws, home_name, away_name, seed, fork_minute,
+                                               home_goals, away_goals, home_has_card, away_has_card,
+                                               trials_per_batch)
+    return pd.DataFrame([{"minute": m, **probs} for m in checkpoints])
 
 
 def clubs_from_traits(traits: pd.DataFrame) -> dict[str, Club]:
