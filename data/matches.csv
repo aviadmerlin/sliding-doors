@@ -370,8 +370,8 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 1,369,37,Greymoor Athletic,Bridgeport Rovers,0,1
 1,370,37,Silverlake FC,Oakhaven City,2,3
 1,371,38,Port Albion,Northgate United,2,0
-1,372,38,Blackthorn Rovers,Red Valley FC,2,3
-1,373,38,Riversedge United,Stonebridge Town,1,0
+1,372,38,Blackthorn Rovers,Red Valley FC,2,2
+1,373,38,Riversedge United,Stonebridge Town,1,1
 1,374,38,Castlebay FC,Ashford Rovers,1,0
 1,375,38,Dunmore Town,West Harbor City,1,0
 1,376,38,Harrow Vale,Kingswell Athletic,1,0
@@ -427,7 +427,7 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 2,426,5,Port Albion,Bridgeport Rovers,2,1
 2,427,5,Red Valley FC,Thornfield United,1,1
 2,428,5,Stonebridge Town,Eastcliff FC,6,1
-2,429,5,Ashford Rovers,Millbrook Town,0,3
+2,429,5,Ashford Rovers,Millbrook Town,1,3
 2,430,5,West Harbor City,Kingswell Athletic,2,2
 2,431,6,Northgate United,Fenwick United,1,1
 2,432,6,Harrow Vale,Greymoor Athletic,0,0
@@ -762,7 +762,7 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 3,761,1,Northgate United,Blackthorn Rovers,1,1
 3,762,1,Port Albion,Riversedge United,2,0
 3,763,1,Red Valley FC,Castlebay FC,2,0
-3,764,1,Stonebridge Town,Dunmore Town,1,1
+3,764,1,Stonebridge Town,Dunmore Town,2,1
 3,765,1,Ashford Rovers,Harrow Vale,4,2
 3,766,1,West Harbor City,Fenwick United,0,0
 3,767,1,Kingswell Athletic,Greymoor Athletic,1,3
@@ -888,7 +888,7 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 3,887,13,Greymoor Athletic,Port Albion,1,0
 3,888,13,Fenwick United,Blackthorn Rovers,1,2
 3,889,13,Harrow Vale,Riversedge United,0,0
-3,890,13,Dunmore Town,Castlebay FC,0,2
+3,890,13,Dunmore Town,Castlebay FC,1,2
 3,891,14,Northgate United,Kingswell Athletic,2,1
 3,892,14,Millbrook Town,West Harbor City,0,2
 3,893,14,Eastcliff FC,Ashford Rovers,1,1
@@ -1801,7 +1801,7 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 5,1800,28,Red Valley FC,Port Albion,2,1
 5,1801,29,Bridgeport Rovers,Northgate United,0,1
 5,1802,29,Thornfield United,Oakhaven City,3,2
-5,1803,29,Eastcliff FC,Silverlake FC,2,2
+5,1803,29,Eastcliff FC,Silverlake FC,2,1
 5,1804,29,Millbrook Town,Greymoor Athletic,1,4
 5,1805,29,Kingswell Athletic,Fenwick United,3,0
 5,1806,29,West Harbor City,Harrow Vale,2,0
@@ -1865,7 +1865,7 @@ season,match_id,matchday,home_team,away_team,home_goals,away_goals
 5,1864,35,Port Albion,Millbrook Town,0,0
 5,1865,35,Blackthorn Rovers,Eastcliff FC,1,3
 5,1866,35,Riversedge United,Thornfield United,1,2
-5,1867,35,Castlebay FC,Bridgeport Rovers,4,1
+5,1867,35,Castlebay FC,Bridgeport Rovers,3,1
 5,1868,35,Dunmore Town,Oakhaven City,1,0
 5,1869,35,Harrow Vale,Silverlake FC,0,0
 5,1870,35,Fenwick United,Greymoor Athletic,0,1

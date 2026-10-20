@@ -47,6 +47,7 @@ def simulate_match(
     """Simulates from start_minute+1 to 90, given the state at start_minute.
     Defaults simulate a full match from kickoff."""
     red_card_minute = {home.name: home_red_card_minute, away.name: away_red_card_minute}
+    sent_off = {home.name: set(), away.name: set()}
     shots = []
     red_card_events = []
 
@@ -54,23 +55,25 @@ def simulate_match(
         for team, squad in ((home, home_squad), (away, away_squad)):
             if red_card_minute[team.name] is None and rng.random() < RED_CARD_CHANCE_PER_MINUTE:
                 red_card_minute[team.name] = minute
-                carded = pick_player(rng, squad, "card_share")
+                eligible = [p for p in squad if p.name not in sent_off[team.name]]
+                carded = pick_player(rng, eligible, "card_share")
+                sent_off[team.name].add(carded.name)
                 red_card_events.append({"minute": minute, "team": team.name,
                                          "player": carded.name, "position": carded.position})
 
         home_has_card = red_card_minute[home.name] is not None
         away_has_card = red_card_minute[away.name] is not None
 
-        shot = _maybe_shot(rng, home, away, home_squad, home_goals, away_goals, minute, True,
-                            home_has_card, away_has_card)
+        shot = _maybe_shot(rng, home, away, home_squad, sent_off[home.name], home_goals, away_goals,
+                            minute, True, home_has_card, away_has_card)
         if shot is not None:
             shots.append({"minute": minute, "team": home.name,
                           "home_score": home_goals, "away_score": away_goals, **shot})
             if shot["is_goal"]:
                 home_goals += 1
 
-        shot = _maybe_shot(rng, away, home, away_squad, away_goals, home_goals, minute, False,
-                            away_has_card, home_has_card)
+        shot = _maybe_shot(rng, away, home, away_squad, sent_off[away.name], away_goals, home_goals,
+                            minute, False, away_has_card, home_has_card)
         if shot is not None:
             shots.append({"minute": minute, "team": away.name,
                           "home_score": home_goals, "away_score": away_goals, **shot})
@@ -88,7 +91,7 @@ def simulate_match(
 
 
 def _maybe_shot(rng: np.random.Generator, team: Club, opponent: Club, squad: list[Player],
-                 own_score: int, opp_score: int, minute: int, is_home: bool,
+                 sent_off_names: set[str], own_score: int, opp_score: int, minute: int, is_home: bool,
                  team_has_red_card: bool, opp_has_red_card: bool) -> dict | None:
     rate = _shot_rate(team, opponent, own_score, opp_score, minute, is_home,
                        team_has_red_card, opp_has_red_card)
@@ -96,7 +99,8 @@ def _maybe_shot(rng: np.random.Generator, team: Club, opponent: Club, squad: lis
         return None
 
     xg, is_penalty, is_big_chance = _draw_shot(rng)
-    shooter = pick_player(rng, squad, "shot_share")
+    eligible = [p for p in squad if p.name not in sent_off_names]
+    shooter = pick_player(rng, eligible, "shot_share")
     effective_xg = float(np.clip(xg * shooter.finishing_skill, 0.01, 0.99))
 
     return {"xg": xg, "is_penalty": is_penalty, "is_big_chance": is_big_chance,

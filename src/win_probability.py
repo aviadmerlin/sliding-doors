@@ -5,28 +5,53 @@ at once, rather than looping replay-by-replay.
 
 For speed, this skips individual shot/player detail (not needed for a
 final-score outcome) and instead uses a single combined "goal this minute"
-probability per team, built from the same shot-rate and shot-type mix as
-the full match engine in match_engine.py.
+probability per team, built from a shot-rate and shot-type mix of the same
+SHAPE as the full match engine in match_engine.py, but with every number
+in it estimated from the generated data (see
+trait_estimation.estimate_league_constants / estimate_finishing_factor) --
+never imported from match_engine.py's true constants.
 """
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from src.league import Club
-from src.match_engine import (BIG_CHANCE_FRACTION, BIG_CHANCE_XG_RANGE, HOME_ADVANTAGE,
-                               PENALTY_SHOT_FRACTION, PENALTY_XG_MEAN, RED_CARD_CHANCE_PER_MINUTE,
-                               BASE_SHOT_RATE_PER_90, NORMAL_XG_RANGE)
 from src.trait_estimation import match_real_states, sample_trait_draws, shrink_traits
 
-BIG_CHANCE_XG_MEAN = sum(BIG_CHANCE_XG_RANGE) / 2
-NORMAL_XG_MEAN = sum(NORMAL_XG_RANGE) / 2
+# Every shot-rate/composition constant the fast engine needs is ESTIMATED from
+# the generated data (see trait_estimation.estimate_league_constants) and
+# saved to this file by scripts/estimate_traits.py -- never imported from
+# src/match_engine.py (the true generator). Home advantage also lives here as
+# a point estimate for convenience, but the uncertainty-aware path (team_draws)
+# instead reads each club's own `home_advantage` field, which varies per
+# sampled draw (see trait_estimation.sample_trait_draws /
+# win_probability.clubs_from_traits).
+_LEAGUE_CONSTANTS_PATH = Path(__file__).resolve().parent.parent / "data" / "model_league_constants.csv"
+
+
+def _load_league_constants(path: Path = _LEAGUE_CONSTANTS_PATH) -> dict[str, float]:
+    return pd.read_csv(path, index_col=0)["value"].to_dict()
+
+
+_constants = _load_league_constants()
+BASE_SHOT_RATE_PER_90 = _constants["base_shot_rate_per_90"]
+PENALTY_SHOT_FRACTION = _constants["penalty_shot_fraction"]
+BIG_CHANCE_FRACTION = _constants["big_chance_fraction"]
+PENALTY_XG_MEAN = _constants["penalty_xg_mean"]
+BIG_CHANCE_XG_MEAN = _constants["big_chance_xg_mean"]
+NORMAL_XG_MEAN = _constants["normal_xg_mean"]
+RED_CARD_CHANCE_PER_MINUTE = _constants["red_card_chance_per_minute"]
 
 
 def _shot_rate(team: Club, opponent: Club, own_score: np.ndarray, opp_score: np.ndarray,
                minute: int, is_home: bool, team_has_card: np.ndarray,
                opp_has_card: np.ndarray) -> np.ndarray:
     """Vectorized version of match_engine._shot_rate: same formula, but
-    own_score/opp_score/*_has_card are arrays (one slot per replay)."""
+    own_score/opp_score/*_has_card are arrays (one slot per replay), and
+    home advantage comes from the HOME club's own estimated field (so it
+    can vary per sampled trait draw) instead of a shared constant."""
     trailing = own_score < opp_score
     attack = np.where(trailing, team.attack * team.comeback_factor, team.attack)
     defense = np.where(trailing, opponent.defense * opponent.protect_lead_factor, opponent.defense)
@@ -39,18 +64,22 @@ def _shot_rate(team: Club, opponent: Club, own_score: np.ndarray, opp_score: np.
 
     rate = (BASE_SHOT_RATE_PER_90 / 90) * attack / defense
     if is_home:
-        rate = rate * HOME_ADVANTAGE
+        rate = rate * team.home_advantage
     return rate
 
 
-def _goal_given_shot(rng: np.random.Generator, n: int) -> np.ndarray:
+def _goal_given_shot(rng: np.random.Generator, n: int, finishing_factor: float) -> np.ndarray:
     """Whether a shot (already known to happen) is a goal: draws a shot
-    type with the same mix as the full engine, using each type's mean xG."""
+    type with the same mix as the full engine, using each type's mean xG,
+    then applies the shooting club's estimated finishing_factor (the fast
+    engine's club-level stand-in for the full engine's per-player
+    finishing_skill)."""
     roll = rng.random(n)
     is_penalty = roll < PENALTY_SHOT_FRACTION
     is_big_chance = (~is_penalty) & (rng.random(n) < BIG_CHANCE_FRACTION)
     xg = np.where(is_penalty, PENALTY_XG_MEAN, np.where(is_big_chance, BIG_CHANCE_XG_MEAN, NORMAL_XG_MEAN))
-    return rng.random(n) < xg
+    effective_xg = np.clip(xg * finishing_factor, 0.01, 0.99)
+    return rng.random(n) < effective_xg
 
 
 def simulate_forward_snapshots(home: Club, away: Club, rng: np.random.Generator, start_minute: int,
@@ -82,8 +111,8 @@ def simulate_forward_snapshots(home: Club, away: Club, rng: np.random.Generator,
         home_shot = rng.random(n_trials) < home_rate
         away_shot = rng.random(n_trials) < away_rate
 
-        home_score += (home_shot & _goal_given_shot(rng, n_trials)).astype(np.int32)
-        away_score += (away_shot & _goal_given_shot(rng, n_trials)).astype(np.int32)
+        home_score += (home_shot & _goal_given_shot(rng, n_trials, home.finishing_factor)).astype(np.int32)
+        away_score += (away_shot & _goal_given_shot(rng, n_trials, away.finishing_factor)).astype(np.int32)
 
         if minute in snapshot_set:
             snapshots[minute] = (home_score.copy(), away_score.copy())
@@ -245,20 +274,33 @@ def counterfactual_continuation_curve(team_draws: list[dict[str, Club]], home_na
 
 
 def clubs_from_traits(traits: pd.DataFrame) -> dict[str, Club]:
-    """Converts a traits DataFrame (indexed by team) into Club objects."""
+    """Converts a traits DataFrame (indexed by team) into Club objects.
+    home_advantage/finishing_factor default to 1.0 (no effect) when the
+    traits table doesn't carry them -- e.g. scripts/calibration.py's
+    out-of-sample refit doesn't estimate finishing_factor separately."""
     return {team: Club(name=team, attack=row.attack, defense=row.defense,
                         comeback_factor=row.comeback_factor, protect_lead_factor=row.protect_lead_factor,
-                        ten_men_resilience=row.ten_men_resilience, fatigue_factor=row.fatigue_factor)
+                        ten_men_resilience=row.ten_men_resilience, fatigue_factor=row.fatigue_factor,
+                        home_advantage=row.get("home_advantage", 1.0),
+                        finishing_factor=row.get("finishing_factor", 1.0))
             for team, row in traits.iterrows()}
 
 
 def sample_team_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], exposure: pd.DataFrame,
-                       shrink_cols: list[str], n_draws: int, rng: np.random.Generator) -> list[dict[str, Club]]:
+                       shrink_cols: list[str], n_draws: int, rng: np.random.Generator,
+                       finishing_factor: pd.Series | None = None) -> list[dict[str, Club]]:
     """Samples n_draws alternate leagues from the GLM's uncertainty,
     applying the same selective shrinkage used for the point estimate so
-    the draws are centered consistently with it."""
+    the draws are centered consistently with it. home_advantage comes along
+    for free (one of the GLM's own coefficients, so it varies naturally
+    per draw); finishing_factor isn't part of the GLM at all (see
+    trait_estimation.estimate_finishing_factor), so the same point
+    estimate is attached to every draw if supplied."""
     raw_draws = sample_trait_draws(params, cov, teams, n_draws, rng)
     shrunk_draws = [shrink_traits(d, exposure, shrink_cols) for d in raw_draws]
+    if finishing_factor is not None:
+        for d in shrunk_draws:
+            d["finishing_factor"] = finishing_factor
     return [clubs_from_traits(d) for d in shrunk_draws]
 
 

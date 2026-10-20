@@ -55,6 +55,11 @@ class Club:
     protect_lead_factor: float  # defense boost while leading (>=1.0)
     ten_men_resilience: float  # attack & defense multiplier with 10 men (<=1.0)
     fatigue_factor: float      # defense multiplier after minute 75 (<=1.0)
+    # Only meaningful for ESTIMATED clubs (src.win_probability.clubs_from_traits).
+    # The true generator (match_engine.py) ignores both: home advantage is its
+    # own global constant there, and finishing is modeled per-player, not per-club.
+    home_advantage: float = 1.0      # multiplier on shot rate for the home side
+    finishing_factor: float = 1.0    # club-level goals-vs-xG multiplier
 
 
 def create_league(seed: int = 42) -> list[Club]:

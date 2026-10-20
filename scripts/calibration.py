@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 from src.trait_estimation import (_match_minute_states, build_regression_table, compute_state_exposure,
-                                   compute_weights, fit_traits, shrink_traits)
+                                   compute_weights, estimate_finishing_factor, fit_traits, shrink_traits)
 from src.win_probability import clubs_from_traits, win_probability_curve
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -35,7 +35,9 @@ SHRINK_COLS = ["comeback_factor", "ten_men_resilience"]
 
 def fit_traits_on_seasons(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
                            seasons: list[int]) -> pd.DataFrame:
-    """Refits the trait regression using only the given seasons' data."""
+    """Refits the trait regression (and finishing_factor) using only the
+    given seasons' data -- so the out-of-sample run never sees season 5's
+    finishing numbers either, matching the in-sample run's methodology."""
     train_matches = matches[matches.season.isin(seasons)]
     train_shots = shots[shots.match_id.isin(train_matches.match_id)]
     train_cards = red_cards[red_cards.match_id.isin(train_matches.match_id)]
@@ -45,7 +47,9 @@ def fit_traits_on_seasons(matches: pd.DataFrame, shots: pd.DataFrame, red_cards:
     weights = compute_weights(table.season, None, max(seasons))
     point = fit_traits(table, teams, weights)
     exposure = compute_state_exposure(table, teams)
-    return shrink_traits(point, exposure, SHRINK_COLS)
+    shrunk = shrink_traits(point, exposure, SHRINK_COLS)
+    shrunk["finishing_factor"] = estimate_finishing_factor(train_shots, train_matches, teams, None, max(seasons))
+    return shrunk
 
 
 def collect_predictions(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,

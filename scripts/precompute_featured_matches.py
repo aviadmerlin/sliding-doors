@@ -54,7 +54,8 @@ def save_model(params: pd.Series, cov: pd.DataFrame, team_draws: list[dict]) -> 
         for team, club in draw.items():
             rows.append({"draw": draw_id, "team": team, "attack": club.attack, "defense": club.defense,
                          "comeback_factor": club.comeback_factor, "protect_lead_factor": club.protect_lead_factor,
-                         "ten_men_resilience": club.ten_men_resilience, "fatigue_factor": club.fatigue_factor})
+                         "ten_men_resilience": club.ten_men_resilience, "fatigue_factor": club.fatigue_factor,
+                         "home_advantage": club.home_advantage, "finishing_factor": club.finishing_factor})
     pd.DataFrame(rows).to_csv(DATA_DIR / "model_team_draws.csv", index=False)
 
 
@@ -77,7 +78,10 @@ def main() -> None:
 
     rng = np.random.default_rng(42)
     raw_draws = sample_trait_draws(params, cov, teams, N_TRAIT_DRAWS, rng)
-    team_draws = [clubs_from_traits(shrink_traits(d, exposure, SHRINK_COLS)) for d in raw_draws]
+    shrunk_draws = [shrink_traits(d, exposure, SHRINK_COLS) for d in raw_draws]
+    for d in shrunk_draws:  # finishing_factor isn't part of the GLM -- same point estimate every draw
+        d["finishing_factor"] = estimated_traits.finishing_factor
+    team_draws = [clubs_from_traits(d) for d in shrunk_draws]
 
     print("Saving the fitted model to disk (data/model_*.csv) so the app never refits it...")
     save_model(params, cov, team_draws)

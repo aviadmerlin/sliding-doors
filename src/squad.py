@@ -78,5 +78,9 @@ def create_squads(clubs: list[Club], seed: int = 1) -> dict[str, list[Player]]:
 
 
 def pick_player(rng: np.random.Generator, squad: list[Player], by: str) -> Player:
-    weights = [getattr(p, by) for p in squad]
+    """Picks weighted by getattr(p, by), normalized to sum to 1 -- so a
+    filtered-down squad (e.g. excluding a sent-off player) still works
+    without the caller having to renormalize first."""
+    weights = np.array([getattr(p, by) for p in squad], dtype=float)
+    weights = weights / weights.sum()
     return squad[rng.choice(len(squad), p=weights)]

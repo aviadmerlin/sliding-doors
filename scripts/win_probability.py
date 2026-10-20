@@ -97,7 +97,7 @@ def main() -> None:
     _, params, cov = fit_traits_distribution(table, teams, weights)
     exposure = compute_state_exposure(table, teams)
     team_draws = sample_team_draws(params, cov, teams, exposure, SHRINK_COLS, N_TRAIT_DRAWS,
-                                    np.random.default_rng(42))
+                                    np.random.default_rng(42), finishing_factor=estimated_traits.finishing_factor)
     print(f"Sampled {N_TRAIT_DRAWS} alternate leagues from the regression's uncertainty.\n")
 
     total_trials = N_TRAIT_DRAWS * TRIALS_PER_DRAW

@@ -200,6 +200,8 @@ def _traits_from_params(params: pd.Series, teams: list[str]) -> pd.DataFrame:
     target = np.log(1.15)
     c = (log_trail.mean() - log_prolead.mean()) / 2 - target
 
+    home_advantage = float(np.exp(params.get("home", 0.0)))
+
     rows = []
     for team, trail, prolead in zip(teams, log_trail, log_prolead):
         resilience_attack_side = np.exp(coef("cardA", team))
@@ -212,6 +214,7 @@ def _traits_from_params(params: pd.Series, teams: list[str]) -> pd.DataFrame:
             "protect_lead_factor": np.exp(-prolead - c),
             "fatigue_factor": np.exp(-coef("late", team)),
             "ten_men_resilience": (resilience_attack_side + resilience_defense_side) / 2,
+            "home_advantage": home_advantage,  # a league-wide estimate, repeated per team for convenience
         })
 
     traits = pd.DataFrame(rows).set_index("team")
@@ -282,3 +285,98 @@ def shrink_traits(estimated: pd.DataFrame, exposure: pd.DataFrame, traits: list[
         league_mean = estimated[trait].mean()
         shrunk[trait] = league_mean + weight * (estimated[trait] - league_mean)
     return shrunk
+
+
+def estimate_finishing_factor(shots: pd.DataFrame, matches: pd.DataFrame, teams: list[str],
+                               half_life: float | None, latest_season: int) -> pd.Series:
+    """Each club's finishing quality relative to xG: recency-weighted goals
+    divided by recency-weighted xG across its shots, shrunk toward the
+    no-bias baseline of 1.0 (a club finishing exactly as well as its shots'
+    xG predicts has finishing_factor == 1.0, by definition of what xG
+    means -- not a peek at the generator's player-level finishing_skill,
+    which this is only ever an aggregate, estimated stand-in for)."""
+    season_by_match = matches.set_index("match_id").season
+    shot_weight = compute_weights(shots.match_id.map(season_by_match), half_life, latest_season)
+
+    totals = pd.DataFrame({
+        "team": shots.team,
+        "w_goals": shots.is_goal.to_numpy(dtype=float) * shot_weight,
+        "w_xg": shots.xg.to_numpy() * shot_weight,
+    }).groupby("team").sum().reindex(teams, fill_value=0.0)
+
+    raw = totals.w_goals / totals.w_xg
+    exposure = totals.w_xg  # more xG faced -> more reliable goals/xG ratio
+    k = exposure.median()
+    weight = exposure / (exposure + k)
+    return (1.0 + weight * (raw - 1.0)).rename("finishing_factor")
+
+
+def estimate_league_constants(shots: pd.DataFrame, red_cards: pd.DataFrame, matches: pd.DataFrame,
+                               params: pd.Series, teams: list[str]) -> dict[str, float]:
+    """League-wide shot-rate/composition quantities that src/match_engine.py
+    treats as fixed true constants, estimated here purely from the
+    generated data -- src/win_probability.py must never import them from
+    the generator. The shot-RATE values (home advantage, base shot rate)
+    come straight off the already-fitted Poisson regression; shot
+    COMPOSITION and red-card rate are plain empirical rates, since the
+    regression doesn't model them at all.
+
+    base_shot_rate_per_90: the regression is fit on xg_sum (total xG, not
+    shot count), so exp(intercept) is an XG-accumulation rate, not a shot
+    rate -- converting it needs dividing by the mean xG per shot (itself
+    estimated just below, from shot composition). It's also the baseline
+    rate for the one reference team (shooter=teams[0], opponent=teams[0]),
+    where that team's own raw attack/defense coefficients are implicitly 0
+    (i.e. exp(0) == 1) by construction of the dropped reference level. But
+    the OUTPUT traits are recentered so the league AVERAGE attack/defense
+    is 1.0, not the reference team's -- so converting the intercept to
+    "rate when attack == defense == 1.0 at the recentered scale" needs the
+    same recentering ratio (G_atk / G_def) applied to it too.
+    """
+
+    def coef(prefix: str, team: str) -> float:
+        col = f"{prefix}_{team}"
+        return params[col] if col in params.index else 0.0
+
+    penalty_shot_fraction = float(shots.is_penalty.mean())
+    big_chance_fraction = float(shots[~shots.is_penalty].is_big_chance.mean())
+
+    penalty_xg_mean = float(shots[shots.is_penalty].xg.mean())
+    big_chance_xg_mean = float(shots[shots.is_big_chance & ~shots.is_penalty].xg.mean())
+    normal_xg_mean = float(shots[~shots.is_penalty & ~shots.is_big_chance].xg.mean())
+
+    mean_xg_per_shot = (penalty_shot_fraction * penalty_xg_mean
+                        + (1 - penalty_shot_fraction) * big_chance_fraction * big_chance_xg_mean
+                        + (1 - penalty_shot_fraction) * (1 - big_chance_fraction) * normal_xg_mean)
+
+    raw_attack = np.exp(np.array([coef("atk", t) for t in teams]))
+    raw_defense = np.exp(-np.array([coef("def", t) for t in teams]))
+    g_atk = np.exp(np.log(raw_attack).mean())
+    g_def = np.exp(np.log(raw_defense).mean())
+    xg_rate_per_90 = np.exp(params["intercept"]) * 90 * (g_atk / g_def)
+    base_shot_rate_per_90 = float(xg_rate_per_90 / mean_xg_per_shot)
+
+    home_advantage = float(np.exp(params.get("home", 0.0)))
+
+    # A team stops being "at risk" of a (further) red card once it already has
+    # one that match -- mirrors match_engine.py's own per-team "already carded"
+    # gate -- so its at-risk minutes end at its first card, not 90.
+    first_card = red_cards.groupby(["match_id", "team"]).minute.min().rename("first_card_minute")
+    team_rows = pd.concat([
+        matches[["match_id", "home_team"]].rename(columns={"home_team": "team"}),
+        matches[["match_id", "away_team"]].rename(columns={"away_team": "team"}),
+    ], ignore_index=True)
+    team_rows = team_rows.merge(first_card, on=["match_id", "team"], how="left")
+    at_risk_minutes = float(team_rows.first_card_minute.fillna(90).sum())
+    red_card_chance_per_minute = len(red_cards) / at_risk_minutes
+
+    return {
+        "home_advantage": home_advantage,
+        "base_shot_rate_per_90": base_shot_rate_per_90,
+        "penalty_shot_fraction": penalty_shot_fraction,
+        "big_chance_fraction": big_chance_fraction,
+        "penalty_xg_mean": penalty_xg_mean,
+        "big_chance_xg_mean": big_chance_xg_mean,
+        "normal_xg_mean": normal_xg_mean,
+        "red_card_chance_per_minute": red_card_chance_per_minute,
+    }

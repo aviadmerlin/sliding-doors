@@ -12,7 +12,8 @@ import numpy as np
 import pandas as pd
 
 from src.trait_estimation import (build_regression_table, compute_state_exposure, compute_weights,
-                                   fit_traits, shrink_traits)
+                                   estimate_finishing_factor, estimate_league_constants, fit_traits,
+                                   fit_traits_distribution, shrink_traits)
 
 SHRINKAGE_CANDIDATES = ["comeback_factor", "protect_lead_factor", "ten_men_resilience", "fatigue_factor"]
 
@@ -114,10 +115,24 @@ def main() -> None:
     final[helps] = shrunk[helps]
     print(f"\nApplying shrinkage to: {helps}")
 
+    # Club-level finishing (goals vs. xG, shrunk toward the no-bias baseline of
+    # 1.0) and the league-wide shot-rate/composition constants the fast engine
+    # needs -- both estimated from data only, at the same best half-life.
+    weights_best = compute_weights(table.season, best_half_life, latest_season)
+    _, params_best, _ = fit_traits_distribution(table, teams, weights_best)
+    final["finishing_factor"] = estimate_finishing_factor(shots, matches, teams, best_half_life, latest_season)
+
+    league_constants = estimate_league_constants(shots, red_cards, matches, params_best, teams)
+    pd.Series(league_constants, name="value").to_csv(DATA_DIR / "model_league_constants.csv")
+    print(f"\nSaved league-wide constants (estimated, not imported from the generator) "
+          f"to {DATA_DIR / 'model_league_constants.csv'}:")
+    for k, v in league_constants.items():
+        print(f"  {k:28} {v:.6f}")
+
     plot_validation(final, true_latest, label(best_half_life), ASSETS_DIR / "trait_validation.png")
 
     final.to_csv(DATA_DIR / "estimated_traits.csv")
-    print(f"Saved estimated traits ({label(best_half_life)}, shrunk where it helps) "
+    print(f"\nSaved estimated traits ({label(best_half_life)}, shrunk where it helps) "
           f"to {DATA_DIR / 'estimated_traits.csv'}")
 
 

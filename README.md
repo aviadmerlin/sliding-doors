@@ -31,12 +31,14 @@ data/
   *.csv                   # generated season data (matches, shots, goals, red cards, players, true/estimated traits)
   featured_curves.csv, featured_turning_points.csv, featured_matches.json  # precomputed for instant loading
   model_params.csv, model_cov.csv, model_team_draws.csv  # the fitted trait model, saved so the app never refits it
+  model_league_constants.csv  # shot-rate/composition constants estimated from data (see "removing data leakage" below)
 assets/
   trait_validation.png     # estimated vs. true traits scatter (see below)
   win_probability.png      # win probability chart for the most dramatic match (see below)
   calibration.png           # predicted vs. actual win rates, out-of-sample (see below)
   counterfactual_demo.png   # actual vs. counterfactual curves for 3 "what if" scenarios (see below)
 app.py                    # interactive Streamlit UI (see below)
+tests/                    # pytest suite: data integrity, model logic, consistency, home advantage/leakage
 .streamlit/config.toml    # dark sports-product theme
 .claude/skills/developing-with-streamlit/  # official Streamlit agent skill (vendored, see Setup)
 ```
@@ -110,6 +112,48 @@ occasional bigger jump, more pooled data reduces noise more than recency
 weighting helps. If clubs changed faster, a shorter half-life would win
 instead.
 
+### Finishing skill and removing data leakage
+
+A code review found two problems with how the win-probability engine
+(`src/win_probability.py`) got its numbers: (1) it never modeled a club's
+finishing quality at all, and (2) it imported several "true" constants
+straight from `src/match_engine.py` — the match generator — instead of
+estimating them, including home advantage even though the regression
+already fits a `home` coefficient that was just sitting unused.
+
+**Finishing skill** is now estimated per club as (recency-weighted) goals
+divided by (recency-weighted) xG across its shots, shrunk toward the
+no-bias baseline of 1.0 the same way the noisier traits are. It feeds
+into the engine as `finishing_factor`, a multiplier on shot quality
+alongside the usual attack/defense numbers.
+
+**Every other constant the engine needs is now estimated from data, not
+imported from the generator:** home advantage from the regression's own
+`home` coefficient (and, unlike the other league-wide constants, it now
+varies per sampled trait draw, so its uncertainty is reflected in the
+app's confidence bands too); base shot rate from the regression's
+intercept (corrected for the fact that the regression is fit on total xG,
+not shot counts); and shot composition (penalty/big-chance shares, xG
+means per shot type) and the red-card rate as plain empirical rates from
+`shots.csv`/`red_cards.csv`. A test (`tests/test_home_advantage_and_leakage.py`)
+parses `src/win_probability.py`'s own source to confirm it never imports
+from `src/match_engine.py` at all.
+
+| constant | estimated | true | relative error |
+|---|---:|---:|---:|
+| home advantage | 1.0960 | 1.1000 | 0.36% |
+| base shot rate (per 90) | 10.90 | 11.00 | 0.92% |
+| penalty share of shots | 0.01093 | 0.01100 | 0.65% |
+| big-chance share of shots | 0.1211 | 0.1200 | 0.90% |
+| penalty xG mean | 0.7599 | 0.7600 | 0.01% |
+| big-chance xG mean | 0.2501 | 0.2500 | 0.05% |
+| normal-shot xG mean | 0.0802 | 0.0800 | 0.24% |
+| red card chance (per team-minute) | 0.000681 | 0.000700 | 2.68% |
+
+Every estimate lands within a few percent of the true value it's standing
+in for — close enough to be useful, far enough apart that it's clearly an
+honest estimate rather than a disguised peek at ground truth.
+
 ## Win probability
 
 ```bash
@@ -126,15 +170,16 @@ not a Python loop per replay.
 
 ![Win probability](assets/win_probability.png)
 
-The selected match (picked automatically, not hand-picked) was a 3-2
-thriller: the eventual winner went behind in the 21st minute and sat at
-under 5% win probability for most of the second half, before an
-87th-minute equalizer (which mostly swung the *draw* probability, not
-the win probability) and an 88th-minute winner completed the turnaround.
-Turning points are ranked by total movement across all three outcome
-probabilities (home/draw/away), not just the home-win number — otherwise
-a goal that mainly makes a draw likely wouldn't register as pivotal even
-though it clearly is.
+The selected match (picked automatically, not hand-picked) was a 2-3
+collapse-and-comeback: Stonebridge Town went 2-0 up inside the first
+half-hour and sat above 80% win probability for most of the match —
+before Harrow Vale clawed back three unanswered goals late on (57', 79',
+89'), the last one completing the turnaround and flipping the away win
+probability from under 2% to 98% in a single minute. Turning points are
+ranked by total movement across all three outcome probabilities
+(home/draw/away), not just the home-win number — otherwise a goal that
+mainly makes a draw likely wouldn't register as pivotal even though it
+clearly is.
 
 **The uncertainty bands reflect two different things stacked together.**
 Early versions only captured simulation noise — "if I replay this 3000
@@ -175,8 +220,8 @@ credit for having already seen the answers.
 ![Calibration](assets/calibration.png)
 
 Expected calibration error (the average gap between predicted and
-actual, weighted by bucket size) is **0.028 out-of-sample**, essentially
-indistinguishable from **0.029 in-sample**
+actual, weighted by bucket size) is **0.0315 out-of-sample**, essentially
+indistinguishable from **0.0289 in-sample**
 (`assets/calibration_in_sample.png`) — any leakage effect is smaller
 than the run-to-run noise at this sample size, consistent with how
 slowly traits drift season to season (see "no decay" winning the
@@ -231,17 +276,17 @@ Three examples, two on the win-probability match above and one on a
 different match that actually had a red card (the first one didn't) —
 each a same-minute, forecast-vs-forecast comparison:
 
-- **Cancel the 87th-minute equalizer** — Northgate's win forecast right
-  after the real goal was 7%; without it (still 1-2 down with 3 minutes
-  left), it jumps to 97%.
-- **Make the 38th-minute big chance a goal instead** — right after the
-  real miss, Northgate was forecast at 72%; if Silverlake had equalized
-  there and then, with 52 minutes still to play, that drops to 43% —
-  much less decisive than the late equalizer, as expected.
-- **Undo a 17th-minute red card** (different match, lost 1-5) —
-  Thornfield's forecast right after the real sending-off was 48%;
-  without it, 27%. That card looks like a major factor, though not the
-  sole explanation for a 1-5 scoreline.
+- **Cancel the 89th-minute winner** — Harrow Vale's win forecast right
+  after the real goal was 98%; without it (still 2-2 with a minute left),
+  it collapses to 1%.
+- **Make the 88th-minute near-miss a goal instead** — right before Harrow
+  Vale's winner, Stonebridge Town's forecast (still 2-2) was just 4%; if
+  their shot a minute earlier had gone in instead, making it 3-2, that
+  jumps to 98% — the mirror image of the goal that actually decided it.
+- **Undo a 36th-minute red card** (different match, won 4-0) — West
+  Harbor City's forecast right after the real sending-off was 80%;
+  without it, 67%. The card helped, but a 4-0 scoreline was clearly not
+  down to the card alone.
 
 ## Interactive UI
 
@@ -261,8 +306,8 @@ points marked, turning-point cards with a clear before → after
 a "What if...?" section that runs the counterfactual engine live —
 pick an event from the match's timeline (the change dropdown only ever
 shows the one change that event actually supports) and it shows a fair
-before → after at the fork minute (e.g. "Northgate United win: 72% →
-43%"), the real match's curve against the counterfactual's honest flat
+before → after at the fork minute (e.g. "Harrow Vale win: 98% → 1%"),
+the real match's curve against the counterfactual's honest flat
 forecast + band, and the real final result in its own clearly-labeled
 panel. A clearly-marked "coming soon" placeholder sits where a free-text
 natural-language question box will go once the Foundry agent is wired up.

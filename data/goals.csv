@@ -270,7 +270,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,104,31,Silverlake FC,1,0,0.26138085942865935,False,True,Lars Bauer,FW
 1,104,39,Kingswell Athletic,2,0,0.7898254961837434,True,False,Kwame Lund,FW
 1,104,62,Kingswell Athletic,2,1,0.13435563200275744,False,False,Sami Castro,MF
-1,104,63,Silverlake FC,2,2,0.05638492747722906,False,False,Luka Dubois,MF
+1,104,63,Silverlake FC,2,2,0.05638492747722906,False,False,Viktor Fontaine,MF
 1,105,33,West Harbor City,0,0,0.3481639272784905,False,True,Felix Nowak,MF
 1,105,90,Greymoor Athletic,0,1,0.09598100377594991,False,False,Pavel Lund,DF
 1,106,83,Fenwick United,0,0,0.3025510992664449,False,True,Enzo Okafor,FW
@@ -417,9 +417,9 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,166,58,Castlebay FC,1,4,0.11038203639628724,False,False,Lars Lund,MF
 1,166,81,Castlebay FC,1,5,0.3298224945649934,False,True,Felix Alvi,FW
 1,167,16,Thornfield United,0,0,0.08943811737527997,False,False,Dion Stroud,MF
-1,167,47,Thornfield United,1,0,0.1367092848965709,False,False,Lars Kovac,DF
+1,167,47,Thornfield United,1,0,0.1367092848965709,False,False,Nico Alvi,DF
 1,167,49,Thornfield United,2,0,0.7279437048066273,True,False,Felix Brennan,MF
-1,167,63,Thornfield United,3,0,0.10948489048931659,False,False,Dion Stroud,MF
+1,167,63,Thornfield United,3,0,0.10948489048931659,False,False,Lars Delgado,MF
 1,168,56,Bridgeport Rovers,0,0,0.0406009649719964,False,False,Viktor Okafor,FW
 1,169,10,Oakhaven City,0,0,0.12152815029431219,False,False,Milan Delgado,DF
 1,169,15,Oakhaven City,1,0,0.020425961643189973,False,False,Aron Marek,MF
@@ -600,7 +600,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,229,58,Eastcliff FC,0,2,0.808980786861465,True,False,Luka Okafor,FW
 1,229,80,West Harbor City,1,2,0.1251666987524781,False,False,Rafa Delgado,FW
 1,229,85,West Harbor City,1,3,0.8034424678506276,True,False,Sami Okafor,DF
-1,230,80,Millbrook Town,0,0,0.2646747450522697,False,True,Luka Soto,MF
+1,230,80,Millbrook Town,0,0,0.2646747450522697,False,True,Marco Dubois,FW
 1,230,82,Kingswell Athletic,1,0,0.1128348204496217,False,False,Kwame Lund,FW
 1,231,8,Harrow Vale,0,0,0.13109526536189078,False,False,Dax Delgado,FW
 1,231,39,Northgate United,1,0,0.12361211919171851,False,False,Dario Castro,FW
@@ -641,7 +641,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,246,73,Thornfield United,0,0,0.13623111404635677,False,False,Jonas Lund,MF
 1,246,88,Thornfield United,1,0,0.040487965031306014,False,False,Kwame Keita,FW
 1,247,85,Port Albion,0,0,0.10038758384770324,False,False,Dion Horvat,MF
-1,247,90,Port Albion,0,1,0.7902910708899267,True,False,Remi Delgado,DF
+1,247,90,Port Albion,0,1,0.7902910708899267,True,False,Dion Horvat,MF
 1,248,67,Millbrook Town,0,0,0.13850711242332717,False,False,Erik Santos,FW
 1,250,6,West Harbor City,0,0,0.346238363401697,False,True,Sami Okafor,DF
 1,250,20,West Harbor City,1,0,0.11042562379918784,False,False,Felix Nowak,MF
@@ -688,7 +688,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,265,42,Eastcliff FC,4,0,0.20028211926055386,False,True,Pavel Bauer,MF
 1,266,33,Castlebay FC,0,0,0.13753399125381707,False,False,Theo Lindqvist,MF
 1,266,65,Castlebay FC,0,1,0.06156037088215426,False,False,Felix Alvi,FW
-1,268,42,West Harbor City,0,0,0.10155053257275594,False,False,Hugo Bauer,DF
+1,268,42,West Harbor City,0,0,0.10155053257275594,False,False,Milan Alvi,DF
 1,268,59,Blackthorn Rovers,1,0,0.06595604874722492,False,False,Dion Okafor,FW
 1,268,66,West Harbor City,1,1,0.15835766970907542,False,True,Felix Nowak,MF
 1,269,10,Ashford Rovers,0,0,0.7570106931204771,True,False,Luka Lund,MF
@@ -743,8 +743,8 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,287,22,Ashford Rovers,2,1,0.08776202296787952,False,False,Tomas Fontaine,MF
 1,287,29,Ashford Rovers,3,1,0.265149662172311,False,True,Tomas Santos,FW
 1,287,63,Ashford Rovers,4,1,0.06564045352048527,False,False,Joao Santos,FW
-1,287,81,Dunmore Town,5,1,0.12081957930913013,False,False,Idris Weiss,MF
-1,287,85,Dunmore Town,5,2,0.04944764285835807,False,False,Nico Palacios,MF
+1,287,81,Dunmore Town,5,1,0.12081957930913013,False,False,Joao Dubois,MF
+1,287,83,Dunmore Town,5,2,0.11513594079781271,False,False,Nico Riva,MF
 1,288,18,Stonebridge Town,0,0,0.07341471262616836,False,False,Omar Delgado,DF
 1,288,29,Stonebridge Town,1,0,0.11710083479268665,False,False,Milan Bauer,FW
 1,288,56,Castlebay FC,2,0,0.12765820447831983,False,False,Edin Osei,DF
@@ -891,7 +891,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,344,39,Port Albion,1,0,0.7620542736904572,True,False,Remi Soto,FW
 1,344,52,Millbrook Town,2,0,0.12136068193343844,False,False,Viktor Novak,MF
 1,344,53,Port Albion,2,1,0.13878217761360204,False,False,Tomas Osei,FW
-1,344,57,Port Albion,3,1,0.30315715585342506,False,True,Remi Delgado,DF
+1,344,57,Port Albion,3,1,0.30315715585342506,False,True,Dion Horvat,MF
 1,345,14,Blackthorn Rovers,0,0,0.09512592866514384,False,False,Dion Okafor,FW
 1,345,34,Blackthorn Rovers,1,0,0.10355891171834047,False,False,Felix Bauer,MF
 1,345,53,Blackthorn Rovers,2,0,0.13822505884481653,False,False,Dion Okafor,FW
@@ -964,9 +964,9 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,372,8,Blackthorn Rovers,0,0,0.12729357993991214,False,False,Joao Osei,FW
 1,372,62,Blackthorn Rovers,1,0,0.1191698648394551,False,False,Joao Osei,FW
 1,372,65,Red Valley FC,2,0,0.2159792659305783,False,True,Marco Lund,FW
-1,372,72,Red Valley FC,2,1,0.035706100877117904,False,False,Remi Lindqvist,FW
-1,372,73,Red Valley FC,2,2,0.03179641424285861,False,False,Milan Santos,MF
-1,373,27,Riversedge United,0,0,0.12124239043998494,False,False,Mateo Corbin,FW
+1,372,72,Red Valley FC,2,1,0.035706100877117904,False,False,Marco Lund,FW
+1,373,16,Stonebridge Town,0,0,0.3452088774739587,False,True,Gabo Santos,MF
+1,373,27,Riversedge United,0,1,0.12124239043998494,False,False,Mateo Corbin,FW
 1,374,4,Castlebay FC,0,0,0.3349510879394062,False,True,Theo Brennan,DF
 1,375,58,Dunmore Town,0,0,0.3103659794057781,False,True,Nico Palacios,MF
 1,376,57,Harrow Vale,0,0,0.2608956037050399,False,True,Remi Marek,MF
@@ -982,7 +982,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 1,380,79,Bridgeport Rovers,1,1,0.027056939137990465,False,False,Pavel Vance,DF
 2,381,19,Blackthorn Rovers,0,0,0.20397871303139384,False,True,Pavel Bergman,DF
 2,381,45,Blackthorn Rovers,0,1,0.16026480591413758,False,True,Joao Osei,FW
-2,381,55,Northgate United,0,2,0.7638292309532227,True,False,Rafa Brennan,MF
+2,381,55,Northgate United,0,2,0.7638292309532227,True,False,Kwame Soto,MF
 2,382,29,Riversedge United,0,0,0.09914699322173863,False,False,Nico Fontaine,DF
 2,382,35,Port Albion,0,1,0.058645546443467346,False,False,Remi Soto,FW
 2,383,32,Red Valley FC,0,0,0.08976205628070319,False,False,Joao Castro,MF
@@ -1129,6 +1129,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 2,429,1,Millbrook Town,0,0,0.08873184315658525,False,False,Viktor Novak,MF
 2,429,30,Millbrook Town,0,1,0.10857769021716726,False,False,Joao Okafor,FW
 2,429,38,Millbrook Town,0,2,0.1700537152798332,False,True,Marco Dubois,FW
+2,429,44,Ashford Rovers,0,3,0.06697711937542797,False,False,Mateo Stroud,DF
 2,430,18,Kingswell Athletic,0,0,0.08972365763232304,False,False,Kwame Lund,FW
 2,430,40,West Harbor City,0,1,0.24904402637501813,False,True,Gabo Varga,DF
 2,430,46,West Harbor City,1,1,0.037932303683512844,False,False,Remi Stroud,DF
@@ -1221,7 +1222,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 2,460,18,Red Valley FC,0,1,0.08818328737146872,False,False,Remi Marek,MF
 2,460,90,Red Valley FC,1,1,0.10776348081226998,False,False,Marco Lund,FW
 2,461,10,Northgate United,0,0,0.10657326033017607,False,False,Kwame Soto,MF
-2,461,54,Northgate United,1,0,0.08983720392357677,False,False,Theo Alvi,DF
+2,461,54,Northgate United,1,0,0.08983720392357677,False,False,Kwame Soto,MF
 2,461,72,Oakhaven City,2,0,0.09035826661893137,False,False,Pavel Marek,DF
 2,462,52,Bridgeport Rovers,0,0,0.08939860256797902,False,False,Omar Dubois,MF
 2,462,84,Silverlake FC,0,1,0.21119741037512496,False,True,Dax Horvat,DF
@@ -1310,7 +1311,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 2,494,72,West Harbor City,0,2,0.09688056719959307,False,False,Edin Varga,MF
 2,495,38,Silverlake FC,0,0,0.06221534534641609,False,False,Lars Bauer,FW
 2,495,70,Silverlake FC,1,0,0.05238215274048797,False,False,Theo Vance,FW
-2,496,61,Stonebridge Town,0,0,0.18123011372732542,False,True,Erik Keita,MF
+2,496,61,Stonebridge Town,0,0,0.18123011372732542,False,True,Dario Brennan,FW
 2,496,64,Greymoor Athletic,0,1,0.04509229520457938,False,False,Mateo Okafor,MF
 2,497,38,Red Valley FC,0,0,0.2815595044490608,False,True,Tomas Horvat,DF
 2,498,30,Harrow Vale,0,0,0.7672828357575834,True,False,Erik Osei,MF
@@ -1383,7 +1384,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 2,524,22,Red Valley FC,0,1,0.10552109495974352,False,False,Dario Stroud,MF
 2,524,36,Eastcliff FC,0,2,0.12113590362189482,False,False,Edin Stroud,DF
 2,524,42,Red Valley FC,1,2,0.05332119683569624,False,False,Marco Lund,FW
-2,524,82,Red Valley FC,1,3,0.7686349114894094,True,False,Erik Lindqvist,MF
+2,524,82,Red Valley FC,1,3,0.7686349114894094,True,False,Joao Castro,MF
 2,525,27,Port Albion,0,0,0.15326543345358057,False,True,Remi Soto,FW
 2,526,12,Blackthorn Rovers,0,0,0.7483689710378313,True,False,Joao Osei,FW
 2,527,44,Oakhaven City,0,0,0.05869379543571624,False,False,Marco Bauer,FW
@@ -2007,6 +2008,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 3,763,89,Red Valley FC,1,0,0.06920187201313548,False,False,Dion Novak,DF
 3,764,39,Dunmore Town,0,0,0.08032714012514736,False,False,Mateo Keita,FW
 3,764,47,Stonebridge Town,0,1,0.1247783594988721,False,False,Erik Keita,MF
+3,764,89,Stonebridge Town,1,1,0.07960798661589873,False,False,Erik Keita,MF
 3,765,17,Ashford Rovers,0,0,0.2672624592410512,False,True,Kwame Keita,MF
 3,765,28,Harrow Vale,1,0,0.26365800504828424,False,True,Omar Lindqvist,MF
 3,765,47,Ashford Rovers,1,1,0.26740127000439307,False,True,Luka Lund,MF
@@ -2364,7 +2366,8 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 3,888,59,Fenwick United,0,1,0.0375643596387244,False,False,Hugo Bergman,MF
 3,888,69,Blackthorn Rovers,1,1,0.770109307778793,True,False,Dario Osei,FW
 3,890,61,Castlebay FC,0,0,0.22775244181580584,False,True,Rafa Nowak,MF
-3,890,86,Castlebay FC,0,1,0.08540510529980284,False,False,Dion Riva,FW
+3,890,69,Dunmore Town,0,1,0.7707840743172752,True,False,Nico Riva,MF
+3,890,86,Castlebay FC,1,1,0.08540510529980284,False,False,Dion Riva,FW
 3,891,12,Northgate United,0,0,0.34677893163306556,False,True,Dion Brennan,FW
 3,891,17,Northgate United,1,0,0.13551892069136234,False,False,Dion Brennan,FW
 3,891,54,Kingswell Athletic,2,0,0.10251419181284933,False,False,Remi Okafor,DF
@@ -2687,7 +2690,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 3,1005,11,Bridgeport Rovers,0,0,0.04393715485199867,False,False,Aron Okafor,DF
 3,1005,31,Bridgeport Rovers,1,0,0.0632159380481243,False,False,Viktor Okafor,FW
 3,1005,46,Riversedge United,2,0,0.05129003305902663,False,False,Joao Brennan,MF
-3,1006,52,Thornfield United,0,0,0.2617130435038652,False,True,Omar Castro,MF
+3,1006,52,Thornfield United,0,0,0.2617130435038652,False,True,Felix Brennan,MF
 3,1006,55,Blackthorn Rovers,1,0,0.32276064648765834,False,True,Dax Weiss,MF
 3,1007,75,Port Albion,0,0,0.7408982203230986,True,False,Tomas Osei,FW
 3,1007,77,Eastcliff FC,0,1,0.07697802048468938,False,False,Omar Varga,MF
@@ -3018,7 +3021,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 3,1126,72,Millbrook Town,0,2,0.1591045620362841,False,True,Joao Okafor,FW
 3,1127,27,Harrow Vale,0,0,0.10112004915846239,False,False,Dax Santos,MF
 3,1129,18,Bridgeport Rovers,0,0,0.15985269311922864,False,True,Hugo Lindqvist,DF
-3,1129,44,Greymoor Athletic,0,1,0.03232289976106133,False,False,Felix Okafor,MF
+3,1129,44,Greymoor Athletic,0,1,0.03232289976106133,False,False,Mateo Okafor,MF
 3,1129,59,Greymoor Athletic,1,1,0.11834570770446835,False,False,Joao Mercer,FW
 3,1129,75,Bridgeport Rovers,2,1,0.045241847365190095,False,False,Viktor Okafor,FW
 3,1129,80,Greymoor Athletic,2,2,0.16984407264821305,False,True,Joao Mercer,FW
@@ -3067,7 +3070,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1148,38,Millbrook Town,0,1,0.13275429324819105,False,False,Luka Soto,MF
 4,1148,51,Millbrook Town,1,1,0.13726430291090413,False,False,Joao Okafor,FW
 4,1148,79,Millbrook Town,2,1,0.1083852841959386,False,False,Erik Santos,FW
-4,1148,79,Silverlake FC,3,1,0.13260091536139937,False,False,Luka Dubois,MF
+4,1148,79,Silverlake FC,3,1,0.13260091536139937,False,False,Theo Vance,FW
 4,1149,26,Eastcliff FC,0,0,0.0692658669962634,False,False,Rafa Vance,MF
 4,1149,47,Oakhaven City,1,0,0.23949691982899565,False,True,Edin Dubois,MF
 4,1150,47,Thornfield United,0,0,0.306633481837463,False,True,Nico Alvi,DF
@@ -3121,7 +3124,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1166,65,Silverlake FC,2,2,0.13834053221253204,False,False,Lars Bauer,FW
 4,1166,67,Stonebridge Town,2,3,0.13489929805908957,False,False,Lars Dubois,DF
 4,1167,51,Oakhaven City,0,0,0.1287931491254315,False,False,Marco Bauer,FW
-4,1167,55,Oakhaven City,0,1,0.12530152958763324,False,False,Edin Dubois,MF
+4,1167,55,Oakhaven City,0,1,0.12530152958763324,False,False,Dion Brennan,MF
 4,1167,59,Oakhaven City,0,2,0.12409543129384655,False,False,Aron Weiss,DF
 4,1167,61,Ashford Rovers,0,3,0.0477920800651606,False,False,Joao Santos,FW
 4,1168,7,Bridgeport Rovers,0,0,0.07613576307709244,False,False,Aron Okafor,DF
@@ -3405,7 +3408,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1275,11,Red Valley FC,1,0,0.06406222823709126,False,False,Kai Fontaine,DF
 4,1275,31,Red Valley FC,1,1,0.10108188785240421,False,False,Tomas Dubois,FW
 4,1275,39,Red Valley FC,1,2,0.7782590688187453,True,False,Tomas Santos,DF
-4,1275,41,Bridgeport Rovers,1,3,0.10621166382397632,False,False,Jonas Delgado,MF
+4,1275,41,Bridgeport Rovers,1,3,0.10621166382397632,False,False,Tomas Dubois,MF
 4,1275,73,Red Valley FC,2,3,0.11421128287139702,False,False,Marco Lund,FW
 4,1276,22,Oakhaven City,0,0,0.7567023171312764,True,False,Dion Brennan,MF
 4,1276,65,Port Albion,1,0,0.0645399809291349,False,False,Pavel Weiss,DF
@@ -3468,7 +3471,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1297,79,Castlebay FC,0,0,0.8061051004641248,True,False,Mateo Palacios,FW
 4,1298,21,Oakhaven City,0,0,0.1393483688739041,False,False,Marco Bauer,FW
 4,1298,83,Oakhaven City,1,0,0.12649866104279525,False,False,Aron Marek,MF
-4,1298,88,Oakhaven City,2,0,0.13890623926084167,False,False,Aron Weiss,DF
+4,1298,88,Oakhaven City,2,0,0.13890623926084167,False,False,Milan Delgado,DF
 4,1299,18,Harrow Vale,0,0,0.10559993619898862,False,False,Dax Delgado,FW
 4,1299,41,Silverlake FC,0,1,0.1127251260681265,False,False,Lars Vance,DF
 4,1299,42,Harrow Vale,1,1,0.08653929574090351,False,False,Dax Bergman,FW
@@ -3559,7 +3562,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1340,34,Thornfield United,1,1,0.11811553159865956,False,False,Noel Pires,FW
 4,1340,45,Bridgeport Rovers,1,2,0.8144604051864928,True,False,Jonas Delgado,MF
 4,1340,51,Thornfield United,2,2,0.13014279786199953,False,False,Jonas Lund,MF
-4,1341,76,Northgate United,0,0,0.32564462482526596,False,True,Edin Fontaine,DF
+4,1341,76,Northgate United,0,0,0.32564462482526596,False,True,Enzo Bergman,DF
 4,1343,72,Port Albion,0,0,0.25089164194639835,False,True,Tomas Osei,FW
 4,1343,74,Port Albion,0,1,0.7375663139001306,True,False,Hugo Osei,MF
 4,1343,86,Port Albion,0,2,0.0553415261210334,False,False,Tomas Osei,FW
@@ -3608,7 +3611,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1360,66,Eastcliff FC,3,2,0.06382033102748347,False,False,Pavel Hartley,DF
 4,1360,75,Eastcliff FC,4,2,0.7068753804655769,True,False,Rafa Vance,MF
 4,1361,68,Dunmore Town,0,0,0.12340713414174677,False,False,Milan Lund,MF
-4,1361,89,Northgate United,1,0,0.19139953958181694,False,True,Kwame Soto,MF
+4,1361,89,Northgate United,1,0,0.19139953958181694,False,True,Rafa Brennan,MF
 4,1362,12,Castlebay FC,0,0,0.03182717480813662,False,False,Edin Osei,DF
 4,1362,19,Castlebay FC,0,1,0.12937554344214217,False,False,Lars Marek,MF
 4,1362,41,Castlebay FC,0,2,0.12188922719366181,False,False,Dion Riva,FW
@@ -3872,7 +3875,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 4,1463,59,Ashford Rovers,1,1,0.12523496536943288,False,False,Kwame Keita,MF
 4,1463,84,Ashford Rovers,2,1,0.2591271503580778,False,True,Luka Lund,MF
 4,1464,55,Stonebridge Town,0,0,0.029947441027620654,False,False,Dario Brennan,FW
-4,1464,63,Thornfield United,1,0,0.12615378010318537,False,False,Erik Bergman,FW
+4,1464,63,Thornfield United,1,0,0.12615378010318537,False,False,Felix Brennan,MF
 4,1464,71,Stonebridge Town,1,1,0.09829042016550303,False,False,Kai Lindqvist,DF
 4,1465,30,Red Valley FC,0,0,0.13017875586686534,False,False,Tomas Santos,DF
 4,1465,76,Red Valley FC,1,0,0.0907406387677234,False,False,Tomas Horvat,DF
@@ -4281,7 +4284,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1612,88,Oakhaven City,1,1,0.33878789900864376,False,True,Viktor Lindqvist,MF
 5,1612,89,Thornfield United,2,1,0.04260838612583823,False,False,Noel Pires,FW
 5,1613,24,Eastcliff FC,0,0,0.0804474205588492,False,False,Luka Okafor,FW
-5,1613,36,Silverlake FC,0,1,0.18481894619390674,False,True,Gabo Novak,MF
+5,1613,36,Silverlake FC,0,1,0.18481894619390674,False,True,Felix Vance,MF
 5,1613,44,Eastcliff FC,1,1,0.10519213194527323,False,False,Milan Bauer,DF
 5,1613,65,Eastcliff FC,1,2,0.3024872785845447,False,True,Kwame Bergman,FW
 5,1614,8,Greymoor Athletic,0,0,0.09066318532160039,False,False,Pavel Lund,DF
@@ -4705,7 +4708,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1762,78,Greymoor Athletic,2,2,0.2148321422438242,False,True,Lars Stroud,FW
 5,1763,12,Dunmore Town,0,0,0.09254067038580245,False,False,Nico Palacios,MF
 5,1763,29,Dunmore Town,0,1,0.07091104984295907,False,False,Mateo Lindqvist,DF
-5,1763,65,Dunmore Town,0,2,0.1024653318587561,False,False,Idris Alvi,DF
+5,1763,65,Dunmore Town,0,2,0.1024653318587561,False,False,Milan Dubois,DF
 5,1763,84,Dunmore Town,0,3,0.10978137965688545,False,False,Luka Delgado,FW
 5,1764,8,Oakhaven City,0,0,0.05078367391389565,False,False,Remi Lindqvist,DF
 5,1764,52,Castlebay FC,1,0,0.13866448278126434,False,False,Mateo Palacios,FW
@@ -4734,7 +4737,7 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1773,75,Oakhaven City,1,0,0.05758785490196433,False,False,Marco Bauer,FW
 5,1774,9,Bridgeport Rovers,0,0,0.7565178056827732,True,False,Jonas Delgado,MF
 5,1774,33,Bridgeport Rovers,1,0,0.08677725452191284,False,False,Edin Weiss,FW
-5,1774,78,Bridgeport Rovers,2,0,0.34802510545530274,False,True,Viktor Okafor,FW
+5,1774,78,Bridgeport Rovers,2,0,0.34802510545530274,False,True,Felix Keita,FW
 5,1775,59,Thornfield United,0,0,0.0357741569700867,False,False,Erik Bergman,FW
 5,1777,26,Millbrook Town,0,0,0.13001989424431387,False,False,Erik Santos,FW
 5,1777,27,Millbrook Town,1,0,0.1285338720463044,False,False,Kai Dubois,MF
@@ -4821,10 +4824,9 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1802,63,Thornfield United,0,2,0.2184747796336298,False,True,Lars Delgado,MF
 5,1802,69,Thornfield United,1,2,0.8309685233340204,True,False,Jonas Lund,MF
 5,1802,85,Thornfield United,2,2,0.12790488796023383,False,False,Lars Delgado,MF
-5,1803,28,Silverlake FC,0,0,0.05016177203980464,False,False,Felix Vance,MF
-5,1803,36,Silverlake FC,0,1,0.06831678707349315,False,False,Omar Dubois,FW
-5,1803,69,Eastcliff FC,0,2,0.1370147120088185,False,False,Dario Bergman,DF
-5,1803,79,Eastcliff FC,1,2,0.3120980024183841,False,True,Pavel Hartley,DF
+5,1803,28,Silverlake FC,0,0,0.05016177203980464,False,False,Nico Palacios,MF
+5,1803,69,Eastcliff FC,0,1,0.1370147120088185,False,False,Dario Bergman,DF
+5,1803,79,Eastcliff FC,1,1,0.3120980024183841,False,True,Pavel Hartley,DF
 5,1804,6,Greymoor Athletic,0,0,0.08139909262456918,False,False,Kwame Nowak,MF
 5,1804,46,Greymoor Athletic,0,1,0.09880028235414372,False,False,Omar Fontaine,FW
 5,1804,47,Greymoor Athletic,0,2,0.732560972258229,True,False,Felix Santos,DF
@@ -5012,10 +5014,9 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1866,78,Thornfield United,1,0,0.12747059315565826,False,False,Omar Castro,MF
 5,1866,89,Thornfield United,1,1,0.24421696583383967,False,True,Lars Delgado,MF
 5,1867,1,Castlebay FC,0,0,0.10960249759344322,False,False,Theo Lindqvist,MF
-5,1867,37,Castlebay FC,1,0,0.12506859963040437,False,False,Lars Lund,MF
-5,1867,38,Bridgeport Rovers,2,0,0.05187517685317818,False,False,Felix Keita,FW
-5,1867,54,Castlebay FC,2,1,0.10432100814030383,False,False,Theo Lindqvist,MF
-5,1867,83,Castlebay FC,3,1,0.07017362536887069,False,False,Lars Lund,MF
+5,1867,38,Bridgeport Rovers,1,0,0.05187517685317818,False,False,Felix Keita,FW
+5,1867,54,Castlebay FC,1,1,0.10432100814030383,False,False,Luka Varga,MF
+5,1867,83,Castlebay FC,2,1,0.07017362536887069,False,False,Lars Lund,MF
 5,1868,4,Dunmore Town,0,0,0.3320625277921643,False,True,Luka Delgado,FW
 5,1870,60,Greymoor Athletic,0,0,0.06371412291762509,False,False,Omar Fontaine,FW
 5,1871,54,Northgate United,0,0,0.1277272754146691,False,False,Felix Weiss,MF
@@ -5060,10 +5061,10 @@ season,match_id,minute,team,home_score,away_score,xg,is_penalty,is_big_chance,pl
 5,1891,87,Port Albion,1,1,0.04484817764409936,False,False,Hugo Osei,MF
 5,1892,36,Red Valley FC,0,0,0.07148813528655985,False,False,Remi Lindqvist,FW
 5,1892,38,Red Valley FC,0,1,0.07206845612897267,False,False,Erik Lindqvist,MF
-5,1892,43,Blackthorn Rovers,0,2,0.12113719142375341,False,False,Felix Bauer,MF
+5,1892,43,Blackthorn Rovers,0,2,0.12113719142375341,False,False,Theo Novak,MF
 5,1892,52,Red Valley FC,1,2,0.05756882085559653,False,False,Dion Novak,DF
 5,1892,61,Red Valley FC,1,3,0.11874134051035089,False,False,Tomas Dubois,FW
-5,1892,65,Blackthorn Rovers,1,4,0.0648209921973387,False,False,Dion Okafor,FW
+5,1892,65,Blackthorn Rovers,1,4,0.0648209921973387,False,False,Dario Delgado,MF
 5,1892,81,Red Valley FC,2,4,0.782117174069322,True,False,Milan Santos,MF
 5,1893,31,Stonebridge Town,0,0,0.03267080621971411,False,False,Dario Brennan,FW
 5,1894,36,Ashford Rovers,0,0,0.09725100014765531,False,False,Tomas Santos,FW

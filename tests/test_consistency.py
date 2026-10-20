@@ -119,7 +119,7 @@ def test_fast_engine_agrees_with_full_shot_by_shot_engine(
 
 
 def test_ui_turning_point_cards_match_underlying_data(featured_curves, featured_turning_points,
-                                                        matches, shots, red_cards) -> None:
+                                                        matches, shots, red_cards, featured_meta) -> None:
     """Runs the app headlessly (Streamlit's AppTest) and checks the exact
     numbers rendered in the turning-point cards equal the numbers in the
     underlying rank_turning_points() output for the same match -- catching
@@ -130,7 +130,7 @@ def test_ui_turning_point_cards_match_underlying_data(featured_curves, featured_
     at.run()
     assert not at.exception, f"app raised on load: {at.exception}"
 
-    match_id = 1781  # the default/featured dramatic match
+    match_id = featured_meta["default_match_id"]  # whichever match the app loads by default
     match = matches[matches.match_id == match_id].iloc[0]
     curve = featured_curves[featured_curves.match_id == match_id].drop(columns="match_id").reset_index(drop=True)
     expected_tp = rank_turning_points(curve, match, shots, red_cards, top_n=3)
@@ -147,10 +147,11 @@ def test_ui_turning_point_cards_match_underlying_data(featured_curves, featured_
 
 
 def test_ui_counterfactual_outcome_panel_matches_underlying_data(matches, shots, red_cards,
-                                                                   team_draws, featured_curves) -> None:
+                                                                   team_draws, featured_curves,
+                                                                   featured_meta) -> None:
     """Runs a real counterfactual through the app UI and checks the
     rendered 'forecast before/after' metrics match apply_counterfactual's
-    own fork_before/fork_after dict, called directly. Match 1781 is
+    own fork_before/fork_after dict, called directly. The default match is
     featured, so (like the app itself) this reuses the precomputed curve
     rather than resimulating it."""
     from streamlit.testing.v1 import AppTest
@@ -161,11 +162,21 @@ def test_ui_counterfactual_outcome_panel_matches_underlying_data(matches, shots,
     btn.set_value(True).run()
     assert not at.exception, f"app raised while running a counterfactual: {at.exception}"
 
-    # Default selection: match 1781, minute 6 goal, "goal_cancelled".
-    cf = Counterfactual(match_id=1781, minute=6, change="goal_cancelled", team="Silverlake FC")
-    match = matches[matches.match_id == 1781].iloc[0]
-    actual_curve = featured_curves[featured_curves.match_id == 1781].drop(columns="match_id").reset_index(drop=True)
-    expected = apply_counterfactual(cf, matches, shots, red_cards, team_draws, 2000 + 1781 * 97 + 6,
+    # Default selection: the default match's earliest notable event, which the
+    # Streamlit selectbox picks (index=0) unless told otherwise. build_timeline
+    # orders shots.csv's rows by minute, so the earliest goal/big-chance/penalty
+    # is first; red cards never come before minute 1 so they can't preempt it.
+    match_id = featured_meta["default_match_id"]
+    match = matches[matches.match_id == match_id].iloc[0]
+    match_shots = shots[shots.match_id == match_id]
+    first_event = match_shots[match_shots.is_goal | match_shots.is_penalty |
+                               match_shots.is_big_chance].sort_values("minute").iloc[0]
+    change = "goal_cancelled" if first_event.is_goal else "shot_becomes_goal"
+
+    cf = Counterfactual(match_id=match_id, minute=int(first_event.minute), change=change, team=first_event.team)
+    actual_curve = featured_curves[featured_curves.match_id == match_id].drop(columns="match_id").reset_index(drop=True)
+    expected = apply_counterfactual(cf, matches, shots, red_cards, team_draws,
+                                     2000 + match_id * 97 + int(first_event.minute),
                                      TRIALS_PER_DRAW, CHECKPOINTS, actual_curve=actual_curve)
 
     rendered_metrics = {(m.label, m.value): m.delta for m in at.metric}

@@ -1,12 +1,15 @@
-"""Demos the counterfactual engine: 3 "what if" questions, 2 on the
-dramatic match from win_probability.py, 1 on a different match that
-actually had a red card (the dramatic match didn't have one).
+"""Demos the counterfactual engine: 3 "what if" questions, 2 on the most
+dramatic match (read from data/featured_matches.json, produced by
+scripts/precompute_featured_matches.py), 1 on a different match that
+actually had a red card (whenever the dramatic match itself didn't have
+one -- true in every run so far, but checked rather than assumed).
 
 Each scenario reports a fair, apples-to-apples headline: win probability
 forecast right before the real event vs. right after the hypothetical
 change, both at the same minute -- not the real match's known final
 result against the hypothetical's forecast (see src/counterfactual.py)."""
 
+import json
 import sys
 from pathlib import Path
 
@@ -81,20 +84,37 @@ def main() -> None:
     matches = pd.read_csv(DATA_DIR / "matches.csv")
     shots = pd.read_csv(DATA_DIR / "shots.csv")
     red_cards = pd.read_csv(DATA_DIR / "red_cards.csv")
-    latest_season = matches.season.max()
 
     print("Loading the precomputed trait model (data/model_team_draws.csv)...")
     team_draws = load_team_draws()
 
-    dramatic = matches[(matches.season == latest_season) & (matches.home_team == "Silverlake FC") &
-                        (matches.away_team == "Northgate United")].iloc[0]
-    red_card_match_id = 1899  # Silverlake FC 1-5 Thornfield United, Fontaine sent off at 17'
+    featured = json.loads((DATA_DIR / "featured_matches.json").read_text())
+    dramatic_id = featured["default_match_id"]
+    dramatic = matches[matches.match_id == dramatic_id].iloc[0]
+    dramatic_shots = shots[shots.match_id == dramatic_id]
+    dramatic_cards = red_cards[red_cards.match_id == dramatic_id]
+
+    last_goal = dramatic_shots[dramatic_shots.is_goal].sort_values("minute").iloc[-1]
+    miss_before_last_goal = dramatic_shots[(dramatic_shots.minute < last_goal.minute) &
+                                            (~dramatic_shots.is_goal)].sort_values("minute").iloc[-1]
+
+    if len(dramatic_cards):
+        red_card_match_id, red_card_minute = int(dramatic_id), int(dramatic_cards.iloc[0].minute)
+    else:
+        # The dramatic match has no red card -- use whichever match has one with
+        # the biggest score margin, for a similarly high-stakes storyline.
+        season_cards = red_cards[red_cards.match_id.isin(matches[matches.season == matches.season.max()].match_id)]
+        with_margin = season_cards.merge(matches, on="match_id")
+        with_margin["margin"] = (with_margin.home_goals - with_margin.away_goals).abs()
+        top = with_margin.sort_values("margin", ascending=False).iloc[0]
+        red_card_match_id, red_card_minute = int(top.match_id), int(top.minute)
 
     scenarios = [
-        Counterfactual(match_id=int(dramatic.match_id), minute=87, change="goal_cancelled"),
-        Counterfactual(match_id=int(dramatic.match_id), minute=38, change="shot_becomes_goal",
-                        team="Silverlake FC"),
-        Counterfactual(match_id=red_card_match_id, minute=17, change="red_card_undone"),
+        Counterfactual(match_id=int(dramatic.match_id), minute=int(last_goal.minute), change="goal_cancelled",
+                        team=last_goal.team),
+        Counterfactual(match_id=int(dramatic.match_id), minute=int(miss_before_last_goal.minute),
+                        change="shot_becomes_goal", team=miss_before_last_goal.team),
+        Counterfactual(match_id=red_card_match_id, minute=red_card_minute, change="red_card_undone"),
     ]
 
     results = []
