@@ -329,6 +329,15 @@ def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFra
     c = c[c.minute.isin(candidate_minutes)]
     top = c.nlargest(min(top_n, len(c)), "swing").sort_values("minute").reset_index(drop=True)
 
+    columns = ["minute", "swing", "p_home", "p_draw", "p_away", "event_kind", "event_team",
+               "event_player", "is_penalty", "secondary_events", "headline_outcome",
+               "headline_before", "headline_after"]
+    if len(top) == 0:
+        # No goals or red cards at all (e.g. a goalless, card-free draw) -- there's
+        # nothing that could legitimately be a turning point. Keep the columns so
+        # callers can rely on them existing even when there are zero rows.
+        return pd.DataFrame(columns=columns)
+
     indexed = curve.set_index("minute")
     rows = []
     for _, row in top.iterrows():
@@ -350,4 +359,4 @@ def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFra
             "headline_after": row[f"p_{headline_outcome}"],
         })
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows)[columns]

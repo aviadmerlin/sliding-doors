@@ -397,16 +397,19 @@ def main() -> None:
 
     # --- Turning points ---
     st.subheader("Top 3 turning points", icon=":material/bolt:")
-    tp_cols = st.columns(3)
-    for col, (_, tp) in zip(tp_cols, turning_points.iterrows()):
-        with col, st.container(border=True, height="stretch"):
-            badge_label, badge_color = KIND_BADGE[tp.event_kind]
-            st.markdown(f"**{tp.minute}'**")
-            st.badge(badge_label, color=badge_color)
-            st.caption(f"{tp.event_player} ({tp.event_team})")
-            st.markdown(f"**{stat_label(tp.headline_outcome, match)}: "
-                        f"{tp.headline_before:.0%} → {tp.headline_after:.0%}**")
-            st.caption(turning_point_summary(tp, match))
+    if len(turning_points) == 0:
+        st.caption("No turning points — a goalless, card-free match.")
+    else:
+        tp_cols = st.columns(3)
+        for col, (_, tp) in zip(tp_cols, turning_points.iterrows()):
+            with col, st.container(border=True, height="stretch"):
+                badge_label, badge_color = KIND_BADGE[tp.event_kind]
+                st.markdown(f"**{tp.minute}'**")
+                st.badge(badge_label, color=badge_color)
+                st.caption(f"{tp.event_player} ({tp.event_team})")
+                st.markdown(f"**{stat_label(tp.headline_outcome, match)}: "
+                            f"{tp.headline_before:.0%} → {tp.headline_after:.0%}**")
+                st.caption(turning_point_summary(tp, match))
 
     # --- What if? ---
     st.subheader("What if...?", icon=":material/alt_route:")
