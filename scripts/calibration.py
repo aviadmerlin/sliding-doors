@@ -53,7 +53,7 @@ def fit_traits_on_seasons(matches: pd.DataFrame, shots: pd.DataFrame, red_cards:
 
 
 def collect_predictions(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: pd.DataFrame,
-                         clubs: dict, seed: int) -> pd.DataFrame:
+                         clubs: dict, seed: int, use_day_form: bool = True) -> pd.DataFrame:
     rows = []
     for _, match in matches.iterrows():
         match_shots = shots[shots.match_id == match.match_id]
@@ -62,11 +62,23 @@ def collect_predictions(matches: pd.DataFrame, shots: pd.DataFrame, red_cards: p
 
         actual_home_win = match.home_goals > match.away_goals
         curve = win_probability_curve(clubs[match.home_team], clubs[match.away_team], states,
-                                       (match.home_goals, match.away_goals), seed, N_TRIALS, CHECKPOINTS)
+                                       (match.home_goals, match.away_goals), seed, N_TRIALS, CHECKPOINTS,
+                                       use_day_form=use_day_form)
         for _, row in curve.iterrows():
             rows.append({"match_id": match.match_id, "minute": row.minute,
                          "predicted_p_home": row.p_home, "actual_home_win": actual_home_win})
     return pd.DataFrame(rows)
+
+
+def log_loss(predictions: pd.DataFrame) -> float:
+    """Binary cross-entropy of the home-win prediction -- unlike calibration
+    (which only checks that probabilities are honest ON AVERAGE within a
+    bucket), this also penalizes confidently WRONG individual predictions,
+    so it can tell apart two equally-well-calibrated models by how much
+    useful information each one's probabilities actually carry."""
+    p = predictions.predicted_p_home.clip(1e-6, 1 - 1e-6)
+    y = predictions.actual_home_win.astype(float)
+    return float(-(y * np.log(p) + (1 - y) * np.log(1 - p)).mean())
 
 
 def bucket_calibration(predictions: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
@@ -108,15 +120,18 @@ def plot_calibration(summary: pd.DataFrame, overall_n: int, ece: float, title: s
 
 
 def run_check(label: str, clubs: dict, season_matches: pd.DataFrame, shots: pd.DataFrame,
-              red_cards: pd.DataFrame, seed: int, out_path: Path, title: str) -> float:
+              red_cards: pd.DataFrame, seed: int, out_path: Path | None, title: str,
+              use_day_form: bool = True, plot: bool = True) -> tuple[float, float]:
     print(f"\n-- {label} --")
-    predictions = collect_predictions(season_matches, shots, red_cards, clubs, seed)
+    predictions = collect_predictions(season_matches, shots, red_cards, clubs, seed, use_day_form)
     summary = bucket_calibration(predictions, N_BUCKETS)
     print(summary.round(3).to_string(index=False))
     ece = expected_calibration_error(summary)
-    print(f"Expected calibration error: {ece:.4f}")
-    plot_calibration(summary, len(predictions), ece, title, out_path)
-    return ece
+    ll = log_loss(predictions)
+    print(f"Expected calibration error: {ece:.4f}  |  Log loss: {ll:.4f}")
+    if plot:
+        plot_calibration(summary, len(predictions), ece, title, out_path)
+    return ece, ll
 
 
 def main() -> None:
@@ -128,7 +143,7 @@ def main() -> None:
     season_matches = matches[matches.season == latest_season]
 
     in_sample_traits = pd.read_csv(DATA_DIR / "estimated_traits.csv").set_index("team")
-    ece_leaky = run_check(
+    ece_leaky, ll_leaky = run_check(
         "In-sample (leaky): fit on seasons 1-5, tested on season 5",
         clubs_from_traits(in_sample_traits), season_matches, shots, red_cards, 1,
         ASSETS_DIR / "calibration_in_sample.png", "Calibration (in-sample, leaky)")
@@ -137,12 +152,32 @@ def main() -> None:
     train_seasons = [s for s in matches.season.unique() if s != latest_season]
     out_of_sample_traits = fit_traits_on_seasons(matches, shots, red_cards, train_seasons)
     out_of_sample_traits.to_csv(DATA_DIR / "estimated_traits_seasons_1_4.csv")
-    ece_honest = run_check(
+    out_of_sample_clubs = clubs_from_traits(out_of_sample_traits)
+    ece_honest, ll_honest = run_check(
         f"Out-of-sample (honest): fit on seasons {train_seasons}, tested on season {latest_season}",
-        clubs_from_traits(out_of_sample_traits), season_matches, shots, red_cards, 2,
+        out_of_sample_clubs, season_matches, shots, red_cards, 2,
         ASSETS_DIR / "calibration.png", "Calibration (out-of-sample)")
 
-    print(f"\nSummary: in-sample ECE = {ece_leaky:.4f}  |  out-of-sample ECE = {ece_honest:.4f}")
+    print(f"\nSummary: in-sample ECE = {ece_leaky:.4f} (log loss {ll_leaky:.4f})  |  "
+          f"out-of-sample ECE = {ece_honest:.4f} (log loss {ll_honest:.4f})")
+
+    # Does the day-form belief update actually help? Same out-of-sample traits,
+    # same matches, same seed -- the ONLY difference is whether win_probability_curve
+    # reacts to real observed shots/xG so far (see win_probability.py's module
+    # docstring). Log loss is the more sensitive check here: calibration only
+    # asks "are the probabilities honest on average per bucket," which a
+    # no-op update could satisfy just as well as a genuinely informative one.
+    print("\n-- Day-form ablation: does the belief update improve predictions out-of-sample? --")
+    ece_without, ll_without = run_check(
+        "Out-of-sample, WITHOUT day-form update", out_of_sample_clubs, season_matches, shots, red_cards,
+        2, None, "", use_day_form=False, plot=False)
+    ece_with, ll_with = ece_honest, ll_honest  # the out-of-sample run above already used the update
+    print(f"\nDay-form ablation summary (out-of-sample):")
+    print(f"  without the update: ECE = {ece_without:.4f}  |  log loss = {ll_without:.4f}")
+    print(f"  with the update:    ECE = {ece_with:.4f}  |  log loss = {ll_with:.4f}")
+    verdict = "helps" if ll_with < ll_without else "does not help"
+    print(f"  Verdict: the day-form update {verdict} out-of-sample predictions "
+          f"(lower log loss and/or ECE is better).")
 
 
 if __name__ == "__main__":

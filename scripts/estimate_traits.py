@@ -12,8 +12,9 @@ import numpy as np
 import pandas as pd
 
 from src.trait_estimation import (build_regression_table, compute_state_exposure, compute_weights,
-                                   estimate_finishing_factor, estimate_league_constants, fit_traits,
-                                   fit_traits_distribution, shrink_traits)
+                                   estimate_day_form_concentration, estimate_finishing_factor,
+                                   estimate_league_constants, fit_traits, fit_traits_distribution, shrink_traits)
+from src.win_probability import clubs_from_traits, compute_power_rating
 
 SHRINKAGE_CANDIDATES = ["comeback_factor", "protect_lead_factor", "ten_men_resilience", "fatigue_factor"]
 
@@ -123,17 +124,59 @@ def main() -> None:
     final["finishing_factor"] = estimate_finishing_factor(shots, matches, teams, best_half_life, latest_season)
 
     league_constants = estimate_league_constants(shots, red_cards, matches, params_best, teams)
+    day_form_shape = estimate_day_form_concentration(table, shots, params_best, teams)
+    league_constants["day_form_shape"] = day_form_shape
     pd.Series(league_constants, name="value").to_csv(DATA_DIR / "model_league_constants.csv")
     print(f"\nSaved league-wide constants (estimated, not imported from the generator) "
           f"to {DATA_DIR / 'model_league_constants.csv'}:")
     for k, v in league_constants.items():
         print(f"  {k:28} {v:.6f}")
 
+    if "home_day_form" in matches.columns:
+        true_day_form_values = pd.concat([matches.home_day_form, matches.away_day_form])
+        true_spread = true_day_form_values.var()
+        learned_spread = 1.0 / day_form_shape if np.isfinite(day_form_shape) else 0.0
+        direction = "larger than" if learned_spread > true_spread else "smaller than"
+        print(f"\nDay-form spread check (point 2 of the day-form feature): learned k = {day_form_shape:.3f} "
+              f"implies Var(psi) = {learned_spread:.4f}, {direction} the true generator's "
+              f"day-form-ONLY Var(psi) = {true_spread:.4f}. Two things push this estimate in opposite "
+              f"directions: pressure spells add real match-to-match variance this estimator can't tell "
+              f"apart from day form (pushes the estimate up); the regression's many team-level "
+              f"parameters can also absorb some of that same noise into the fitted attack/defense "
+              f"values themselves (pushes it down). Reported as-is, not forced toward either -- see "
+              f"win_probability.py's module docstring and the README.")
+
     plot_validation(final, true_latest, label(best_half_life), ASSETS_DIR / "trait_validation.png")
 
     final.to_csv(DATA_DIR / "estimated_traits.csv")
     print(f"\nSaved estimated traits ({label(best_half_life)}, shrunk where it helps) "
           f"to {DATA_DIR / 'estimated_traits.csv'}")
+
+    print("\n-- Power ranking: estimated attack/defense vs. the real final table --")
+    power_ranking = compute_power_rating(clubs_from_traits(final))
+    power_ranking.to_csv(DATA_DIR / "power_ranking.csv", index=False)
+
+    season_matches = matches[matches.season == latest_season]
+    points: dict[str, int] = {team: 0 for team in teams}
+    for _, m in season_matches.iterrows():
+        if m.home_goals > m.away_goals:
+            points[m.home_team] += 3
+        elif m.home_goals < m.away_goals:
+            points[m.away_team] += 3
+        else:
+            points[m.home_team] += 1
+            points[m.away_team] += 1
+    real_table = pd.Series(points, name="points").rename_axis("team").reset_index() \
+        .sort_values("points", ascending=False).reset_index(drop=True)
+
+    merged = power_ranking.merge(real_table, on="team")
+    merged["power_rank"] = merged.expected_goal_difference.rank(ascending=False)
+    merged["real_rank"] = merged.points.rank(ascending=False)
+    rank_corr = merged.power_rank.corr(merged.real_rank, method="spearman")
+    print(f"Spearman rank correlation (power rating vs. real final table): {rank_corr:.3f}")
+    print(merged.sort_values("power_rank")[["team", "expected_goal_difference", "power_rank",
+                                              "points", "real_rank"]].round(2).to_string(index=False))
+    print(f"\nSaved power ranking to {DATA_DIR / 'power_ranking.csv'}")
 
 
 if __name__ == "__main__":

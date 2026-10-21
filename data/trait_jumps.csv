@@ -1,0 +1,19 @@
+season,team,trait,delta
+2,Dunmore Town,attack,-0.1466021957625525
+2,Dunmore Town,defense,0.258470451942833
+2,Dunmore Town,comeback_factor,0.035726528665203094
+2,Dunmore Town,protect_lead_factor,0.13003368531920279
+2,Dunmore Town,ten_men_resilience,-0.06314946927615861
+2,Dunmore Town,fatigue_factor,0.0067347939188184824
+5,Stonebridge Town,attack,-0.08540866191268148
+5,Stonebridge Town,defense,-0.003300203149189329
+5,Stonebridge Town,comeback_factor,0.011882247555433434
+5,Stonebridge Town,protect_lead_factor,-0.1481657219909045
+5,Stonebridge Town,ten_men_resilience,-0.12449929322560227
+5,Stonebridge Town,fatigue_factor,0.12188080528362866
+5,Blackthorn Rovers,attack,-0.2801874474630847
+5,Blackthorn Rovers,defense,0.016309539150481278
+5,Blackthorn Rovers,comeback_factor,-0.03359318480838969
+5,Blackthorn Rovers,protect_lead_factor,0.01987236195703601
+5,Blackthorn Rovers,ten_men_resilience,0.1558889163514927
+5,Blackthorn Rovers,fatigue_factor,-0.06677844786160159

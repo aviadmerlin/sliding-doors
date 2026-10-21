@@ -158,7 +158,7 @@ def apply_counterfactual(cf: Counterfactual, matches: pd.DataFrame, shots: pd.Da
     fork_checkpoints = [m for m in checkpoints if m >= cf.minute]
     continuation = counterfactual_continuation_curve(
         team_draws, match.home_team, match.away_team, seed + 10_000, cf.minute,
-        h_score, a_score, h_card, a_card, trials_per_draw, fork_checkpoints)
+        h_score, a_score, h_card, a_card, trials_per_draw, fork_checkpoints, real_states)
     continuation["home_score"], continuation["away_score"] = h_score, a_score
 
     before_fork = actual_curve[actual_curve.minute < cf.minute]

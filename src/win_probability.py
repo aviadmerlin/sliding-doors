@@ -10,6 +10,31 @@ SHAPE as the full match engine in match_engine.py, but with every number
 in it estimated from the generated data (see
 trait_estimation.estimate_league_constants / estimate_finishing_factor) --
 never imported from match_engine.py's true constants.
+
+Day form: match_engine.py gives each team a hidden per-match multiplier
+psi (Gamma, mean 1) split as sqrt(psi) across BOTH the shot-rate and
+shot-quality channels, so their product recovers psi exactly -- this
+module never gets to see psi itself, only the REAL xG it produced. At any
+checkpoint minute, this module's belief about a team's psi is the
+Gamma-Poisson posterior mean given everything observed so far: prior
+Gamma(k, 1/k) [mean 1], updated to Gamma(k + xg_observed, k + xg_expected)
+where xg_expected is what the club-trait model (psi = 1) would have
+predicted through that same minute. Taking total xG as the Poisson
+"count" is what makes this match the generator's psi correctly (not
+day_form itself, which only shows up per channel as sqrt(psi) and would
+be a biased target to update on directly -- squaring back out after the
+two channels compound would silently double-count the effect size).
+k is learned from training data (trait_estimation.estimate_day_form_concentration),
+not imported from match_engine.py's true DAY_FORM_SHAPE. Pressure spells
+are a second, separate source of real match-to-match variance in
+match_engine.py that this module deliberately does NOT try to track or
+decompose -- it only ever asks "how much more/less xG has this team
+produced than expected," which mixes day form and pressure together
+indistinguishably. That's a known, reported limitation (see
+scripts/estimate_traits.py's day-form report and the README) -- some of
+what k learns is really pressure-spell noise, not true day-to-day
+variation, which inflates the learned spread above the true day-form-only
+spread.
 """
 
 from pathlib import Path
@@ -43,15 +68,27 @@ PENALTY_XG_MEAN = _constants["penalty_xg_mean"]
 BIG_CHANCE_XG_MEAN = _constants["big_chance_xg_mean"]
 NORMAL_XG_MEAN = _constants["normal_xg_mean"]
 RED_CARD_CHANCE_PER_MINUTE = _constants["red_card_chance_per_minute"]
+DAY_FORM_SHAPE = _constants["day_form_shape"]
+
+# Expected xG per shot, blended across the three shot types by their estimated
+# shares -- used only to convert an expected SHOT rate into an expected xG
+# rate for the day-form belief update (the shot-rate/quality split itself
+# still happens exactly as elsewhere; this is just the day-form bookkeeping).
+MEAN_XG_PER_SHOT = (PENALTY_SHOT_FRACTION * PENALTY_XG_MEAN
+                    + (1 - PENALTY_SHOT_FRACTION) * BIG_CHANCE_FRACTION * BIG_CHANCE_XG_MEAN
+                    + (1 - PENALTY_SHOT_FRACTION) * (1 - BIG_CHANCE_FRACTION) * NORMAL_XG_MEAN)
 
 
 def _shot_rate(team: Club, opponent: Club, own_score: np.ndarray, opp_score: np.ndarray,
                minute: int, is_home: bool, team_has_card: np.ndarray,
-               opp_has_card: np.ndarray) -> np.ndarray:
+               opp_has_card: np.ndarray, day_form_multiplier: float = 1.0) -> np.ndarray:
     """Vectorized version of match_engine._shot_rate: same formula, but
     own_score/opp_score/*_has_card are arrays (one slot per replay), and
     home advantage comes from the HOME club's own estimated field (so it
-    can vary per sampled trait draw) instead of a shared constant."""
+    can vary per sampled trait draw) instead of a shared constant.
+    day_form_multiplier is the rate-channel half of the day-form belief
+    (see module docstring) -- 1.0 (no effect) unless the caller has
+    computed one from real observed evidence."""
     trailing = own_score < opp_score
     attack = np.where(trailing, team.attack * team.comeback_factor, team.attack)
     defense = np.where(trailing, opponent.defense * opponent.protect_lead_factor, opponent.defense)
@@ -62,35 +99,48 @@ def _shot_rate(team: Club, opponent: Club, own_score: np.ndarray, opp_score: np.
     attack = np.where(team_has_card, attack * team.ten_men_resilience, attack)
     defense = np.where(opp_has_card, defense * opponent.ten_men_resilience, defense)
 
-    rate = (BASE_SHOT_RATE_PER_90 / 90) * attack / defense
+    rate = (BASE_SHOT_RATE_PER_90 / 90) * attack / defense * day_form_multiplier
     if is_home:
         rate = rate * team.home_advantage
     return rate
 
 
-def _goal_given_shot(rng: np.random.Generator, n: int, finishing_factor: float) -> np.ndarray:
+def _goal_given_shot(rng: np.random.Generator, n: int, finishing_factor: float,
+                      day_form_multiplier: float = 1.0) -> np.ndarray:
     """Whether a shot (already known to happen) is a goal: draws a shot
     type with the same mix as the full engine, using each type's mean xG,
     then applies the shooting club's estimated finishing_factor (the fast
     engine's club-level stand-in for the full engine's per-player
-    finishing_skill)."""
+    finishing_skill) and the quality-channel half of the day-form belief
+    (same day_form_multiplier passed to _shot_rate -- this mirrors
+    match_engine.py applying sqrt(psi) to both channels)."""
     roll = rng.random(n)
     is_penalty = roll < PENALTY_SHOT_FRACTION
     is_big_chance = (~is_penalty) & (rng.random(n) < BIG_CHANCE_FRACTION)
     xg = np.where(is_penalty, PENALTY_XG_MEAN, np.where(is_big_chance, BIG_CHANCE_XG_MEAN, NORMAL_XG_MEAN))
-    effective_xg = np.clip(xg * finishing_factor, 0.01, 0.99)
+    effective_xg = np.clip(xg * finishing_factor * day_form_multiplier, 0.01, 0.99)
     return rng.random(n) < effective_xg
 
 
 def simulate_forward_snapshots(home: Club, away: Club, rng: np.random.Generator, start_minute: int,
                                 home_goals: int, away_goals: int, home_has_card: bool, away_has_card: bool,
-                                n_trials: int, snapshot_minutes: list[int]) -> dict[int, tuple[np.ndarray, np.ndarray]]:
+                                n_trials: int, snapshot_minutes: list[int],
+                                home_day_form: float = 1.0, away_day_form: float = 1.0
+                                ) -> dict[int, tuple[np.ndarray, np.ndarray]]:
     """Replays the rest of the match (start_minute+1 .. 90) n_trials times in
     parallel, in ONE pass, recording a copy of every replay's score at each
     requested minute. Used when later checkpoints should reflect a single
     coherent imagined continuation (e.g. a counterfactual "what if" branch),
     rather than independently re-simulating from a real, known state at each
-    checkpoint (that's what win_probability_curve does for the real match)."""
+    checkpoint (that's what win_probability_curve does for the real match).
+
+    home_day_form / away_day_form: the Bayesian posterior-mean day-form
+    multiplier for the REST of the match, held fixed for every trial and
+    every remaining minute (a point estimate, not a fresh per-trial draw --
+    the whole point is to react to what's already been observed, not to
+    simulate hypothetical future day-form swings). 1.0 (the default)
+    reproduces the pre-day-form behavior exactly, used for the "without
+    the update" side of the validation ablation."""
     home_score = np.full(n_trials, home_goals, dtype=np.int32)
     away_score = np.full(n_trials, away_goals, dtype=np.int32)
     home_card = np.full(n_trials, home_has_card)
@@ -105,14 +155,18 @@ def simulate_forward_snapshots(home: Club, away: Club, rng: np.random.Generator,
         home_card |= rng.random(n_trials) < RED_CARD_CHANCE_PER_MINUTE
         away_card |= rng.random(n_trials) < RED_CARD_CHANCE_PER_MINUTE
 
-        home_rate = _shot_rate(home, away, home_score, away_score, minute, True, home_card, away_card)
-        away_rate = _shot_rate(away, home, away_score, home_score, minute, False, away_card, home_card)
+        home_rate = _shot_rate(home, away, home_score, away_score, minute, True, home_card, away_card,
+                                home_day_form)
+        away_rate = _shot_rate(away, home, away_score, home_score, minute, False, away_card, home_card,
+                                away_day_form)
 
         home_shot = rng.random(n_trials) < home_rate
         away_shot = rng.random(n_trials) < away_rate
 
-        home_score += (home_shot & _goal_given_shot(rng, n_trials, home.finishing_factor)).astype(np.int32)
-        away_score += (away_shot & _goal_given_shot(rng, n_trials, away.finishing_factor)).astype(np.int32)
+        home_score += (home_shot & _goal_given_shot(rng, n_trials, home.finishing_factor,
+                                                      home_day_form)).astype(np.int32)
+        away_score += (away_shot & _goal_given_shot(rng, n_trials, away.finishing_factor,
+                                                      away_day_form)).astype(np.int32)
 
         if minute in snapshot_set:
             snapshots[minute] = (home_score.copy(), away_score.copy())
@@ -122,11 +176,13 @@ def simulate_forward_snapshots(home: Club, away: Club, rng: np.random.Generator,
 
 def simulate_forward(home: Club, away: Club, rng: np.random.Generator, start_minute: int,
                       home_goals: int, away_goals: int, home_has_card: bool, away_has_card: bool,
-                      n_trials: int) -> tuple[np.ndarray, np.ndarray]:
+                      n_trials: int, home_day_form: float = 1.0, away_day_form: float = 1.0
+                      ) -> tuple[np.ndarray, np.ndarray]:
     """Replays the rest of the match (start_minute+1 .. 90) n_trials times
     in parallel. Returns (final_home_score, final_away_score) arrays."""
     return simulate_forward_snapshots(home, away, rng, start_minute, home_goals, away_goals,
-                                       home_has_card, away_has_card, n_trials, [90])[90]
+                                       home_has_card, away_has_card, n_trials, [90],
+                                       home_day_form, away_day_form)[90]
 
 
 def win_probabilities(final_home: np.ndarray, final_away: np.ndarray) -> dict:
@@ -158,8 +214,62 @@ def real_state_at(real_states: pd.DataFrame, final_score: tuple[int, int], minut
             bool(next_row.home_card), bool(next_row.away_card))
 
 
+def _expected_cumulative_xg(club: Club, opponent: Club, real_states: pd.DataFrame, is_home: bool) -> np.ndarray:
+    """Expected (day-form-neutral, psi=1) cumulative xG for `club`, through
+    each minute 0..90 inclusive -- arr[m] = expected total through minute m.
+    This is the Gamma-Poisson exposure (Lambda) day_form_multiplier_curves
+    conditions against; real_states supplies the real game state
+    (score/cards) at each minute, same as everywhere else in this module."""
+    arr = np.zeros(91)
+    total = 0.0
+    for _, row in real_states.iterrows():
+        minute = int(row.minute)
+        own_score = np.array([row.home_score if is_home else row.away_score])
+        opp_score = np.array([row.away_score if is_home else row.home_score])
+        own_card = np.array([bool(row.home_card if is_home else row.away_card)])
+        opp_card = np.array([bool(row.away_card if is_home else row.home_card)])
+        rate = _shot_rate(club, opponent, own_score, opp_score, minute, is_home, own_card, opp_card)[0]
+        total += rate * MEAN_XG_PER_SHOT
+        arr[minute] = total
+    return arr
+
+
+def _observed_cumulative_xg_through(real_states: pd.DataFrame, minute: int) -> tuple[float, float]:
+    """Real, observed cumulative xG for each side through `minute`
+    inclusive -- same "through minute m" convention as _expected_cumulative_xg,
+    reusing real_state_at's pattern of reading the next row (or, past
+    minute 90, there's nothing left to simulate anyway so the exact value
+    stops mattering)."""
+    if minute == 0:
+        return 0.0, 0.0
+    if minute >= 90:
+        last = real_states.iloc[-1]
+        return float(last.home_xg_cumulative), float(last.away_xg_cumulative)
+    next_row = real_states[real_states.minute == minute + 1].iloc[0]
+    return float(next_row.home_xg_cumulative), float(next_row.away_xg_cumulative)
+
+
+def day_form_multiplier_curves(home: Club, away: Club, real_states: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
+    """For every minute 0..90, the Bayesian posterior-mean day-form
+    multiplier for home and away (see module docstring), given everything
+    observed in the REAL match up to that minute. Index 0 is exactly 1.0
+    for both sides -- no evidence yet, so the belief hasn't moved from the
+    neutral prior (see tests/test_day_form.py's
+    test_day_form_multiplier_is_neutral_with_no_evidence)."""
+    home_expected = _expected_cumulative_xg(home, away, real_states, True)
+    away_expected = _expected_cumulative_xg(away, home, real_states, False)
+
+    home_mult, away_mult = np.ones(91), np.ones(91)
+    for minute in range(91):
+        home_obs, away_obs = _observed_cumulative_xg_through(real_states, minute)
+        home_mult[minute] = np.sqrt((DAY_FORM_SHAPE + home_obs) / (DAY_FORM_SHAPE + home_expected[minute]))
+        away_mult[minute] = np.sqrt((DAY_FORM_SHAPE + away_obs) / (DAY_FORM_SHAPE + away_expected[minute]))
+    return home_mult, away_mult
+
+
 def win_probability_curve(home: Club, away: Club, real_states: pd.DataFrame, final_score: tuple[int, int],
-                           seed: int, n_trials: int, checkpoints: list[int]) -> pd.DataFrame:
+                           seed: int, n_trials: int, checkpoints: list[int],
+                           use_day_form: bool = True) -> pd.DataFrame:
     """Win probability at each checkpoint minute, re-simulating forward from
     the REAL match's actual state at that minute each time (independent
     per checkpoint — appropriate since the real continuation is known).
@@ -170,13 +280,23 @@ def win_probability_curve(home: Club, away: Club, real_states: pd.DataFrame, fin
     random numbers): adjacent checkpoints then share most of their random
     draws, so the curve only moves meaningfully where the real state
     actually changed, instead of jittering from independent Monte Carlo
-    noise between checkpoints that are simulating almost the same thing."""
+    noise between checkpoints that are simulating almost the same thing.
+
+    use_day_form: whether to react to the real match's observed shots/xG
+    so far via the Bayesian day-form belief (see module docstring).
+    False reproduces the pre-day-form curve exactly -- used for the "without
+    the update" side of the validation ablation in scripts/calibration.py."""
+    if use_day_form:
+        home_day_form_curve, away_day_form_curve = day_form_multiplier_curves(home, away, real_states)
+
     rows = []
     for minute in checkpoints:
         h_score, a_score, h_card, a_card = real_state_at(real_states, final_score, minute)
+        home_df = home_day_form_curve[minute] if use_day_form else 1.0
+        away_df = away_day_form_curve[minute] if use_day_form else 1.0
         rng = np.random.default_rng(seed)
         final_home, final_away = simulate_forward(home, away, rng, minute, h_score, a_score,
-                                                    h_card, a_card, n_trials)
+                                                    h_card, a_card, n_trials, home_df, away_df)
         probs = win_probabilities(final_home, final_away)
         rows.append({"minute": minute, "home_score": h_score, "away_score": a_score, **probs})
 
@@ -203,24 +323,35 @@ def _pool_batches(batch_probs: list[dict]) -> dict:
 def win_probability_curve_with_uncertainty(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
                                             real_states: pd.DataFrame, final_score: tuple[int, int],
                                             seed: int, trials_per_batch: int,
-                                            checkpoints: list[int]) -> pd.DataFrame:
+                                            checkpoints: list[int], use_day_form: bool = True) -> pd.DataFrame:
     """Like win_probability_curve, but each of the len(team_draws) batches
     uses a different sampled set of club traits (see
     trait_estimation.sample_trait_draws), so the resulting bands reflect
-    both simulation noise and trait-estimation uncertainty.
+    both simulation noise and trait-estimation uncertainty. The day-form
+    belief (see module docstring) is computed separately per draw, since
+    each draw's own attack/defense gives a slightly different "expected"
+    baseline to compare the real observed xG against.
 
     Common random numbers: batch i always starts from seed + i, regardless
     of which checkpoint it's simulating, so adjacent checkpoints are highly
     correlated and the curve doesn't jitter between them (see
     win_probability_curve for the full rationale)."""
+    day_form_curves = None
+    if use_day_form:
+        day_form_curves = [day_form_multiplier_curves(draw[home_name], draw[away_name], real_states)
+                            for draw in team_draws]
+
     rows = []
     for minute in checkpoints:
         h_score, a_score, h_card, a_card = real_state_at(real_states, final_score, minute)
         batch_probs = []
         for i, draw in enumerate(team_draws):
             rng = np.random.default_rng(seed + i)
+            home_df, away_df = (day_form_curves[i][0][minute], day_form_curves[i][1][minute]) \
+                if use_day_form else (1.0, 1.0)
             final_home, final_away = simulate_forward(draw[home_name], draw[away_name], rng, minute,
-                                                        h_score, a_score, h_card, a_card, trials_per_batch)
+                                                        h_score, a_score, h_card, a_card, trials_per_batch,
+                                                        home_df, away_df)
             batch_probs.append(win_probabilities(final_home, final_away))
         rows.append({"minute": minute, "home_score": h_score, "away_score": a_score,
                      **_pool_batches(batch_probs)})
@@ -231,19 +362,30 @@ def win_probability_curve_with_uncertainty(team_draws: list[dict[str, Club]], ho
 def counterfactual_fork_probabilities(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
                                        seed: int, fork_minute: int, home_goals: int, away_goals: int,
                                        home_has_card: bool, away_has_card: bool,
-                                       trials_per_batch: int) -> dict:
+                                       trials_per_batch: int, real_states: pd.DataFrame | None = None,
+                                       use_day_form: bool = True) -> dict:
     """The one well-defined number after a hypothetical change: probability
     of each outcome by full time, simulated forward from the fork state,
     pooled across trait draws. There is no single "counterfactual
     timeline" beyond this -- only a distribution over what might happen --
     so this is deliberately a single forecast, not a minute-by-minute
-    curve (see counterfactual_continuation_curve)."""
+    curve (see counterfactual_continuation_curve).
+
+    real_states: the REAL match's observed state (not the hypothetical
+    forked one) -- day form reflects how the team has actually been
+    playing, which a hypothetical change to one event doesn't alter.
+    Required (and used) only when use_day_form is True."""
     batch_probs = []
     for i, draw in enumerate(team_draws):
         rng = np.random.default_rng(seed + i)
+        if use_day_form and real_states is not None:
+            home_curve, away_curve = day_form_multiplier_curves(draw[home_name], draw[away_name], real_states)
+            home_df, away_df = home_curve[fork_minute], away_curve[fork_minute]
+        else:
+            home_df, away_df = 1.0, 1.0
         final_home, final_away = simulate_forward(draw[home_name], draw[away_name], rng, fork_minute,
                                                     home_goals, away_goals, home_has_card, away_has_card,
-                                                    trials_per_batch)
+                                                    trials_per_batch, home_df, away_df)
         batch_probs.append(win_probabilities(final_home, final_away))
     return _pool_batches(batch_probs)
 
@@ -251,7 +393,9 @@ def counterfactual_fork_probabilities(team_draws: list[dict[str, Club]], home_na
 def counterfactual_continuation_curve(team_draws: list[dict[str, Club]], home_name: str, away_name: str,
                                        seed: int, fork_minute: int, home_goals: int,
                                        away_goals: int, home_has_card: bool, away_has_card: bool,
-                                       trials_per_batch: int, checkpoints: list[int]) -> pd.DataFrame:
+                                       trials_per_batch: int, checkpoints: list[int],
+                                       real_states: pd.DataFrame | None = None,
+                                       use_day_form: bool = True) -> pd.DataFrame:
     """Win probability for every checkpoint >= fork_minute, as an honest
     FLAT line at the single fork forecast (see
     counterfactual_fork_probabilities), not a fabricated trajectory.
@@ -269,7 +413,7 @@ def counterfactual_continuation_curve(team_draws: list[dict[str, Club]], home_na
     summary is one forecast, held flat, with its uncertainty band."""
     probs = counterfactual_fork_probabilities(team_draws, home_name, away_name, seed, fork_minute,
                                                home_goals, away_goals, home_has_card, away_has_card,
-                                               trials_per_batch)
+                                               trials_per_batch, real_states, use_day_form)
     return pd.DataFrame([{"minute": m, **probs} for m in checkpoints])
 
 
@@ -284,6 +428,23 @@ def clubs_from_traits(traits: pd.DataFrame) -> dict[str, Club]:
                         home_advantage=row.get("home_advantage", 1.0),
                         finishing_factor=row.get("finishing_factor", 1.0))
             for team, row in traits.iterrows()}
+
+
+def compute_power_rating(clubs: dict[str, Club]) -> pd.DataFrame:
+    """An explicit club rating in "expected goal difference per match"
+    units: how many more (or fewer) goals this club would be expected to
+    score minus concede per match against a hypothetical AVERAGE opponent
+    (attack = defense = 1.0) on a neutral ground (no home advantage) --
+    read directly off the estimated attack/defense, not a separate model.
+    Sorted strongest to weakest."""
+    avg_goals_per_match = BASE_SHOT_RATE_PER_90 * MEAN_XG_PER_SHOT
+    rows = []
+    for team, club in clubs.items():
+        expected_goals_for = avg_goals_per_match * club.attack
+        expected_goals_against = avg_goals_per_match / club.defense
+        rows.append({"team": team, "expected_goal_difference": expected_goals_for - expected_goals_against,
+                     "expected_goals_for": expected_goals_for, "expected_goals_against": expected_goals_against})
+    return pd.DataFrame(rows).sort_values("expected_goal_difference", ascending=False).reset_index(drop=True)
 
 
 def sample_team_draws(params: pd.Series, cov: pd.DataFrame, teams: list[str], exposure: pd.DataFrame,

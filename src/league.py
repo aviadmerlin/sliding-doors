@@ -82,13 +82,22 @@ def create_league(seed: int = 42) -> list[Club]:
 
 
 def drift_traits(club: Club, rng: np.random.Generator, jump_prob: float = 0.08,
-                  drift_sigma: float = 0.03, jump_sigma: float = 0.15) -> Club:
+                  drift_sigma: float = 0.03, jump_sigma: float = 0.15) -> tuple[Club, dict]:
     """Ages a club by one season. Each trait takes a small random-walk step;
     occasionally (jump_prob) the club instead takes a much bigger step,
-    standing in for something like a new coach or a squad overhaul."""
-    sigma = jump_sigma if rng.random() < jump_prob else drift_sigma
+    standing in for something like a new coach or a squad overhaul.
+
+    Returns (new_club, jump_info), where jump_info = {"is_jump": bool,
+    "deltas": {trait: new - old}} -- recorded so season_generator.py can
+    save which seasons/traits had a "big jump", for a plain-language
+    storyline later (src/storylines.py) without having to re-derive it
+    from the saved trait tables after the fact."""
+    is_jump = rng.random() < jump_prob
+    sigma = jump_sigma if is_jump else drift_sigma
     updates = {
         trait: float(np.clip(getattr(club, trait) + rng.normal(0, sigma), lo, hi))
         for trait, (lo, hi) in TRAIT_BOUNDS.items()
     }
-    return replace(club, **updates)
+    new_club = replace(club, **updates)
+    deltas = {trait: updates[trait] - getattr(club, trait) for trait in TRAIT_BOUNDS}
+    return new_club, {"is_jump": is_jump, "deltas": deltas}

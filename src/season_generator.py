@@ -49,6 +49,11 @@ def generate_season(clubs: list[Club], squads: dict[str, list[Player]], rng: np.
                     "away_team": away.name,
                     "home_goals": result["home_goals"],
                     "away_goals": result["away_goals"],
+                    # Hidden from every estimation/win-probability script by convention --
+                    # kept only so validation scripts can check an estimate against the
+                    # ground truth they're standing in for (see src/match_engine.py).
+                    "home_day_form": result["home_day_form"],
+                    "away_day_form": result["away_day_form"],
                 })
                 for shot in result["shots"]:
                     shot_rows.append({"match_id": match_id, **shot})
@@ -80,6 +85,7 @@ def generate_seasons(initial_clubs: list[Club], squads: dict[str, list[Player]],
 
     season_tables = {"matches": [], "shots": [], "red_cards": []}
     trait_rows = []
+    jump_rows = []
 
     for season in range(1, num_seasons + 1):
         for club in clubs:
@@ -94,10 +100,22 @@ def generate_seasons(initial_clubs: list[Club], squads: dict[str, list[Player]],
             df.insert(0, "season", season)
             season_tables[name].append(df)
 
-        clubs = [drift_traits(c, rng) for c in clubs]
+        drifted = [drift_traits(c, rng) for c in clubs]
+        clubs = [new_club for new_club, _ in drifted]
+        # A jump drifted FROM season `season` TO season `season + 1` -- the new
+        # traits take effect starting next season, so that's what gets tagged.
+        for new_club, jump_info in drifted:
+            if jump_info["is_jump"]:
+                for trait, delta in jump_info["deltas"].items():
+                    jump_rows.append({"season": season + 1, "team": new_club.name,
+                                      "trait": trait, "delta": delta})
 
     combined = {name: pd.concat(dfs, ignore_index=True) for name, dfs in season_tables.items()}
     combined["true_traits"] = pd.DataFrame(trait_rows)
+    trait_jumps = pd.DataFrame(jump_rows, columns=["season", "team", "trait", "delta"])
+    # The final drift (after the last simulated season) produces traits that are
+    # never actually used in any simulated season -- drop any jump tagged for it.
+    combined["trait_jumps"] = trait_jumps[trait_jumps.season <= num_seasons].reset_index(drop=True)
     combined["goals"] = combined["shots"][combined["shots"].is_goal].drop(columns=["is_goal"])
 
     return combined

@@ -27,6 +27,7 @@ import streamlit as st
 
 from src.counterfactual import Counterfactual, CounterfactualResult, apply_counterfactual
 from src.league import Club
+from src.storylines import club_storylines
 from src.trait_estimation import match_real_states
 from src.win_probability import clubs_from_traits, rank_turning_points, win_probability_curve_with_uncertainty
 
@@ -94,6 +95,37 @@ def load_season_matches() -> pd.DataFrame:
 @st.cache_data(show_spinner=False)
 def load_estimated_traits() -> pd.DataFrame:
     return pd.read_csv(DATA_DIR / "estimated_traits.csv").set_index("team")
+
+
+@st.cache_data(show_spinner=False)
+def load_trait_jumps() -> pd.DataFrame:
+    return pd.read_csv(DATA_DIR / "trait_jumps.csv")
+
+
+@st.cache_data(show_spinner=False)
+def load_power_ranking() -> pd.DataFrame:
+    """The model's power ranking (scripts/estimate_traits.py), already
+    validated there against the real final table via rank correlation --
+    this just joins the two for side-by-side display."""
+    power_ranking = pd.read_csv(DATA_DIR / "power_ranking.csv")
+    season_matches = load_season_matches()
+
+    points: dict[str, int] = {team: 0 for team in power_ranking.team}
+    for _, m in season_matches.iterrows():
+        if m.home_goals > m.away_goals:
+            points[m.home_team] += 3
+        elif m.home_goals < m.away_goals:
+            points[m.away_team] += 3
+        else:
+            points[m.home_team] += 1
+            points[m.away_team] += 1
+
+    real_table = pd.Series(points, name="real_points").rename_axis("team").reset_index()
+    merged = power_ranking.merge(real_table, on="team").sort_values(
+        "expected_goal_difference", ascending=False).reset_index(drop=True)
+    merged.insert(0, "model_rank", range(1, len(merged) + 1))
+    merged["real_rank"] = merged.real_points.rank(ascending=False, method="min").astype(int)
+    return merged
 
 
 @st.cache_data(show_spinner=False)
@@ -210,18 +242,21 @@ def club_profile(team: str, estimated_traits: pd.DataFrame) -> list[dict]:
     return notable
 
 
-def render_club_card(team: str, estimated_traits: pd.DataFrame) -> None:
+def render_club_card(team: str, estimated_traits: pd.DataFrame, trait_jumps: pd.DataFrame) -> None:
     with st.container(border=True, height="stretch"):
         st.markdown(f"**{team}**")
         traits = club_profile(team, estimated_traits)
         if not traits:
             st.caption("Average across the board in our estimates — no standout traits.")
-            return
-        for t in traits:
-            st.caption(f"• {t['label']}")
-        rough = [t["label"] for t in traits if t["confidence"] == "rougher estimate"]
-        if rough:
-            st.caption(f":material/info: Less certain estimate: {', '.join(rough).lower()}.")
+        else:
+            for t in traits:
+                st.caption(f"• {t['label']}")
+            rough = [t["label"] for t in traits if t["confidence"] == "rougher estimate"]
+            if rough:
+                st.caption(f":material/info: Less certain estimate: {', '.join(rough).lower()}.")
+
+        for line in club_storylines(team, trait_jumps):
+            st.caption(f":material/history: {line}")
 
 
 def rgba(hex_color: str, alpha: float) -> str:
@@ -275,6 +310,43 @@ def build_win_prob_figure(curve: pd.DataFrame, match: pd.Series, turning_points:
     minutes = turning_points.minute.tolist()
     add_minute_markers(fig, minutes, [f"{m}'" for m in minutes])
     style_figure(fig)
+    return fig
+
+
+def compute_momentum(shots: pd.DataFrame, match: pd.Series, window: int = 12) -> pd.DataFrame:
+    """Rolling-window REAL xG pressure per side, like a broadcast momentum
+    bar -- a plain description of the real match's actual shots (not a
+    model forecast): for each minute, each side's actual xG over the
+    trailing `window` minutes, and the home-minus-away difference."""
+    match_shots = shots[shots.match_id == match.match_id]
+    home_xg, away_xg = np.zeros(91), np.zeros(91)
+    for _, r in match_shots.iterrows():
+        minute = int(r.minute)
+        if r.team == match.home_team:
+            home_xg[minute] += r.xg
+        else:
+            away_xg[minute] += r.xg
+
+    rows = []
+    for minute in range(1, 91):
+        lo = max(1, minute - window + 1)
+        home_roll, away_roll = float(home_xg[lo:minute + 1].sum()), float(away_xg[lo:minute + 1].sum())
+        rows.append({"minute": minute, "home_xg": home_roll, "away_xg": away_roll,
+                     "diff": home_roll - away_roll})
+    return pd.DataFrame(rows)
+
+
+def build_momentum_figure(momentum: pd.DataFrame, window: int) -> go.Figure:
+    colors = [COLOR_HOME if d >= 0 else COLOR_AWAY for d in momentum["diff"]]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=momentum.minute, y=momentum["diff"], marker_color=colors,
+                          hovertemplate="minute %{x}<br>xG pressure %{y:.2f}<extra></extra>"))
+    fig.add_hline(y=0, line_color="rgba(255,255,255,0.3)")
+    fig.update_layout(
+        xaxis_title="minute", yaxis_title=f"{window}-min rolling xG, home minus away",
+        template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        xaxis_range=[0, 90], margin=dict(t=10, b=40, l=10, r=10), height=180, showlegend=False,
+    )
     return fig
 
 
@@ -345,6 +417,7 @@ def main() -> None:
             st.caption(desc)
 
     matches = load_matches()
+    shots = load_shots()
     season_matches = load_season_matches()
     estimated_traits = load_estimated_traits()
     featured_curves, featured_turning_points, featured_meta = load_featured()
@@ -367,6 +440,21 @@ def main() -> None:
                    "⚡ matches load instantly (precomputed); others simulate on selection, "
                    "a few seconds the first time.")
 
+        with st.expander("Model power ranking", icon=":material/leaderboard:"):
+            st.caption("Each club's estimated attack/defense, turned into an expected goal "
+                       "difference per match against a league-average opponent -- the model's own "
+                       "view of true strength, independent of any one season's results.")
+            power_ranking = load_power_ranking()
+            st.dataframe(
+                power_ranking[["model_rank", "team", "expected_goal_difference", "real_rank"]]
+                .rename(columns={"model_rank": "Model rank", "team": "Club",
+                                 "expected_goal_difference": "Exp. goal diff/match", "real_rank": "Real rank"}),
+                hide_index=True, width="stretch",
+                column_config={"Exp. goal diff/match": st.column_config.NumberColumn(format="%.2f")})
+            st.caption("Real rank = this season's actual final table. The two broadly agree but "
+                       "aren't identical -- a season's results reflect day form and luck too, not "
+                       "just underlying strength.")
+
     match = matches[matches.match_id == match_id].iloc[0]
 
     # --- Header ---
@@ -381,11 +469,12 @@ def main() -> None:
         st.caption(f"Season {match.season} · Matchday {match.matchday}", text_alignment="center")
 
     # --- Club profiles ---
+    trait_jumps = load_trait_jumps()
     profile_cols = st.columns(2)
     with profile_cols[0]:
-        render_club_card(match.home_team, estimated_traits)
+        render_club_card(match.home_team, estimated_traits, trait_jumps)
     with profile_cols[1]:
-        render_club_card(match.away_team, estimated_traits)
+        render_club_card(match.away_team, estimated_traits, trait_jumps)
 
     timeline = build_timeline(match_id)
 
@@ -410,10 +499,22 @@ def main() -> None:
                                                            featured_turning_points, featured_ids)
 
     st.subheader("Win probability", icon=":material/show_chart:")
-    st.caption("Bands reflect both simulation randomness and uncertainty in the estimated club traits.")
+    st.caption("Bands reflect both simulation randomness and uncertainty in the estimated club traits. "
+                "Moves moderately between goals too, as the model updates its belief about which side "
+                "is currently playing better than their usual level (see Momentum below).")
     fig = build_win_prob_figure(curve, match, turning_points)
     st.plotly_chart(fig, width="stretch",
                      alt=f"Win probability over 90 minutes for {match.home_team} vs {match.away_team}")
+
+    # --- Momentum chart ---
+    st.subheader("Momentum", icon=":material/bolt:")
+    st.caption("Real shot data only, not a model forecast: each side's actual xG over the last 12 "
+                "minutes. The win-probability chart above reacts to the same kind of signal (overall "
+                "xG pressure), but treats short bursts like this as noise around a team's underlying "
+                "day form, not as their own tracked effect.")
+    momentum = compute_momentum(shots, match)
+    st.plotly_chart(build_momentum_figure(momentum, window=12), width="stretch",
+                     alt=f"Rolling 12-minute xG momentum for {match.home_team} vs {match.away_team}")
 
     # --- Turning points ---
     st.subheader("Top 3 turning points", icon=":material/bolt:")

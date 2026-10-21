@@ -101,6 +101,7 @@ def main() -> None:
     season["goals"].to_csv(DATA_DIR / "goals.csv", index=False)
     season["red_cards"].to_csv(DATA_DIR / "red_cards.csv", index=False)
     season["true_traits"].to_csv(DATA_DIR / "true_traits.csv", index=False)
+    season["trait_jumps"].to_csv(DATA_DIR / "trait_jumps.csv", index=False)
 
     players_rows = [
         {"team": team, "player": p.name, "position": p.position,

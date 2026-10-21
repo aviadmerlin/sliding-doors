@@ -206,8 +206,12 @@ def test_same_seed_gives_identical_results(point_clubs) -> None:
     assert probs1 == probs2, f"same seed produced different win probabilities: {probs1} vs {probs2}"
 
 
-def test_same_seed_gives_identical_counterfactual(matches, shots, red_cards, team_draws) -> None:
-    cf = Counterfactual(match_id=1781, minute=38, change="shot_becomes_goal", team="Silverlake FC")
+def test_same_seed_gives_identical_counterfactual(matches, shots, red_cards, team_draws, featured_meta) -> None:
+    match_id = featured_meta["default_match_id"]
+    match_shots = shots[shots.match_id == match_id]
+    a_miss = match_shots[(~match_shots.is_goal) & (match_shots.is_penalty | match_shots.is_big_chance)].iloc[0]
+
+    cf = Counterfactual(match_id=match_id, minute=int(a_miss.minute), change="shot_becomes_goal", team=a_miss.team)
     r1 = apply_counterfactual(cf, matches, shots, red_cards, team_draws, 55555, 150, CHECKPOINTS)
     r2 = apply_counterfactual(cf, matches, shots, red_cards, team_draws, 55555, 150, CHECKPOINTS)
 

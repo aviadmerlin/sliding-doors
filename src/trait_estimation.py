@@ -16,13 +16,21 @@ import statsmodels.api as sm
 
 def _match_minute_states(home_team: str, away_team: str, shots: pd.DataFrame,
                           red_cards: pd.DataFrame) -> pd.DataFrame:
-    """Reconstructs, for minutes 1..90, the score/red-card state in effect
-    for that minute's rate calculation (mirrors the match engine's own
-    bookkeeping: a red card issued in minute M applies from minute M; a
-    goal scored in minute M applies starting minute M+1)."""
+    """Reconstructs, for minutes 1..90, the score/red-card/cumulative-xG
+    state in effect for that minute's rate calculation (mirrors the match
+    engine's own bookkeeping: a red card issued in minute M applies from
+    minute M; a goal (or any shot's xG) in minute M applies starting
+    minute M+1). home_xg_cumulative/away_xg_cumulative are each team's
+    REAL, OBSERVED total xG from minutes 1..M-1 -- the evidence the
+    day-form belief update (win_probability.py) conditions on; this
+    function stays model-free (no club traits involved), just bookkeeping
+    on the real data, same as score/cards."""
     goals_by_minute: dict[int, list[str]] = {}
-    for _, row in shots[shots.is_goal].iterrows():
-        goals_by_minute.setdefault(int(row.minute), []).append(row.team)
+    xg_by_minute: dict[int, list[tuple[str, float]]] = {}
+    for _, row in shots.iterrows():
+        xg_by_minute.setdefault(int(row.minute), []).append((row.team, float(row.xg)))
+        if row.is_goal:
+            goals_by_minute.setdefault(int(row.minute), []).append(row.team)
 
     cards_by_minute: dict[int, list[str]] = {}
     for _, row in red_cards.iterrows():
@@ -30,6 +38,7 @@ def _match_minute_states(home_team: str, away_team: str, shots: pd.DataFrame,
 
     home_score = away_score = 0
     home_card = away_card = False
+    home_xg = away_xg = 0.0
     rows = []
     for minute in range(1, 91):
         for team in cards_by_minute.get(minute, []):
@@ -39,13 +48,20 @@ def _match_minute_states(home_team: str, away_team: str, shots: pd.DataFrame,
                 away_card = True
 
         rows.append({"minute": minute, "home_score": home_score, "away_score": away_score,
-                     "home_card": home_card, "away_card": away_card})
+                     "home_card": home_card, "away_card": away_card,
+                     "home_xg_cumulative": home_xg, "away_xg_cumulative": away_xg})
 
         for team in goals_by_minute.get(minute, []):
             if team == home_team:
                 home_score += 1
             elif team == away_team:
                 away_score += 1
+
+        for team, xg in xg_by_minute.get(minute, []):
+            if team == home_team:
+                home_xg += xg
+            elif team == away_team:
+                away_xg += xg
 
     return pd.DataFrame(rows)
 
@@ -380,3 +396,56 @@ def estimate_league_constants(shots: pd.DataFrame, red_cards: pd.DataFrame, matc
         "normal_xg_mean": normal_xg_mean,
         "red_card_chance_per_minute": red_card_chance_per_minute,
     }
+
+
+def estimate_day_form_concentration(table: pd.DataFrame, shots: pd.DataFrame, params: pd.Series,
+                                     teams: list[str]) -> float:
+    """Method-of-moments estimate of the day-form Gamma concentration k
+    (see win_probability.py's module docstring for what k means): how much
+    more match-to-match variance real team xG totals show than the
+    club-trait model alone predicts, attributed to an unknown per-match
+    Gamma(k, 1/k) multiplier (mean 1) on each team's total xG output for
+    that match. This is "learning the size of the day-form effect from
+    training data" -- k is never read off match_engine.py's true
+    DAY_FORM_SHAPE.
+
+    xg_sum is NOT a Poisson count -- it's a sum of a Poisson-distributed
+    NUMBER of shots, each contributing its own bounded, far-from-unit-mean
+    xG value. For a true Poisson count, Var=Mean; for this compound sum
+    (no day form), Var = Mean * b where b = E[xg^2]/E[xg] over individual
+    shot xG values (b << 1 here, since each shot's xG is a small fraction,
+    not a full "1" per event) -- using the Poisson Var=Mean baseline
+    directly would badly overstate the no-day-form variance and make any
+    real day-form effect invisible (every one of these matches was tried
+    and failed while building this). With day form (psi ~ Gamma(k,1/k)):
+    Var(xg_sum) = Mean*b + Mean^2/k. In Pearson chi-square form, scaling
+    each residual by b: E[sum((O-E)^2 / (E*b))] = n + sum(E) / (k*b), so
+    k = sum(E) / (b * (chi2_b - n)).
+
+    Pressure spells (match_engine.py) are a SEPARATE source of real
+    match-to-match variance this estimator has no way to tell apart from
+    true day-form variance -- in principle both inflate the apparent
+    spread the same way, but in practice the net bias vs. the true
+    DAY_FORM_SHAPE also depends on how much the GLM's own many parameters
+    (team-level attack/defense etc.) absorb some of that same match-to-match
+    noise into the fitted means themselves, which pulls the other way. Both
+    effects are reported together rather than assumed (see the day-form
+    validation report in scripts/estimate_traits.py and the README)."""
+    b = float((shots.xg ** 2).mean() / shots.xg.mean())
+
+    X = build_design_matrix(table, teams)
+    predicted_rate = np.exp(X.to_numpy() @ params.to_numpy())
+    expected_per_row = predicted_rate * table.exposure.to_numpy()
+
+    totals = pd.DataFrame({
+        "team": table.shooter.to_numpy(), "match_id": table.match_id.to_numpy(),
+        "observed": table.xg_sum.to_numpy(), "expected": expected_per_row,
+    }).groupby(["team", "match_id"]).sum()
+
+    observed, expected = totals.observed.to_numpy(), totals.expected.to_numpy()
+    n = len(observed)
+    chi2_b = ((observed - expected) ** 2 / (expected * b)).sum()
+    excess = chi2_b - n
+    if excess <= 0:
+        return float(np.inf)  # no detectable overdispersion -- treat day form as negligible
+    return float(expected.sum() / (b * excess))

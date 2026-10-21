@@ -236,7 +236,8 @@ def test_counterfactual_with_no_change_reproduces_actual_probabilities(
 
         h, a, hc, ac = real_state_at(states, final_score, minute)
         fork_probs = counterfactual_fork_probabilities(
-            team_draws, m.home_team, m.away_team, rng_seed, minute, h, a, hc, ac, trials_per_batch)
+            team_draws, m.home_team, m.away_team, rng_seed, minute, h, a, hc, ac, trials_per_batch,
+            real_states=states)
 
         for outcome in ("home", "draw", "away"):
             diff = abs(actual_at_45[f"p_{outcome}"] - fork_probs[f"p_{outcome}"])

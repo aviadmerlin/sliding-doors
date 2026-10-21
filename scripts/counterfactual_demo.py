@@ -101,12 +101,23 @@ def main() -> None:
     if len(dramatic_cards):
         red_card_match_id, red_card_minute = int(dramatic_id), int(dramatic_cards.iloc[0].minute)
     else:
-        # The dramatic match has no red card -- use whichever match has one with
-        # the biggest score margin, for a similarly high-stakes storyline.
+        # The dramatic match has no red card -- find one where the score was
+        # still close WHEN the card happened (so undoing it has something real
+        # to swing -- a card in a match already decided by then makes a flat,
+        # uninteresting demo), preferring earlier cards with more of the match
+        # left to play. Falls back to the overall best-margin card if no
+        # candidate was ever close.
         season_cards = red_cards[red_cards.match_id.isin(matches[matches.season == matches.season.max()].match_id)]
-        with_margin = season_cards.merge(matches, on="match_id")
-        with_margin["margin"] = (with_margin.home_goals - with_margin.away_goals).abs()
-        top = with_margin.sort_values("margin", ascending=False).iloc[0]
+        candidates = []
+        for _, card in season_cards.iterrows():
+            match_shots = shots[shots.match_id == card.match_id]
+            before = match_shots[match_shots.minute <= card.minute]
+            h, a = (int(before.iloc[-1].home_score), int(before.iloc[-1].away_score)) if len(before) else (0, 0)
+            candidates.append({"match_id": int(card.match_id), "minute": int(card.minute),
+                               "margin_at_card": abs(h - a), "minutes_left": 90 - int(card.minute)})
+        cand_df = pd.DataFrame(candidates)
+        close_games = cand_df[cand_df.margin_at_card <= 1].sort_values("minutes_left", ascending=False)
+        top = (close_games if len(close_games) else cand_df.sort_values("margin_at_card")).iloc[0]
         red_card_match_id, red_card_minute = int(top.match_id), int(top.minute)
 
     scenarios = [
