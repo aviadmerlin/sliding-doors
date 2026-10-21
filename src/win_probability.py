@@ -535,6 +535,39 @@ def event_minutes(match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame
     return set(match_shots.minute.tolist()) | set(match_cards.minute.tolist())
 
 
+def list_notable_events(match: pd.Series, shots: pd.DataFrame, red_cards: pd.DataFrame) -> pd.DataFrame:
+    """Every notable event in a match (goals, missed penalties, missed big
+    chances, red cards) in chronological order, with minute/team/player/
+    description/score-after -- the single source of truth for both the
+    app's timeline and the agent's list_match_events tool."""
+    match_shots = shots[shots.match_id == match.match_id]
+    match_cards = red_cards[red_cards.match_id == match.match_id]
+    notable = match_shots[match_shots.is_goal | match_shots.is_penalty | match_shots.is_big_chance].copy()
+
+    rows = []
+    for _, r in notable.iterrows():
+        kind = "goal" if r.is_goal else ("missed_penalty" if r.is_penalty else "big_chance")
+        if kind == "goal":
+            is_home = r.team == match.home_team
+            h_after = int(r.home_score) + is_home
+            a_after = int(r.away_score) + (not is_home)
+            score = f"{h_after}-{a_after}"
+            desc = f"{r.player} ({r.team})" + (", penalty" if r.is_penalty else "")
+        else:
+            score = f"{int(r.home_score)}-{int(r.away_score)}"
+            desc = f"{r.player} ({r.team}), xG {r.xg:.2f}"
+        rows.append({"minute": int(r.minute), "team": r.team, "kind": kind,
+                     "player": r.player, "description": desc, "score_after": score})
+
+    for _, r in match_cards.iterrows():
+        rows.append({"minute": int(r.minute), "team": r.team, "kind": "red_card",
+                     "player": r.player, "description": f"{r.player} ({r.team})", "score_after": ""})
+
+    columns = ["minute", "team", "kind", "player", "description", "score_after"]
+    timeline = pd.DataFrame(rows, columns=columns)
+    return timeline.sort_values("minute").reset_index(drop=True) if len(timeline) else timeline
+
+
 def rank_turning_points(curve: pd.DataFrame, match: pd.Series, shots: pd.DataFrame,
                          red_cards: pd.DataFrame, top_n: int = 3) -> pd.DataFrame:
     """Ranks REAL events (goals and red cards only) by total movement across

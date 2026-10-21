@@ -1,7 +1,6 @@
-"""Turns the generator's between-season trait jumps (src/league.py's
-drift_traits) into short plain-language storylines for the app's club
-profile card. Text only -- reads already-generated data
-(data/trait_jumps.csv), no model or estimation logic.
+"""Turns model output into plain-language text for the app's club profile
+card (and the agent's get_club_profile tool) -- no model or estimation
+logic of its own, just reading already-computed data/traits.
 
 For all six traits, a BIGGER value is the improvement (attack/defense/
 comeback/lead-protection are boosts that help; ten_men_resilience/
@@ -10,6 +9,31 @@ less of a penalty) -- so delta > 0 always means "got better" and no
 per-trait sign-flipping is needed."""
 
 import pandas as pd
+
+# (high-trait phrase, low-trait phrase, confidence), shown only when a club is
+# in the top/bottom 30% of the league for that trait. Confidence tags reflect
+# the validation correlations from "Estimate traits" in the README.
+TRAIT_DESCRIPTIONS = {
+    "attack": ("Potent going forward", "Struggles to create chances", "well-established"),
+    "defense": ("Hard to break down", "Leaky at the back", "well-established"),
+    "protect_lead_factor": ("Strong at protecting a lead", "Can let leads slip", "well-established"),
+    "fatigue_factor": ("Strong legs late on", "Fades late in matches", "rougher estimate"),
+    "ten_men_resilience": ("Copes well with 10 men", "Struggles with 10 men", "rougher estimate"),
+    "comeback_factor": ("Dangerous when behind", "Rarely fights back from behind", "rougher estimate"),
+}
+
+
+def club_profile(team: str, estimated_traits: pd.DataFrame) -> list[dict]:
+    """Traits where this club sits in the top or bottom 30% of the league,
+    i.e. actually notable rather than merely average."""
+    notable = []
+    for trait, (high_label, low_label, confidence) in TRAIT_DESCRIPTIONS.items():
+        percentile = (estimated_traits[trait] < estimated_traits.loc[team, trait]).mean()
+        if percentile >= 0.7:
+            notable.append({"label": high_label, "confidence": confidence})
+        elif percentile <= 0.3:
+            notable.append({"label": low_label, "confidence": confidence})
+    return notable
 
 _UP_PHRASES = {
     "attack": "an attacking signing paid off",

@@ -21,6 +21,8 @@ src/
   win_probability.py      # vectorized Monte Carlo re-simulation -> win/draw/loss probability from any match state
   counterfactual.py       # re-simulates a match with one real event changed (shot/goal/red card)
   storylines.py           # turns between-season trait jumps into plain-language text (no model logic)
+  agent_tools.py           # tools wrapping the engine for the AI agent (list events, win prob, counterfactual, club profile)
+  agent.py                 # the AI agent itself: Analyst (tool use) + Narrator (writing style) -- see "AI agent" below
 scripts/
   generate_season.py      # entry point: builds a league + squads, generates seasons, saves + summarizes
   estimate_traits.py       # estimates current traits, sweeps recency half-lives, validates, plots; also estimates
@@ -42,7 +44,8 @@ assets/
   calibration.png           # predicted vs. actual win rates, out-of-sample (see below)
   counterfactual_demo.png   # actual vs. counterfactual curves for 3 "what if" scenarios (see below)
 app.py                    # interactive Streamlit UI (see below)
-tests/                    # pytest suite: data integrity, model logic, consistency, home advantage/leakage, day form
+tests/                    # pytest suite: data integrity, model logic, consistency, home advantage/leakage, day form, agent
+.env / .env.example       # Azure OpenAI credentials for the AI agent (never committed -- see "AI agent" below)
 .streamlit/config.toml    # dark sports-product theme
 .claude/skills/developing-with-streamlit/  # official Streamlit agent skill (vendored, see Setup)
 ```
@@ -53,6 +56,7 @@ tests/                    # pytest suite: data integrity, model logic, consisten
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env   # then fill in AZURE_OPENAI_* (see "AI agent" below) -- optional, only needed for the agent
 ```
 
 The repo vendors the official [Streamlit agent skill](https://github.com/streamlit/agent-skills)
@@ -428,8 +432,9 @@ shows the one change that event actually supports) and it shows a fair
 before → after at the fork minute (e.g. "Oakhaven City win: 100% → 0%"),
 the real match's curve against the counterfactual's honest flat
 forecast + band, and the real final result in its own clearly-labeled
-panel. A clearly-marked "coming soon" placeholder sits where a free-text
-natural-language question box will go once the Foundry agent is wired up.
+panel. Below that, a "Match recap" button and a free-text "Ask a what-if
+question" box (fan/analyst tone + English/Hebrew) are answered by the AI
+agent described in "AI agent" below.
 
 **Cold start and the fitted model.** Fitting the trait regression from 5
 seasons of shot-level data takes ~15-20s — far too slow for a judge's
@@ -498,3 +503,104 @@ each season into one plain sentence, e.g. Dunmore Town's "Season 2:
 new-look team this season, defense improved sharply." Text only — no
 model or estimation logic — shown in each club's profile card in the app
 whenever that club had a jump season.
+
+## AI agent
+
+```bash
+cp .env.example .env   # fill in AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_API_KEY / AZURE_OPENAI_CHAT_DEPLOYMENT_NAME
+streamlit run app.py   # "Match recap" and "Ask a what-if question" are live once .env is filled in
+```
+
+Everything above is a deterministic simulation engine with no language
+model in the loop. This step adds one: a fan can ask a free-text "what
+if" question (or request a recap) about whichever match is selected, and
+an AI agent turns that into the right tool call against the *same*
+engine, then explains the result in plain language.
+
+**SDK: Microsoft Agent Framework**, not the raw OpenAI SDK. The
+hackathon names Agent Framework as a "hero technology," so before
+deciding, it was checked directly against the actually-installed
+package (`pip install agent-framework`, currently 1.22.0) rather than
+trusting older docs/blog posts, which turned out to describe an earlier,
+already-superseded API shape (`ChatAgent` → now `Agent`; a plain
+`AzureOpenAIChatClient` → now routed through `agent_framework_openai`'s
+`OpenAIChatClient`/`OpenAIChatCompletionClient` with explicit Azure
+params). Confirmed before committing: a "Production/Stable" release,
+plain Python functions with type hints work directly as tools (no
+wrapping needed), `AzureOpenAIChatClient`-style Azure routing works with
+a plain API key (no Azure AD/managed-identity setup required), and the
+full message/tool-call history is inspectable after a run (needed for
+the two-role design and the tests below) — so the bar for using it
+("stable and simple for our case") was met and the OpenAI-SDK fallback
+wasn't needed.
+
+**Tools** (`src/agent_tools.py`, one `MatchContext` per match, each tool
+a thin wrapper returning plain JSON-able dicts):
+
+- `list_match_events` — the same notable-events timeline the UI shows
+- `get_win_probability` — the win-probability curve, read at one minute
+- `run_counterfactual` — wraps `apply_counterfactual` directly, same
+  three change types as the UI (`shot_becomes_goal`, `goal_cancelled`,
+  `red_card_undone`) — nothing else can be simulated
+- `get_club_profile` — the same plain-language trait card as the UI
+
+The match is already fixed by the UI's match picker, so `match_id` is
+never a tool parameter the model could get wrong — only minute/change/
+team are.
+
+**Two roles** (`src/agent.py`):
+
+- **Analyst** — sees the question and the four tools. Calls whichever
+  it needs (often `list_match_events` first, to resolve a real minute/
+  team before acting on it), or, when the question is ambiguous or asks
+  for something the engine can't simulate, writes one short plain note
+  instead of calling a tool (`"CLARIFY: ..."` or `"UNSUPPORTED: ..."`).
+  It never writes the fan-facing reply itself.
+- **Narrator** — always writes the actual reply, in the requested tone
+  (fan / analyst) and language (English / Hebrew), from the Analyst's
+  tool results (or its clarify/unsupported note). Instructed to use
+  *only* numbers present in those tool results — never to invent or
+  recompute one. "What if they'd defended better?" has no matching tool,
+  so it becomes an honest "can't simulate that, here's what I can do
+  instead" reply, in the same tone and language as everything else.
+
+**Match recap** skips the Analyst entirely (there's no question to
+route) — it fetches the match's turning points and final result directly
+and sends that straight to the Narrator.
+
+**Cost control**: `reasoning: {"effort": "low"}` (gpt-5-mini's cheapest
+reasoning tier) and a 300-token output cap on both roles — a tool-routing
+plus one-paragraph-of-prose task has no need for more.
+
+**Grounding, mechanically checked, not just prompted.**
+`src/agent.ungrounded_numbers(text, tool_calls)` extracts every number
+from the reply and every numeric value from the tool results, normalizes
+both to the same 0-1 scale (`"28%"` and the raw `0.283` both become
+`0.28`, with a tolerance absorbing rounding to the nearest percent point)
+and reports any reply number that doesn't match one — this works
+regardless of script, since digits are the same Unicode characters in
+Hebrew prose as in English. `answer_question` calls this after every
+run and logs a warning if anything comes back ungrounded, so a drift
+here is visible in practice, not just in tests.
+
+**Tracing.** Setting `APPLICATIONINSIGHTS_CONNECTION_STRING` in `.env`
+(found in the Foundry project's Application Insights settings) turns on
+Agent Framework's built-in OpenTelemetry instrumentation
+(`agent_framework.observability.enable_instrumentation`, via
+`azure-monitor-opentelemetry`'s `configure_azure_monitor`), so every
+agent run and tool call shows up in the Foundry portal's tracing view.
+Entirely optional — nothing above requires it, and the test suite never
+sets it.
+
+**Tests** (`tests/test_agent.py`). The chat client is mocked for the
+whole suite with a scripted `FakeChatClient` that returns pre-written
+"model" responses off a queue — but tool execution is NOT mocked, so
+these exercise the real `src/agent_tools.py` functions end to end, just
+with a fake model choosing what to call. Covers: tool routing (the right
+tool gets called with the right arguments, and its real result is what
+the test sees), the refusal path (an unsupported question never reaches
+`run_counterfactual`), the clarification path, and the grounding check
+(including the Hebrew/percentage-normalization case above). One further
+test talks to the real deployment and checks a real reply is grounded —
+it's auto-skipped unless `AZURE_OPENAI_*` are actually set in `.env`, so
+the default `pytest` run makes no network calls and costs nothing.

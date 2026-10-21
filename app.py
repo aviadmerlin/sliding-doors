@@ -14,22 +14,32 @@ match -- still works, simulating on demand with a progress indicator,
 but no longer pays the model-fitting cost.
 """
 
+import asyncio
 import json
+import os
 import sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+from typing import Awaitable, TypeVar
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from dotenv import load_dotenv
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+load_dotenv()
+
+from src.agent import AgentAnswer, answer_question, generate_recap
+from src.agent_tools import MatchContext
 from src.counterfactual import Counterfactual, CounterfactualResult, apply_counterfactual
 from src.league import Club
-from src.storylines import club_storylines
+from src.storylines import club_profile, club_storylines
 from src.trait_estimation import match_real_states
-from src.win_probability import clubs_from_traits, rank_turning_points, win_probability_curve_with_uncertainty
+from src.win_probability import (clubs_from_traits, list_notable_events, rank_turning_points,
+                                  win_probability_curve_with_uncertainty)
+
+_T = TypeVar("_T")
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
@@ -53,18 +63,6 @@ KIND_TO_CHANGE = {"goal": "goal_cancelled", "missed_penalty": "shot_becomes_goal
                    "big_chance": "shot_becomes_goal", "red_card": "red_card_undone"}
 KIND_BADGE = {"goal": ("Goal", "green"), "missed_penalty": ("Penalty missed", "red"),
               "big_chance": ("Big chance missed", "orange"), "red_card": ("Red card", "red")}
-
-# (high-trait phrase, low-trait phrase), shown only when a club is in the top/bottom
-# 30% of the league for that trait. Confidence tags reflect the validation
-# correlations from step 2 (see README "Estimated vs. true traits").
-TRAIT_DESCRIPTIONS = {
-    "attack": ("Potent going forward", "Struggles to create chances", "well-established"),
-    "defense": ("Hard to break down", "Leaky at the back", "well-established"),
-    "protect_lead_factor": ("Strong at protecting a lead", "Can let leads slip", "well-established"),
-    "fatigue_factor": ("Strong legs late on", "Fades late in matches", "rougher estimate"),
-    "ten_men_resilience": ("Copes well with 10 men", "Struggles with 10 men", "rougher estimate"),
-    "comeback_factor": ("Dangerous when behind", "Rarely fights back from behind", "rougher estimate"),
-}
 
 st.set_page_config(page_title="Sliding Doors", page_icon=":material/sports_soccer:", layout="wide")
 
@@ -195,51 +193,39 @@ def get_curve_and_turning_points(match_id: int, featured_curves: pd.DataFrame,
     return curve, turning_points
 
 
+# --- AI agent: question answering + match recap (src/agent.py) ---
+
+def agent_configured() -> bool:
+    return bool(os.environ.get("AZURE_OPENAI_ENDPOINT", "").strip()
+                and os.environ.get("AZURE_OPENAI_API_KEY", "").strip()
+                and os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME", "").strip())
+
+
+@st.cache_resource(show_spinner=False)
+def get_match_context(match_id: int) -> MatchContext:
+    """One MatchContext per match_id, reused across questions/recaps in
+    the same session (cheap to build, but no reason to rebuild it on
+    every click)."""
+    return MatchContext(match_id)
+
+
+def run_agent_coroutine(coro: Awaitable[_T]) -> _T:
+    """Streamlit's script execution is synchronous with no running event
+    loop, so a plain asyncio.run() per call is the simplest bridge to
+    Agent Framework's async Agent.run()."""
+    return asyncio.run(coro)
+
+
 @st.cache_data(show_spinner=False, max_entries=50)
 def build_timeline(match_id: int) -> pd.DataFrame:
     """Notable events for the timeline and the What-if picker: goals,
     missed penalties, missed big chances, and red cards. Cheap -- no
-    simulation needed, so this is always instant, featured or not."""
+    simulation needed, so this is always instant, featured or not. Thin
+    cached wrapper around win_probability.list_notable_events, the same
+    function the agent's list_match_events tool uses."""
     matches, shots, red_cards = load_matches(), load_shots(), load_red_cards()
     match = matches[matches.match_id == match_id].iloc[0]
-    shots = shots[shots.match_id == match_id]
-    cards = red_cards[red_cards.match_id == match_id]
-    notable = shots[shots.is_goal | shots.is_penalty | shots.is_big_chance].copy()
-
-    rows = []
-    for _, r in notable.iterrows():
-        kind = "goal" if r.is_goal else ("missed_penalty" if r.is_penalty else "big_chance")
-        if kind == "goal":
-            is_home = r.team == match.home_team
-            h_after = int(r.home_score) + is_home
-            a_after = int(r.away_score) + (not is_home)
-            score = f"{h_after}-{a_after}"
-            desc = f"{r.player} ({r.team})" + (", penalty" if r.is_penalty else "")
-        else:
-            score = f"{int(r.home_score)}-{int(r.away_score)}"
-            desc = f"{r.player} ({r.team}), xG {r.xg:.2f}"
-        rows.append({"minute": int(r.minute), "team": r.team, "kind": kind,
-                     "player": r.player, "description": desc, "score_after": score})
-
-    for _, r in cards.iterrows():
-        rows.append({"minute": int(r.minute), "team": r.team, "kind": "red_card",
-                     "player": r.player, "description": f"{r.player} ({r.team})", "score_after": ""})
-
-    timeline = pd.DataFrame(rows)
-    return timeline.sort_values("minute").reset_index(drop=True) if len(timeline) else timeline
-
-
-def club_profile(team: str, estimated_traits: pd.DataFrame) -> list[dict]:
-    """Traits where this club sits in the top or bottom 30% of the league,
-    i.e. actually notable rather than merely average."""
-    notable = []
-    for trait, (high_label, low_label, confidence) in TRAIT_DESCRIPTIONS.items():
-        percentile = (estimated_traits[trait] < estimated_traits.loc[team, trait]).mean()
-        if percentile >= 0.7:
-            notable.append({"label": high_label, "confidence": confidence})
-        elif percentile <= 0.3:
-            notable.append({"label": low_label, "confidence": confidence})
-    return notable
+    return list_notable_events(match, shots, red_cards)
 
 
 def render_club_card(team: str, estimated_traits: pd.DataFrame, trait_jumps: pd.DataFrame) -> None:
@@ -594,14 +580,61 @@ def main() -> None:
                 st.markdown(f"**{match.home_team} {result.real_final_score[0]}-{result.real_final_score[1]} "
                             f"{match.away_team}** — {outcome_word}.")
 
-    # --- AI placeholder ---
+    # --- Match recap ---
+    st.subheader("Match recap", icon=":material/summarize:")
+    with st.container(border=True):
+        recap_cols = st.columns([3, 1, 1])
+        with recap_cols[1]:
+            recap_mode = st.selectbox("Tone", ["fan", "analyst"], key="recap_mode", label_visibility="collapsed")
+        with recap_cols[2]:
+            recap_language = st.selectbox("Language", ["english", "hebrew"], key="recap_language",
+                                           label_visibility="collapsed")
+        if recap_cols[0].button("Generate recap", icon=":material/auto_awesome:"):
+            if not agent_configured():
+                st.error("Set AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_API_KEY / "
+                         "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME in .env to use this.", icon=":material/error:")
+            else:
+                with st.spinner("Writing the recap..."):
+                    try:
+                        st.session_state["recap_text"] = run_agent_coroutine(
+                            generate_recap(get_match_context(match_id), recap_mode, recap_language))
+                    except Exception as e:
+                        st.error(f"Couldn't generate the recap: {e}", icon=":material/error:")
+        if st.session_state.get("recap_text"):
+            st.write(st.session_state["recap_text"])
+
+    # --- Ask a what-if question ---
     st.subheader("Ask a what-if question", icon=":material/chat:")
     with st.container(border=True):
-        st.badge("Coming soon", icon=":material/schedule:", color="orange")
-        st.text_input("Ask in plain English", label_visibility="collapsed", disabled=True,
-                      placeholder="e.g. What if Northgate had defended better after half time?")
-        st.caption("A natural-language agent (on Microsoft Foundry) will answer free-text questions "
-                  "like this using the same simulation and counterfactual engine shown above.")
+        qa_cols = st.columns([3, 1, 1])
+        with qa_cols[0]:
+            question = st.text_input("Ask in plain English", label_visibility="collapsed",
+                                      placeholder="e.g. What if the 42nd-minute goal hadn't happened?")
+        with qa_cols[1]:
+            qa_mode = st.selectbox("Tone", ["fan", "analyst"], key="qa_mode", label_visibility="collapsed")
+        with qa_cols[2]:
+            qa_language = st.selectbox("Language", ["english", "hebrew"], key="qa_language",
+                                        label_visibility="collapsed")
+        ask = st.button("Ask", icon=":material/send:")
+        st.caption("Answered by an AI agent (Microsoft Agent Framework + Azure OpenAI) using the same "
+                  "simulation and counterfactual engine shown above -- every number in the answer comes "
+                  "from a real tool call, never invented. Questions outside what the engine can "
+                  "simulate get an honest 'can't do that' reply instead of a guess.")
+
+        if ask and question.strip():
+            if not agent_configured():
+                st.error("Set AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_API_KEY / "
+                         "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME in .env to use this.", icon=":material/error:")
+            else:
+                with st.spinner("Thinking..."):
+                    try:
+                        answer = run_agent_coroutine(
+                            answer_question(get_match_context(match_id), question, qa_mode, qa_language))
+                        st.session_state["qa_answer"] = answer.text
+                    except Exception as e:
+                        st.error(f"Something went wrong answering that: {e}", icon=":material/error:")
+        if st.session_state.get("qa_answer"):
+            st.write(st.session_state["qa_answer"])
 
 
 if __name__ == "__main__":
