@@ -127,11 +127,24 @@ class MatchContext:
         seed = 2000 + self.match_id * 97 + minute
         result = apply_counterfactual(cf, self.matches, self.shots, self.red_cards, self.team_draws,
                                        seed, TRIALS_PER_DRAW, CHECKPOINTS, actual_curve=self._curve())
+
+        # Which of home/draw/away moved the most -- the one number the answer
+        # should lead with, so the Narrator never has to guess which of the
+        # three outcomes is the headline (same rule the UI's turning-point
+        # cards use: biggest total movement).
+        deltas = {o: result.fork_after[o] - result.fork_before[o] for o in ("home", "draw", "away")}
+        headline_outcome = max(deltas, key=lambda o: abs(deltas[o]))
+        headline_team = {"home": self.match.home_team, "draw": "a draw",
+                         "away": self.match.away_team}[headline_outcome]
+
         return {
             "description": result.description,
             "fork_minute": result.fork_minute,
             "forecast_before_change": {k: round(v, 4) for k, v in result.fork_before.items()},
             "forecast_after_change": {k: round(v, 4) for k, v in result.fork_after.items()},
+            "headline_team": headline_team,
+            "headline_before": round(result.fork_before[headline_outcome], 4),
+            "headline_after": round(result.fork_after[headline_outcome], 4),
             "real_final_score": {"home": result.real_final_score[0], "away": result.real_final_score[1]},
             "real_outcome": result.real_outcome,
         }

@@ -113,6 +113,26 @@ async def test_tool_routing_calls_counterfactual_with_correct_args(match_ctx, mo
     assert json.loads(cf_call.result) == expected
 
 
+def test_counterfactual_result_names_a_single_headline_number(match_ctx) -> None:
+    """The Narrator is told to lead with headline_team/headline_before/
+    headline_after -- the tool must always provide exactly one unambiguous
+    before/after pair (whichever of home/draw/away moved most), not leave
+    the Narrator to pick among three forecasts itself."""
+    events = match_ctx.list_match_events()
+    a_goal = next(e for e in events if e["kind"] == "goal")
+
+    result = match_ctx.run_counterfactual(minute=a_goal["minute"], change="goal_cancelled", team=a_goal["team"])
+    assert result["headline_team"] in (match_ctx.match.home_team, match_ctx.match.away_team, "a draw")
+    assert 0.0 <= result["headline_before"] <= 1.0
+    assert 0.0 <= result["headline_after"] <= 1.0
+    # The headline pair must be the biggest mover among the three forecasts.
+    deltas = {o: result["forecast_after_change"][o] - result["forecast_before_change"][o]
+              for o in ("home", "draw", "away")}
+    biggest = max(deltas, key=lambda o: abs(deltas[o]))
+    assert result["headline_before"] == result["forecast_before_change"][biggest]
+    assert result["headline_after"] == result["forecast_after_change"][biggest]
+
+
 # --- Refusal / clarification (no tool call -- the Analyst's note drives the reply) ---
 
 async def test_refusal_for_unsupported_question(match_ctx, monkeypatch) -> None:
@@ -166,6 +186,16 @@ def test_grounding_rejects_invented_number() -> None:
                            result={"p_home": 0.283, "p_draw": 0.2, "p_away": 0.517})]
     bad = ungrounded_numbers("There's a 95% chance of a home win.", tool_calls)
     assert bad == {0.95}
+
+
+def test_grounding_accepts_rounding_to_nearest_whole_percent() -> None:
+    """The Narrator is instructed to round every probability to the nearest
+    whole percent (e.g. 0.1142 -> "11%") -- that rounded form must still be
+    accepted as grounded, not flagged as an invented number."""
+    tool_calls = [ToolCall(name="get_win_probability", arguments={"minute": 45},
+                           result={"p_home": 0.1142, "p_draw": 0.1975, "p_away": 0.6883})]
+    text = "At minute 45, the home side have about an 11% chance to win, 20% for a draw, 69% away."
+    assert ungrounded_numbers(text, tool_calls) == set()
 
 
 def test_grounding_handles_hebrew_text() -> None:

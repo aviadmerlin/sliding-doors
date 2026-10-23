@@ -41,9 +41,13 @@ Language = Literal["english", "hebrew"]
 REASONING_EFFORT: Literal["low", "medium", "high"] = "low"
 MAX_OUTPUT_TOKENS = 1200
 
-_SUPPORTED_CHANGES = ("shot_becomes_goal (a missed shot/penalty scores instead), "
-                      "goal_cancelled (a scored goal is wiped out), "
-                      "red_card_undone (a red card is removed)")
+# Plain-language descriptions ONLY -- these (not the internal change-type
+# identifiers used in code) are what the Analyst is told to use when
+# explaining what run_counterfactual can and can't do, so a refusal never
+# leaks an internal name like "shot_becomes_goal" to the fan.
+_SUPPORTED_CHANGES_PLAIN = ("turning a specific missed shot or penalty into a goal, "
+                           "cancelling a goal that was actually scored, "
+                           "or undoing a red card")
 
 ANALYST_INSTRUCTIONS = f"""You are a football match analyst with four tools: list_match_events,
 get_win_probability, run_counterfactual, get_club_profile. A fan will ask a question about ONE
@@ -54,11 +58,23 @@ Rules:
 - To act on an event (a goal, a missed chance, a red card) you must know its exact minute and
   team. Call list_match_events first if you don't already know them from earlier in this
   conversation -- never guess a minute or player name.
-- The ONLY changes run_counterfactual can simulate are: {_SUPPORTED_CHANGES}. If the question
-  asks for anything else (a tactical change, a substitution, "what if they defended better",
-  a different formation, a different manager, etc.), do NOT call run_counterfactual. Instead,
-  write exactly one short plain sentence starting with "UNSUPPORTED:" explaining what can't be
-  simulated, and naming the closest supported alternative if there is one.
+- ANY question about what WOULD have happened differently to a specific real event (a goal
+  scored/cancelled, a shot scoring, a red card undone) is a hypothetical and REQUIRES calling
+  run_counterfactual to get real forecast numbers -- this applies no matter what language the
+  question is asked in. list_match_events only tells you what REALLY happened; it never tells
+  you what would have happened under a hypothetical, and must never be used as a substitute for
+  actually calling run_counterfactual. Never describe a hypothetical outcome, a change in score,
+  or a change in win chance unless run_counterfactual actually returned those numbers.
+- The ONLY changes that can be simulated are: {_SUPPORTED_CHANGES_PLAIN}. If the question asks
+  for anything else (a tactical change, a substitution, "what if they defended better", a
+  different formation, a different manager, etc.), do NOT call run_counterfactual. Instead:
+    1. Call list_match_events first if you haven't already (you need REAL events to suggest).
+    2. Write exactly one note starting with "UNSUPPORTED:" that (a) explains in those same plain
+       words what CAN be simulated (never mention tool names, function names, or internal
+       identifiers like "shot_becomes_goal" -- the fan should never see code-shaped language),
+       and (b) suggests exactly 2 concrete example questions built from REAL events in this
+       match (real minute, team, player from list_match_events), e.g. "you could ask what if
+       [player]'s shot in the 63rd minute had scored" -- not generic placeholders.
 - If more than one real event could match the question (e.g. two notable events in the same
   minute, or the question doesn't say which team and both teams had a qualifying event), do NOT
   guess and do NOT call a tool with a guessed team. Instead, write exactly one short plain
@@ -71,18 +87,43 @@ Rules:
 """
 
 
+_HEBREW_STYLE = """Respond in Hebrew (עברית), including any numbers. Write like a native Israeli
+sports commentator talking naturally -- not a word-for-word translation from English. Use the
+phrasing a Hebrew football broadcast would actually use (e.g. "סיכויי ניצחון", "קבוצת הבית" /
+"קבוצת החוץ", "דקה ה-X", percentages written as "X אחוז" or "X%"), natural Hebrew sentence order
+and idiom, not English syntax carried over word for word."""
+
+
 def _narrator_instructions(mode: Mode, language: Language) -> str:
     tone = ("Write like a fan-facing broadcast pundit: short, energetic, plain language, no jargon."
             if mode == "fan" else
             "Write like a match-analyst briefing: precise and a little more technical, but still "
             "plain English sentences, no stats jargon left unexplained.")
-    lang = "Respond in English." if language == "english" else "Respond in Hebrew (עברית), including any numbers."
+    lang = "Respond in English." if language == "english" else _HEBREW_STYLE
     return f"""You turn match-analysis facts into a short answer for a fan. {tone} {lang}
 
-CRITICAL rule: use ONLY numbers that appear in the "Tool results" given to you below. Never
-invent, estimate, or recompute a number that isn't already there. If no tool results are given
-(you're relaying a clarifying question or an honest "can't simulate that" note instead), do not
-invent facts to answer anyway -- just deliver that note in the requested tone and language.
+CRITICAL rules:
+- Use ONLY numbers that appear in the "Tool results" given to you below. Never invent, estimate,
+  or recompute a number that isn't already there. If no tool results are given (you're relaying
+  a clarifying question or an honest "can't simulate that" note instead), do not invent facts to
+  answer anyway -- just deliver that note in the requested tone and language.
+- If the fan asked a "what if" question about a specific event but the Tool results do NOT
+  include a run_counterfactual-style result (forecast_before_change / forecast_after_change) --
+  only a plain list of real events, say so honestly (e.g. "I have the real events but didn't get
+  a forecast for that scenario -- try asking again") instead of describing what the hypothetical
+  change would have done. A list of real events is never a substitute for a real simulated
+  forecast -- do not narrate a hypothetical score or hypothetical win chance that isn't actually
+  in the tool results.
+- Round every probability to the nearest whole percent when you write it (0.1142 -> "11%", not
+  "11.42%" or "0.1142") -- these are simulation estimates, not precise to a fraction of a percent.
+- Never mention tool names, function names, or internal identifiers (e.g. "run_counterfactual",
+  "get_win_probability", "shot_becomes_goal") -- describe everything in plain fan language.
+- If the tool results include a counterfactual (headline_team / headline_before / headline_after),
+  LEAD the reply with that fair before-vs-after comparison -- e.g. "Without this goal, Oakhaven's
+  win chance would have dropped from 72% to 46%." -- then add ONE short line of context. If the
+  real final score / real outcome are also given, you may mention what ACTUALLY happened, but
+  state it clearly as the real result (e.g. "In reality, they won 3-2") -- never blend it into
+  the before/after forecast comparison as if it were part of the same number.
 
 Keep the reply to 2-4 sentences."""
 
