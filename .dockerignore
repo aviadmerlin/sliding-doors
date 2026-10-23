@@ -1,0 +1,22 @@
+# Never bake credentials into the image -- Azure OpenAI creds are passed
+# as Container App secrets at deploy/runtime instead (see README "AI agent").
+.env
+.env.example
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.github/
+.claude/
+.DS_Store
+
+# Not needed to SERVE the app (only to generate/regenerate data+model, or
+# to develop/test it) -- excluded to keep the image lean.
+tests/
+scripts/
+docs/
+*.md
+SPEC.md
