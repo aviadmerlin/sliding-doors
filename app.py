@@ -15,11 +15,12 @@ but no longer pays the model-fitting cost.
 """
 
 import asyncio
+import html
 import json
 import os
 import sys
 from pathlib import Path
-from typing import Awaitable, TypeVar
+from typing import Awaitable, Callable, TypeVar
 
 import numpy as np
 import pandas as pd
@@ -63,6 +64,51 @@ KIND_TO_CHANGE = {"goal": "goal_cancelled", "missed_penalty": "shot_becomes_goal
                    "big_chance": "shot_becomes_goal", "red_card": "red_card_undone"}
 KIND_BADGE = {"goal": ("Goal", "green"), "missed_penalty": ("Penalty missed", "red"),
               "big_chance": ("Big chance missed", "orange"), "red_card": ("Red card", "red")}
+
+CHART_RANGE_PRESETS = {"Full match": (0, 90), "1st half": (0, 45), "2nd half": (45, 90), "Last 15'": (75, 90)}
+
+# Breakpoint below which we switch to the stacked mobile scoreboard and the
+# touch-safe chart variant (see GLOBAL_CSS and render_responsive_chart).
+MOBILE_BREAKPOINT_PX = 640
+
+GLOBAL_CSS = f"""
+<style>
+/* Scoreboard (see render_scoreboard): one horizontal row on desktop, like
+   today; on narrow screens st.columns alone would just stack the 3
+   columns with no team/score pairing, so below the breakpoint we switch
+   to two rows, each with its own team name, Home/Away label, and score
+   on the same line. */
+.scoreboard {{ display: flex; align-items: center; justify-content: center; gap: 20px; }}
+.scoreboard .sb-team {{ display: flex; align-items: center; gap: 10px; }}
+.scoreboard .sb-label {{ display: none; }}
+.scoreboard .sb-name {{ font-size: 1.25rem; font-weight: 600; }}
+.scoreboard .sb-score {{ font-size: 2.1rem; font-weight: 700; }}
+.scoreboard .sb-vs {{ font-size: 2.1rem; font-weight: 700; color: #9CA3AF; }}
+
+@media (max-width: {MOBILE_BREAKPOINT_PX}px) {{
+    .scoreboard {{ flex-direction: column; align-items: stretch; gap: 10px; }}
+    .scoreboard .sb-vs {{ display: none; }}
+    .scoreboard .sb-team {{ justify-content: space-between; width: 100%; }}
+    .scoreboard .sb-label {{ display: inline-block; font-size: 0.7rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.04em; color: #9CA3AF; width: 48px; flex-shrink: 0; }}
+    .scoreboard .sb-name {{ flex: 1; font-size: 1.05rem; }}
+    .scoreboard .sb-score {{ font-size: 1.3rem; min-width: 2ch; text-align: right; }}
+}}
+
+/* Charts (see render_responsive_chart) render twice: a desktop variant
+   that keeps drag-to-zoom/pan, and a mobile variant with dragmode off
+   (so a scroll gesture starting on the chart is never captured by
+   Plotly) plus range buttons standing in for zoom. Only one is shown per
+   breakpoint via st.container(key=...), which Streamlit exposes as a
+   stable "st-key-<key>" CSS class. */
+div[class*="st-key-"][class*="-chart-desktop"] {{ display: block; }}
+div[class*="st-key-"][class*="-chart-mobile"] {{ display: none; }}
+@media (max-width: {MOBILE_BREAKPOINT_PX}px) {{
+    div[class*="st-key-"][class*="-chart-desktop"] {{ display: none; }}
+    div[class*="st-key-"][class*="-chart-mobile"] {{ display: block; }}
+}}
+</style>
+"""
 
 st.set_page_config(page_title="Sliding Doors", page_icon=":material/sports_soccer:", layout="wide")
 
@@ -287,6 +333,47 @@ def add_minute_markers(fig: go.Figure, minutes: list[int], labels: list[str]) ->
                             font=dict(size=11, color="#E5E7EB"))
 
 
+def render_scoreboard(match: pd.Series) -> None:
+    """One horizontal row on desktop; on narrow screens (see GLOBAL_CSS)
+    each team gets its own row with a Home/Away label and its score on
+    the same line, so it's unambiguous which score belongs to which team."""
+    home, away = html.escape(str(match.home_team)), html.escape(str(match.away_team))
+    st.markdown(f"""
+<div class="scoreboard">
+  <div class="sb-team sb-home">
+    <span class="sb-label">Home</span>
+    <span class="sb-name">{home}</span>
+    <span class="sb-score">{match.home_goals}</span>
+  </div>
+  <div class="sb-vs">–</div>
+  <div class="sb-team sb-away">
+    <span class="sb-label">Away</span>
+    <span class="sb-name">{away}</span>
+    <span class="sb-score">{match.away_goals}</span>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+def render_responsive_chart(build_fig: Callable[[], go.Figure], key: str, alt: str) -> None:
+    """Desktop keeps the usual drag-to-zoom/pan Plotly chart. Mobile gets
+    dragmode disabled -- a touch gesture that starts on the chart is
+    never captured, so the page always keeps scrolling -- plus touch-
+    friendly range buttons standing in for zoom (pinch-zoom isn't
+    reliably distinguishable from an intended scroll once any drag
+    interaction is enabled, so we don't rely on it)."""
+    with st.container(key=f"{key}-chart-desktop"):
+        st.plotly_chart(build_fig(), width="stretch", alt=alt, config={"displaylogo": False})
+
+    with st.container(key=f"{key}-chart-mobile"):
+        choice = st.segmented_control("Range", list(CHART_RANGE_PRESETS), default="Full match",
+                                       required=True, key=f"{key}-range", label_visibility="collapsed")
+        fig = build_fig()
+        fig.update_layout(dragmode=False)
+        fig.update_xaxes(range=list(CHART_RANGE_PRESETS[choice]))
+        st.plotly_chart(fig, width="stretch", alt=alt, config={"scrollZoom": False, "displaylogo": False})
+
+
 def build_win_prob_figure(curve: pd.DataFrame, match: pd.Series, turning_points: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     add_band(fig, curve, "p_home", "se_home", COLOR_HOME, f"{match.home_team} win")
@@ -387,6 +474,7 @@ def turning_point_summary(tp: pd.Series, match: pd.Series) -> str:
 
 
 def main() -> None:
+    st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
     st.title("Sliding Doors", icon=":material/sports_soccer:")
     st.caption("Counterfactual match intelligence for a fictional 20-club league")
     st.markdown("**See how a match turned, and replay it with one moment changed.**")
@@ -445,13 +533,7 @@ def main() -> None:
 
     # --- Header ---
     with st.container(border=True):
-        cols = st.columns([4, 2, 4], vertical_alignment="center")
-        with cols[0]:
-            st.subheader(match.home_team, text_alignment="right")
-        with cols[1]:
-            st.title(f"{match.home_goals} – {match.away_goals}", text_alignment="center")
-        with cols[2]:
-            st.subheader(match.away_team, text_alignment="left")
+        render_scoreboard(match)
         st.caption(f"Season {match.season} · Matchday {match.matchday}", text_alignment="center")
 
     # --- Club profiles ---
@@ -488,9 +570,9 @@ def main() -> None:
     st.caption("Bands reflect both simulation randomness and uncertainty in the estimated club traits. "
                 "Moves moderately between goals too, as the model updates its belief about which side "
                 "is currently playing better than their usual level (see Momentum below).")
-    fig = build_win_prob_figure(curve, match, turning_points)
-    st.plotly_chart(fig, width="stretch",
-                     alt=f"Win probability over 90 minutes for {match.home_team} vs {match.away_team}")
+    render_responsive_chart(
+        lambda: build_win_prob_figure(curve, match, turning_points), "winprob",
+        alt=f"Win probability over 90 minutes for {match.home_team} vs {match.away_team}")
 
     # --- Momentum chart ---
     st.subheader("Momentum", icon=":material/bolt:")
@@ -499,8 +581,9 @@ def main() -> None:
                 "xG pressure), but treats short bursts like this as noise around a team's underlying "
                 "day form, not as their own tracked effect.")
     momentum = compute_momentum(shots, match)
-    st.plotly_chart(build_momentum_figure(momentum, window=12), width="stretch",
-                     alt=f"Rolling 12-minute xG momentum for {match.home_team} vs {match.away_team}")
+    render_responsive_chart(
+        lambda: build_momentum_figure(momentum, window=12), "momentum",
+        alt=f"Rolling 12-minute xG momentum for {match.home_team} vs {match.away_team}")
 
     # --- Turning points ---
     st.subheader("Top 3 turning points", icon=":material/bolt:")
@@ -553,10 +636,10 @@ def main() -> None:
                         f"{result.fork_before[headline_outcome]:.0%} → {result.fork_after[headline_outcome]:.0%}**")
             st.caption(counterfactual_headline_summary(result, match, headline_outcome))
 
-            cf_fig = build_counterfactual_figure(result, headline_outcome, match)
-            st.plotly_chart(cf_fig, width="stretch",
-                             alt=f"Real versus counterfactual {stat_label(headline_outcome, match)} "
-                                 f"probability: {result.description}")
+            render_responsive_chart(
+                lambda: build_counterfactual_figure(result, headline_outcome, match), f"cf-{event_idx}",
+                alt=f"Real versus counterfactual {stat_label(headline_outcome, match)} "
+                    f"probability: {result.description}")
 
             outcome_cols = st.columns(2)
             with outcome_cols[0], st.container(border=True, height="stretch"):
