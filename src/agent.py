@@ -34,8 +34,12 @@ Language = Literal["english", "hebrew"]
 
 # Keep cost/latency low: a tool-routing + one-paragraph-of-prose task has no
 # need for anything more than the cheapest reasoning tier and a short reply.
+# MAX_OUTPUT_TOKENS has to cover gpt-5-mini's hidden reasoning tokens too, not
+# just the visible reply -- 300 proved too tight in practice (reasoning alone
+# consumed the whole budget, leaving an empty or mid-sentence-truncated
+# answer); 1200 leaves headroom for "low" reasoning + a few sentences.
 REASONING_EFFORT: Literal["low", "medium", "high"] = "low"
-MAX_OUTPUT_TOKENS = 300
+MAX_OUTPUT_TOKENS = 1200
 
 _SUPPORTED_CHANGES = ("shot_becomes_goal (a missed shot/penalty scores instead), "
                       "goal_cancelled (a scored goal is wiped out), "

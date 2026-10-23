@@ -569,8 +569,11 @@ route) — it fetches the match's turning points and final result directly
 and sends that straight to the Narrator.
 
 **Cost control**: `reasoning: {"effort": "low"}` (gpt-5-mini's cheapest
-reasoning tier) and a 300-token output cap on both roles — a tool-routing
-plus one-paragraph-of-prose task has no need for more.
+reasoning tier) and a 1200-token output cap on both roles. (An initial
+300-token cap looked cheaper but came back empty or cut off mid-sentence
+in real testing -- gpt-5-mini's hidden reasoning tokens count against
+this budget too, not just the visible reply, so the cap has to cover
+both.)
 
 **Grounding, mechanically checked, not just prompted.**
 `src/agent.ungrounded_numbers(text, tool_calls)` extracts every number
