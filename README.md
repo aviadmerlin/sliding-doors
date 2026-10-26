@@ -1,13 +1,111 @@
 # Sliding Doors — Counterfactual Match Intelligence
 
-Built for the Microsoft x Premier League "Inside the Game" hackathon.
+Built for the Microsoft x Premier League ["Inside the Game"](https://github.com/microsoft/insidethegamehackathon)
+hackathon.
 
-"Sliding Doors" re-runs a football match from any moment, hundreds of
-times, with one thing changed — a penalty scored, a red card not given —
-and measures how much that moment shifted the win probability. An AI
-agent answers fans' "what if" questions about the match in plain language.
+Every fan has had the argument "if that goal hadn't gone in, we'd have
+won" — and until now it's always stayed an opinion. **Sliding Doors**
+settles it with data: it re-runs a football match from any moment,
+hundreds of times, with one thing changed — a penalty scored, a goal
+cancelled, a red card undone — and measures how much that moment actually
+shifted the win probability. A two-agent AI layer (Microsoft Agent
+Framework, on Microsoft Foundry) answers fans' free-text "what if"
+questions in plain language — English or Hebrew, fan or analyst tone —
+grounding every number it writes in a real simulation result, never an
+invented one, and refusing honestly when a question can't be simulated.
+All match data is **100% synthetic**: a fictional 20-club league, fictional
+players, 5 simulated seasons — no real clubs, players, or logos anywhere
+in the code, data, or UI.
 
-See [SPEC.md](SPEC.md) for the full MVP checklist and rules.
+- **Demo video:** _TODO — add the hosted video URL here before submitting_
+- **Live demo:** https://sliding-doors.happytree-e6502234.switzerlandnorth.azurecontainerapps.io/
+  (Azure Container Apps, `switzerlandnorth`)
+- **Submission pitch / testing instructions:** [SUBMISSION.md](SUBMISSION.md)
+- **Spec / MVP checklist:** [SPEC.md](SPEC.md)
+
+## Challenge pipeline
+
+| Stage | What it means (per the official rules) | How Sliding Doors does it |
+|---|---|---|
+| **Ingest** | synthetic match events as they happen | [`src/match_engine.py`](src/match_engine.py) + [`src/season_generator.py`](src/season_generator.py) simulate 5 seasons of a fictional 20-club league minute-by-minute — shots, goals, red cards, day form, pressure spells |
+| **Interpret** | turn events into meaningful statistics and context | [`src/trait_estimation.py`](src/trait_estimation.py) recovers each club's hidden attack/defense/etc. from the shot-level data via weighted Poisson regression (never reads the true values); [`src/win_probability.py`](src/win_probability.py) turns that into live win/draw/loss curves |
+| **Explain** | why a moment matters, not just that it happened | [`src/counterfactual.py`](src/counterfactual.py) re-simulates a match with one real event changed and reports a fair before/after; the Analyst/Narrator agent pair ([`src/agent.py`](src/agent.py)) explains it in natural language |
+| **Render** | put the insight on screen alongside the match | [`app.py`](app.py) — scoreboard, win-probability chart with turning points, "What if...?" panel, all live and interactive |
+| **Personalize** | the same intelligence, two different experiences | the agent's fan vs. analyst tone and English vs. Hebrew language modes, from the same grounded tool results |
+
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Offline["Offline (run once, see Setup)"]
+        SG["season_generator.py + match_engine.py<br/>Ingest: synthetic matches/shots/goals/red cards"]
+        TE["trait_estimation.py<br/>Interpret: Poisson regression recovers club traits"]
+        SG -->|"matches.csv, shots.csv, ..."| TE
+        TE -->|"model_params.csv, model_cov.csv,<br/>model_team_draws.csv"| Model[("fitted model, data/")]
+    end
+
+    subgraph Runtime["app.py — Streamlit"]
+        WP["win_probability.py<br/>Monte Carlo win/draw/loss curves"]
+        CF["counterfactual.py<br/>Explain: re-simulate with one event changed"]
+        UI["Streamlit UI<br/>Render: scoreboard, chart, turning points,<br/>What if...? panel"]
+        Model --> WP --> UI
+        Model --> CF --> UI
+    end
+
+    subgraph Agent["AI agent — Microsoft Agent Framework"]
+        Analyst["Analyst agent<br/>sees the question + 4 tools,<br/>never writes the fan-facing reply"]
+        Tools["agent_tools.py<br/>list_match_events / get_win_probability /<br/>run_counterfactual / get_club_profile"]
+        Narrator["Narrator agent<br/>Personalize: fan/analyst tone x English/Hebrew,<br/>only uses numbers the tools returned"]
+        Analyst -->|tool calls| Tools
+        Tools --> WP
+        Tools --> CF
+        Tools -->|real results, or an honest<br/>CLARIFY/UNSUPPORTED note| Narrator
+    end
+
+    UI -->|free-text question or recap request| Analyst
+    Narrator -->|grounded natural-language answer| UI
+    Analyst -.->|OpenAIChatClient, Azure routing| Foundry[("Microsoft Foundry /<br/>Azure OpenAI, gpt-5-mini")]
+    Narrator -.-> Foundry
+    Analyst -.->|optional, APPLICATIONINSIGHTS_CONNECTION_STRING| AppInsights[("Application Insights<br/>via OpenTelemetry")]
+```
+
+The Analyst and the Narrator are deliberately separate agents with a hard
+boundary between them: the Analyst can call tools but never writes the
+fan-facing reply, and the Narrator writes the reply but has no tools and
+can only use numbers already present in what the Analyst's tool calls
+returned (mechanically checked — see `src/agent.ungrounded_numbers` under
+"AI agent" below). Match recap skips the Analyst (there's no question to
+route) and goes straight from data to Narrator.
+
+## Microsoft & Azure stack
+
+Only what's actually wired up and used — nothing aspirational:
+
+- **Microsoft Agent Framework** (`agent-framework` 1.22.0, via
+  `agent_framework_openai`'s `OpenAIChatClient`) — the Analyst/Narrator
+  agents in `src/agent.py`, including native tool-calling for the four
+  functions in `src/agent_tools.py`.
+- **Microsoft Foundry / Azure OpenAI** — `gpt-5-mini` (Global Standard
+  deployment), `reasoning: {"effort": "low"}` + a 1200-token cap on both
+  roles for cost control. Configured via `AZURE_OPENAI_ENDPOINT` /
+  `AZURE_OPENAI_API_KEY` / `AZURE_OPENAI_CHAT_DEPLOYMENT_NAME`.
+- **Azure AI Speech** (neural text-to-speech) — used only to generate the
+  demo video's voiceover (`video/scripts/generate-voiceover.mjs`), not
+  part of the running app.
+- **Azure Monitor OpenTelemetry / Application Insights** (optional) —
+  `azure-monitor-opentelemetry` + Agent Framework's built-in OTel
+  instrumentation trace every agent run and tool call to the Foundry
+  portal's tracing view when `APPLICATIONINSIGHTS_CONNECTION_STRING` is
+  set. Entirely optional; the test suite never sets it.
+- **Azure Container Apps** — hosts the live demo (`Dockerfile`,
+  `switzerlandnorth`), with the three `AZURE_OPENAI_*` values and the
+  tracing connection string injected as Container App secrets at deploy
+  time, never baked into the image (see `.dockerignore`).
+
+Everything else (the simulation engine, trait estimation, Streamlit UI)
+is plain Python/pandas/numpy/statsmodels/Plotly — no Microsoft/Azure
+dependency, by design, so the core product works and is fully testable
+with zero cloud cost; the agent layer is what's additive on top.
 
 ## Project structure
 
@@ -48,18 +146,65 @@ tests/                    # pytest suite: data integrity, model logic, consisten
 .env / .env.example       # Azure OpenAI credentials for the AI agent (never committed -- see "AI agent" below)
 .streamlit/config.toml    # dark sports-product theme
 .claude/skills/developing-with-streamlit/  # official Streamlit agent skill (vendored, see Setup)
+Dockerfile / .dockerignore  # Azure Container Apps deployment (see "Deployment" below)
+video/                    # Remotion project that produces the hackathon demo video
+                            # from real Playwright recordings of the live app + an
+                            # Azure AI Speech voiceover -- see video/README.md
 ```
 
-## Setup
+## Setup & run (from a clean clone)
+
+**Prerequisites:** Python 3.13+ (tested version; 3.10+ likely works).
 
 ```bash
+git clone https://github.com/aviadmerlin/sliding-doors.git
+cd sliding-doors
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env   # then fill in AZURE_OPENAI_* (see "AI agent" below) -- optional, only needed for the agent
+streamlit run app.py
 ```
 
-The repo vendors the official [Streamlit agent skill](https://github.com/streamlit/agent-skills)
+That's it — `data/` already ships with 5 seasons of precomputed synthetic
+match data and a pre-fitted model (see "Cold start and the fitted model"
+under "Interactive UI" below for why), so the app runs immediately. Every
+chart, the win-probability simulation, and the "What if...?" counterfactual
+panel all work with no further setup or API keys. (`pip install` pulls in
+`agent-framework`'s full set of optional provider integrations and can
+take several minutes the first time — that's normal, not a hang.)
+
+**To also enable the AI agent** ("Match recap" and "Ask a what-if
+question"), add Azure OpenAI / Microsoft Foundry credentials:
+
+```bash
+cp .env.example .env
+# then fill in AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_API_KEY /
+# AZURE_OPENAI_CHAT_DEPLOYMENT_NAME from your Foundry project
+# (APPLICATIONINSIGHTS_CONNECTION_STRING is optional tracing -- see
+# "Microsoft & Azure stack" above)
+```
+
+`.env` is read automatically on the next `streamlit run app.py` (via
+`python-dotenv`) — no restart beyond that needed. See "AI agent" below
+for exactly what those three variables need to be.
+
+**Run the tests** (mocked chat client, no network calls, no cost):
+
+```bash
+pytest
+```
+
+**To regenerate the synthetic data and model from scratch** instead of
+using what's committed in `data/` (optional — only needed if you change
+the simulation/estimation logic):
+
+```bash
+python scripts/generate_season.py        # Ingest: simulate 5 seasons
+python scripts/estimate_traits.py        # Interpret: recover club traits
+python scripts/precompute_featured_matches.py  # fit + cache the model app.py loads
+```
+
+The repo also vendors the official [Streamlit agent skill](https://github.com/streamlit/agent-skills)
 under `.claude/skills/developing-with-streamlit/` — Claude Code picks it up
 automatically for any Streamlit work in this project (styling, caching,
 layout, etc.).
@@ -410,9 +555,12 @@ each a same-minute, forecast-vs-forecast comparison:
 ## Interactive UI
 
 ```bash
-python scripts/precompute_featured_matches.py   # run once, before deploying/sharing the app
 streamlit run app.py
 ```
+
+(`data/` already ships with the precomputed model and featured-match
+curves — see "Setup & run" above. `python scripts/precompute_featured_matches.py`
+only needs rerunning if you regenerate the underlying data.)
 
 Ties every piece above into one app: a one-line explanation and 3-step
 guide for first-time visitors, a match picker (defaults to the most
@@ -607,3 +755,18 @@ the test sees), the refusal path (an unsupported question never reaches
 test talks to the real deployment and checks a real reply is grounded —
 it's auto-skipped unless `AZURE_OPENAI_*` are actually set in `.env`, so
 the default `pytest` run makes no network calls and costs nothing.
+
+## Deployment
+
+Live at https://sliding-doors.happytree-e6502234.switzerlandnorth.azurecontainerapps.io/
+on **Azure Container Apps** (`sliding-doors`, resource group
+`rg-aviadmerlin-4429`, `switzerlandnorth`) — same region and resource
+group as the Foundry/Cognitive Services account the agent uses.
+
+`Dockerfile` builds a plain `python:3.13-slim` image that copies only
+`app.py`, `src/`, the precomputed `data/`, `assets/`, and
+`.streamlit/config.toml` — never `.env` (see `.dockerignore`). The three
+`AZURE_OPENAI_*` values and `APPLICATIONINSIGHTS_CONNECTION_STRING` are
+injected as Container App secrets/env vars at deploy time, not baked into
+the image, so the agent works identically on the live deployment as it
+does locally with a filled-in `.env`.
