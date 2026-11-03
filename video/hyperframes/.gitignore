@@ -1,0 +1,17 @@
+node_modules
+.env
+.DS_Store
+
+# Rendered output and generated captures/audio -- reproducible via
+# scripts/, too large and too easy to regenerate to version.
+out/
+assets/audio/
+assets/scoreboard.png
+.hyperframes/
+
+assets/proof/
+
+# Draft/intermediate renders -- reproducible via `npm run render`. The
+# one snapshot we do want versioned (renders/full-v5.mp4) is force-added
+# past this rule as a checkpoint.
+renders/

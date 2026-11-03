@@ -1,0 +1,380 @@
+<!-- Proof scene -- SCRIPT.md beat 4, the real task in the real UI. Real
+     local-instance footage (assets/proof/proof.mp4, scripts/record-proof.mjs),
+     cut into 8 beats, each a camera push/pan on a wrapper (never on the
+     video element itself) so the real UI never sits flat and still. The
+     ~7s real compute wait is shown SPED UP (2.5x playback-rate), not cut
+     away entirely -- it's the proof the engine is really computing. The
+     two ~16-18s real answer waits ARE hard-cut (typing -> answer), real
+     frames on both sides of the cut. Karaoke caption bar on here (this is
+     the screen-recording scene, per the caption rule) + a quick zoom-punch
+     at the Run-counterfactual click instant in place of a drawn cursor
+     (no logged click coordinates to place one accurately). -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <template>
+      <div
+        id="pf-root"
+        data-composition-id="proof"
+        data-start="0"
+        data-duration="28.8"
+        data-width="1920"
+        data-height="1080"
+        data-motion-blur="on"
+      >
+        <style>
+          @font-face {
+            font-family: "Inter";
+            font-weight: 600;
+            font-style: normal;
+            src: local("Inter");
+          }
+          #pf-root {
+            --bg: #0b1220;
+            --border: #243049;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --accent: #22c55e;
+            --bg-panel: #141c2e;
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: var(--bg);
+          }
+          .pf-cam {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+          }
+          .pf-cam video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+          }
+          .pf-flash {
+            position: absolute;
+            inset: 0;
+            background: var(--accent);
+            opacity: 0;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 4;
+          }
+
+          #pf-captions {
+            position: absolute;
+            left: 160px;
+            right: 160px;
+            bottom: 90px;
+            display: flex;
+            justify-content: center;
+            z-index: 5;
+          }
+          #pf-caption-box {
+            max-width: 1500px;
+            background: rgba(20, 28, 46, 0.86);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 34px;
+            font-family: "Inter", -apple-system, sans-serif;
+            font-size: 36px;
+            font-weight: 600;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            column-gap: 0.28em;
+            row-gap: 0.05em;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+          }
+          .pf-cap-word {
+            display: inline-block;
+            color: var(--text-dim);
+            transform-origin: left center;
+          }
+
+          .pf-badge {
+            position: absolute;
+            top: 70px;
+            right: 110px;
+            background: rgba(20, 28, 46, 0.86);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 12px 28px;
+            font-family: "Inter", -apple-system, sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--text);
+            opacity: 0;
+            z-index: 5;
+          }
+        </style>
+
+        <!-- Each cut is its OWN physical file (assets/proof/cuts/*.mp4,
+             scripts/record-proof.mjs + ffmpeg split), re-encoded with dense
+             keyframes (-g 15), trimmed against the real interaction marks
+             (assets/proof/marks.json) rather than round numbers -- the
+             first self-critique pass found two bugs here: (1) sharing one
+             source file across 8 <video> elements froze/blacked out later
+             cuts under the screenshot-capture pipeline, fixed by giving
+             each cut its own file; (2) sparse keyframes in those files made
+             seek-to-frame capture land on stale frames, fixed by forcing a
+             keyframe every 0.5s; (3) the ORIGINAL cut boundaries (round
+             numbers, not marks) opened Proof on ~3.7s of Streamlit's own
+             loading blank before the scoreboard painted -- a loading state,
+             which the brief explicitly bans. Cut A now starts exactly at
+             marks.scoreboard_visible instead of recording_start. -->
+        <div id="pf-cam-a" class="pf-cam">
+          <video id="pf-video-a" src="../assets/proof/cuts/a.mp4" data-start="0" data-duration="4.4" muted></video>
+        </div>
+
+        <div id="pf-cam-b" class="pf-cam">
+          <video id="pf-video-b" src="../assets/proof/cuts/b.mp4" data-start="4.4" data-duration="1.2" muted></video>
+        </div>
+        <div class="pf-flash clip" id="pf-flash-run" data-start="4.4" data-duration="1.2" data-track-index="3"></div>
+
+        <div id="pf-cam-c" class="pf-cam">
+          <video
+            id="pf-video-c"
+            src="../assets/proof/cuts/c.mp4"
+            data-start="5.6"
+            data-duration="2.9"
+            data-playback-rate="2.5"
+            muted
+          ></video>
+        </div>
+        <div class="pf-badge clip" id="pf-badge-sim" data-start="5.6" data-duration="2.9" data-track-index="3">3,600 simulations</div>
+
+        <div id="pf-cam-d" class="pf-cam">
+          <video id="pf-video-d" src="../assets/proof/cuts/d.mp4" data-start="8.5" data-duration="3.5" muted></video>
+        </div>
+
+        <div id="pf-cam-e" class="pf-cam">
+          <video id="pf-video-e" src="../assets/proof/cuts/e.mp4" data-start="12.0" data-duration="4.0" muted></video>
+        </div>
+        <div class="pf-badge clip" id="pf-badge-en" data-start="12.0" data-duration="4.0" data-track-index="3">EN · grounding check</div>
+
+        <div id="pf-cam-f" class="pf-cam">
+          <video id="pf-video-f" src="../assets/proof/cuts/f.mp4" data-start="16.0" data-duration="4.0" muted></video>
+        </div>
+
+        <div id="pf-cam-g" class="pf-cam">
+          <video id="pf-video-g" src="../assets/proof/cuts/g.mp4" data-start="20.0" data-duration="3.4" muted></video>
+        </div>
+        <div class="pf-badge clip" id="pf-badge-he" data-start="20.0" data-duration="8.8" data-track-index="3">עברית · Hebrew</div>
+
+        <div id="pf-cam-h" class="pf-cam">
+          <video
+            id="pf-video-h"
+            src="../assets/proof/cuts/h.mp4"
+            data-start="23.4"
+            data-duration="5.4"
+            data-playback-rate="0.7407"
+            muted
+          ></video>
+        </div>
+
+        <div id="pf-captions" class="clip" data-start="0" data-duration="28.8" data-track-index="6" data-track-kind="captions">
+          <div id="pf-caption-box"></div>
+        </div>
+
+        <audio
+          id="pf-voice-1"
+          class="clip"
+          data-start="0.3"
+          data-duration="4.1"
+          data-track-index="7"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/04-proof-1.mp3"
+        ></audio>
+        <audio
+          id="pf-voice-2"
+          class="clip"
+          data-start="4.5"
+          data-duration="4.95"
+          data-track-index="7"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/04-proof-2.mp3"
+        ></audio>
+        <audio
+          id="pf-voice-3"
+          class="clip"
+          data-start="12.5"
+          data-duration="1.55"
+          data-track-index="7"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/04-proof-3.mp3"
+        ></audio>
+        <audio
+          id="pf-voice-4"
+          class="clip"
+          data-start="20.3"
+          data-duration="0.6"
+          data-track-index="7"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/04-proof-4.mp3"
+        ></audio>
+
+        <audio
+          id="pf-music"
+          class="clip"
+          data-start="0"
+          data-duration="28.8"
+          data-track-index="8"
+          data-track-kind="music"
+          data-has-audio="true"
+          data-volume="0.5"
+          data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0.35},{"t":28.3,"v":0.35},{"t":28.8,"v":1}]}]}'
+          src="../assets/audio/music-PLACEHOLDER-SILENT.mp3"
+        ></audio>
+      </div>
+
+      <script>
+        (function () {
+          var tl = gsap.timeline({ paused: true });
+
+          // -- Camera: push/pan on each cut's WRAPPER, never the <video>
+          // itself, so the real UI never sits flat and still.
+          function cam(id, from, to, delay) {
+            var el = document.getElementById(id).querySelector("video");
+            gsap.set(el, from);
+            tl.to(el, Object.assign({ ease: "none" }, to), delay || 0);
+          }
+          // A: slow push from the full scoreboard+sidebar toward center.
+          cam("pf-cam-a", { scale: 1.0, x: 0, y: 0 }, { scale: 1.08, duration: 4.4 });
+          // B: push into the dropdown/button area (upper-right of frame).
+          cam("pf-cam-b", { scale: 1.1, x: 40, y: -10 }, { scale: 1.2, x: 55, y: -15, duration: 1.2 });
+          // C: hold tight on the running panel while sped up.
+          cam("pf-cam-c", { scale: 1.2, x: 60, y: -15 }, { scale: 1.34, x: 60, y: -15, duration: 2.9 });
+          // D: push into the result numbers.
+          cam("pf-cam-d", { scale: 1.15, x: -20, y: 30 }, { scale: 1.3, x: -30, y: 40, duration: 3.5 });
+          // E: settle on the Ask box as it's typed into.
+          cam("pf-cam-e", { scale: 1.05, x: 0, y: 10 }, { scale: 1.18, x: 0, y: 20, duration: 4.0 });
+          // F: push into the EN answer text.
+          cam("pf-cam-f", { scale: 1.1, x: 0, y: 20 }, { scale: 1.24, x: 0, y: 30, duration: 4.0 });
+          // G: settle on the language switch + HE typing.
+          cam("pf-cam-g", { scale: 1.05, x: 0, y: 10 }, { scale: 1.18, x: 0, y: 20, duration: 3.4 });
+          // H: push into the HE answer text, the scene's final hold.
+          cam("pf-cam-h", { scale: 1.1, x: 0, y: 20 }, { scale: 1.26, x: 0, y: 30, duration: 5.4 });
+
+          // Zoom-punch at the Run-counterfactual click instant (stands in
+          // for a drawn cursor -- no click coordinates were logged). Click
+          // lands at marks.run_clicked (8.961s source) = 0.961s into cut B.
+          var flashRun = document.getElementById("pf-flash-run");
+          tl.fromTo(flashRun, { opacity: 0 }, { opacity: 0.35, duration: 0.05 }, 5.33);
+          tl.to(flashRun, { opacity: 0, duration: 0.18 }, 5.38);
+
+          // Badges: staggered in, not just fade.
+          ["pf-badge-sim", "pf-badge-en", "pf-badge-he"].forEach(function (id, i) {
+            var el = document.getElementById(id);
+            var startT = [5.6, 12.0, 20.0][i];
+            gsap.set(el, { opacity: 0, x: 24 });
+            tl.to(el, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, startT + 0.15);
+          });
+
+          // -- Captions: four real narration lines, word-synced (this is
+          // the screen-recording scene, so the caption bar is ON).
+          var box = document.getElementById("pf-caption-box");
+          var LINES = [
+            {
+              sceneStart: 0.3,
+              words: [
+                { text: "Oakhaven", start: 0.1, end: 0.575 },
+                { text: "were", start: 0.588, end: 0.725 },
+                { text: "losing", start: 0.738, end: 1.163 },
+                { text: "for", start: 1.175, end: 1.325 },
+                { text: "forty", start: 1.338, end: 1.663 },
+                { text: "minutes.", start: 1.675, end: 2.15 },
+                { text: "Pick", start: 2.788, end: 2.938 },
+                { text: "the", start: 2.95, end: 3.025 },
+                { text: "moment", start: 3.038, end: 3.375 },
+                { text: "that", start: 3.388, end: 3.525 },
+                { text: "changed", start: 3.538, end: 3.888 },
+                { text: "it.", start: 3.9, end: 4.075 },
+              ],
+            },
+            {
+              sceneStart: 4.5,
+              words: [
+                { text: "Cancel", start: 0.1, end: 0.35 },
+                { text: "the", start: 0.363, end: 0.438 },
+                { text: "goal", start: 0.45, end: 0.725 },
+                { text: "the", start: 0.925, end: 1.013 },
+                { text: "engine", start: 1.025, end: 1.425 },
+                { text: "re-simulates", start: 1.438, end: 2.138 },
+                { text: "the", start: 2.15, end: 2.225 },
+                { text: "match,", start: 2.238, end: 2.75 },
+                { text: "3,600", start: 2.938, end: 4.375 },
+                { text: "times.", start: 4.388, end: 4.913 },
+              ],
+            },
+            {
+              sceneStart: 12.5,
+              words: [
+                { text: "Or", start: 0.113, end: 0.163 },
+                { text: "just", start: 0.175, end: 0.388 },
+                { text: "ask", start: 0.4, end: 0.725 },
+                { text: "in", start: 0.975, end: 1.05 },
+                { text: "English,", start: 1.063, end: 1.525 },
+              ],
+            },
+            {
+              sceneStart: 20.3,
+              words: [
+                { text: "or", start: 0.1, end: 0.175 },
+                { text: "Hebrew.", start: 0.188, end: 0.55 },
+              ],
+            },
+          ];
+
+          LINES.forEach(function (line) {
+            var wrap = document.createElement("div");
+            wrap.style.display = "contents";
+            var els = line.words.map(function (w) {
+              var span = document.createElement("span");
+              span.className = "pf-cap-word";
+              span.textContent = w.text;
+              return span;
+            });
+            var lineStart = line.sceneStart;
+            var lineEnd = line.sceneStart + line.words[line.words.length - 1].end + 0.4;
+            tl.call(
+              function () {
+                box.innerHTML = "";
+                els.forEach(function (el) {
+                  box.appendChild(el);
+                });
+              },
+              null,
+              lineStart - 0.05,
+            );
+            tl.to(box, { opacity: 1, duration: 0.12 }, lineStart);
+            tl.to(box, { opacity: 0, duration: 0.12 }, lineEnd);
+            els.forEach(function (el, i) {
+              var s = lineStart + line.words[i].start;
+              var e = lineStart + line.words[i].end;
+              tl.to(el, { color: "#22c55e", scale: 1.06, duration: 0.05 }, s);
+              tl.to(el, { color: "#e5e7eb", scale: 1.0, duration: 0.12 }, e);
+            });
+          });
+
+          tl.seek(0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["proof"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

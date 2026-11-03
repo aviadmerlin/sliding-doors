@@ -1,0 +1,20 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Installed skill boilerplate (hyperframes/figma/media-use/etc.), not
+# project-specific -- same convention as the repo root's .claude/.
+.claude/skills/
+
+# Ignore the output video from Git but not videos you import into src/.
+out
+
+# Raw recordings and generated voiceover audio: reproducible via
+# scripts/record-footage.ts and scripts/generate-voiceover.ts, too large
+# and too easy to regenerate to version.
+public/recordings/
+public/audio/
+
+# Reference videos for visual-design study -- not ours to redistribute.
+references/

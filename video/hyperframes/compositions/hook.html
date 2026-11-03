@@ -1,0 +1,291 @@
+<!-- Hook scene -- video/SCRIPT.md beat 1. Door motif is ACTIVE here, not a
+     one-off: the scene opens covered by door panels which part to reveal
+     the scoreboard, and closes by the same panels sliding shut again --
+     the brand's own "sliding doors" becomes the literal transition
+     mechanism. Nothing holds static: panels move 0-1.1s, card settles
+     with a brief 3D tilt 0.5-1.1s, headline karaoke sweeps 0.4-1.9s,
+     background glows orbit continuously, card keeps a slow push-in the
+     whole scene, panels close 6.2-7.0s. Real, fully-loaded,
+     sidebar-free scoreboard capture (never tilted once settled, per
+     launch.md -- the brief 3D entrance is choreography, not a resting state). -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <template>
+      <div
+        id="hook-root"
+        data-composition-id="hook"
+        data-start="0"
+        data-duration="7"
+        data-width="1920"
+        data-height="1080"
+        data-motion-blur="on"
+      >
+        <style>
+          @font-face {
+            font-family: "Space Grotesk";
+            font-weight: 500;
+            font-style: normal;
+            src: url("../assets/fonts/SpaceGrotesk-500.woff2") format("woff2");
+          }
+          @font-face {
+            font-family: "Space Grotesk";
+            font-weight: 700;
+            font-style: normal;
+            src: url("../assets/fonts/SpaceGrotesk-700.woff2") format("woff2");
+          }
+
+          #hook-root {
+            --bg: #0b1220;
+            --bg-sidebar: #0f1729;
+            --border: #243049;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --accent: #22c55e;
+            --purple: #8b5cf6;
+
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: radial-gradient(120% 90% at 30% 20%, var(--bg-sidebar) 0%, var(--bg) 55%, #060910 100%);
+          }
+
+          #hook-orbit {
+            position: absolute;
+            inset: -200px;
+          }
+          #hook-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 64px 64px;
+            opacity: 0.22;
+          }
+          #hook-glow-a {
+            position: absolute;
+            width: 900px;
+            height: 900px;
+            border-radius: 50%;
+            left: 100px;
+            top: 50px;
+            background: radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 70%);
+            filter: blur(10px);
+          }
+          #hook-glow-b {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            right: 150px;
+            bottom: 100px;
+            background: radial-gradient(circle, color-mix(in srgb, var(--purple) 16%, transparent) 0%, transparent 70%);
+            filter: blur(10px);
+          }
+
+          #hook-stage {
+            position: absolute;
+            inset: 0;
+            perspective: 1800px;
+          }
+
+          #hook-card-wrap {
+            position: absolute;
+            left: 50%;
+            top: 388px;
+            width: 1600px;
+            margin-left: -800px;
+            filter: drop-shadow(0 30px 70px rgba(0, 0, 0, 0.55));
+            transform-style: preserve-3d;
+          }
+          #hook-card-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+          }
+
+          #hook-headline-wrap {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 165px;
+            display: flex;
+            justify-content: center;
+            padding: 0 170px;
+          }
+          #hook-headline {
+            max-width: 1480px;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 92px;
+            line-height: 1.14;
+            letter-spacing: -0.02em;
+            text-align: center;
+            text-wrap: balance;
+            text-shadow: 0 8px 40px rgba(0, 0, 0, 0.55);
+          }
+          .hook-word {
+            display: inline-block;
+            color: var(--text-dim);
+            transform-origin: left center;
+            margin-right: 0.18em;
+          }
+
+          /* Door panels: the brand motif as the opening/closing move. */
+          #hook-door-left,
+          #hook-door-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: linear-gradient(135deg, #0f1729 0%, #070b14 100%);
+            background-image: linear-gradient(135deg, #0f1729 0%, #070b14 100%),
+              linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size:
+              auto,
+              48px 48px,
+              48px 48px;
+            z-index: 5;
+          }
+          #hook-door-left {
+            left: 0;
+            border-right: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+            box-shadow: 8px 0 40px rgba(0, 0, 0, 0.5);
+          }
+          #hook-door-right {
+            right: 0;
+            border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+            box-shadow: -8px 0 40px rgba(0, 0, 0, 0.5);
+          }
+        </style>
+
+        <div id="hook-stage" class="clip" data-start="0" data-duration="7" data-track-index="0">
+          <div id="hook-orbit">
+            <div id="hook-grid"></div>
+            <div id="hook-glow-a"></div>
+            <div id="hook-glow-b"></div>
+          </div>
+
+          <div id="hook-card-wrap">
+            <img id="hook-card-img" src="../assets/scoreboard.png" alt="" />
+          </div>
+
+          <div id="hook-headline-wrap">
+            <div id="hook-headline"></div>
+          </div>
+        </div>
+
+        <div id="hook-door-left" class="clip" data-start="0" data-duration="7" data-track-index="1" data-layout-allow-occlusion data-layout-allow-overflow></div>
+        <div id="hook-door-right" class="clip" data-start="0" data-duration="7" data-track-index="2" data-layout-allow-occlusion data-layout-allow-overflow></div>
+
+        <audio
+          id="hook-voice"
+          class="clip"
+          data-start="0.4"
+          data-duration="1.9"
+          data-track-index="3"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/01-hook.mp3"
+        ></audio>
+
+        <audio
+          id="hook-music"
+          class="clip"
+          data-start="0"
+          data-duration="7"
+          data-track-index="4"
+          data-track-kind="music"
+          data-has-audio="true"
+          data-volume="0.5"
+          data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":1},{"t":0.4,"v":0.35},{"t":2.1,"v":0.35},{"t":2.6,"v":1}]}]}'
+          src="../assets/audio/music-PLACEHOLDER-SILENT.mp3"
+        ></audio>
+      </div>
+
+      <script>
+        (function () {
+          var WORDS = [
+            { text: "What", start: 0.103, end: 0.193 },
+            { text: "if", start: 0.206, end: 0.309 },
+            { text: "that", start: 0.322, end: 0.515 },
+            { text: "goal", start: 0.528, end: 0.825 },
+            { text: "never", start: 0.838, end: 1.082 },
+            { text: "happened", start: 1.095, end: 1.533 },
+          ];
+          var AUDIO_LEAD = 0.4;
+
+          var headline = document.getElementById("hook-headline");
+          var cardWrap = document.getElementById("hook-card-wrap");
+          var orbit = document.getElementById("hook-orbit");
+          var doorL = document.getElementById("hook-door-left");
+          var doorR = document.getElementById("hook-door-right");
+
+          var wordEls = WORDS.map(function (w, i) {
+            var span = document.createElement("span");
+            span.className = "hook-word";
+            span.textContent = w.text;
+            headline.appendChild(span);
+            if (i < WORDS.length - 1) headline.appendChild(document.createTextNode(" "));
+            return span;
+          });
+
+          var tl = gsap.timeline({ paused: true });
+
+          // Continuous background orbit -- a slow drift the whole scene,
+          // not a static gradient. ~4deg/s matches motion.md's "slow orbit
+          // of a background stage (3-5deg a second)".
+          gsap.set(orbit, { transformOrigin: "50% 50%" });
+          tl.to(orbit, { rotation: 7 * 4.2, duration: 7, ease: "none" }, 0);
+
+          // Card: brief 3D tilt-in as the doors part, settling flat --
+          // choreography, not a resting tilted state (launch.md).
+          gsap.set(cardWrap, { rotationX: 18, y: 40, opacity: 0, transformPerspective: 1800 });
+          tl.to(cardWrap, { rotationX: 0, y: 0, opacity: 1, duration: 0.85, ease: "power3.out" }, 0.25);
+          // Continuous push-in for the rest of the scene (one direction,
+          // not a breathing loop).
+          tl.fromTo(cardWrap, { scale: 1.0 }, { scale: 1.09, duration: 6.8, ease: "none" }, 0.25);
+
+          // Door panels: open 0-1.05s (the card is already animating in
+          // behind them), close 6.2-7.0s to hand off to Tension.
+          tl.fromTo(doorL, { xPercent: 0 }, { xPercent: -100, duration: 0.85, ease: "power3.inOut" }, 0.15);
+          tl.fromTo(doorR, { xPercent: 0 }, { xPercent: 100, duration: 0.85, ease: "power3.inOut" }, 0.15);
+          tl.to(doorL, { xPercent: 0, duration: 0.8, ease: "power3.inOut" }, 6.2);
+          tl.to(doorR, { xPercent: 0, duration: 0.8, ease: "power3.inOut" }, 6.2);
+
+          // Headline: rises in as the doors finish parting, overlapping
+          // (not waiting for a full stop).
+          tl.fromTo(
+            headline.parentElement,
+            { opacity: 0, y: 28 },
+            { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+            0.55,
+          );
+
+          // Word-level karaoke sweep, driven by the real Azure word-boundary
+          // timestamps.
+          wordEls.forEach(function (el, i) {
+            var start = WORDS[i].start + AUDIO_LEAD;
+            var end = WORDS[i].end + AUDIO_LEAD;
+            tl.to(el, { color: "#22c55e", scale: 1.08, duration: 0.06, ease: "power1.out" }, start);
+            tl.to(el, { color: "#e5e7eb", scale: 1.0, duration: 0.14, ease: "power1.out" }, end);
+          });
+
+          // Headline exits ahead of the door close so the close reads clean.
+          tl.to(headline.parentElement, { opacity: 0, y: -24, duration: 0.3, ease: "power2.in" }, 6.0);
+          tl.to(cardWrap, { opacity: 0.6, duration: 0.5, ease: "power2.in" }, 6.1);
+
+          tl.seek(0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["hook"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

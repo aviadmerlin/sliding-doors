@@ -1,0 +1,100 @@
+[
+  {
+    "text": "Every",
+    "startMs": 105,
+    "endMs": 342,
+    "timestampMs": 224,
+    "confidence": null
+  },
+  {
+    "text": " fan's",
+    "startMs": 355,
+    "endMs": 803,
+    "timestampMs": 579,
+    "confidence": null
+  },
+  {
+    "text": " had",
+    "startMs": 816,
+    "endMs": 987,
+    "timestampMs": 901,
+    "confidence": null
+  },
+  {
+    "text": " this",
+    "startMs": 1000,
+    "endMs": 1158,
+    "timestampMs": 1079,
+    "confidence": null
+  },
+  {
+    "text": " argument",
+    "startMs": 1171,
+    "endMs": 1575,
+    "timestampMs": 1373,
+    "confidence": null
+  },
+  {
+    "text": " if",
+    "startMs": 1961,
+    "endMs": 2053,
+    "timestampMs": 2007,
+    "confidence": null
+  },
+  {
+    "text": " that",
+    "startMs": 2066,
+    "endMs": 2224,
+    "timestampMs": 2145,
+    "confidence": null
+  },
+  {
+    "text": " shot",
+    "startMs": 2237,
+    "endMs": 2487,
+    "timestampMs": 2362,
+    "confidence": null
+  },
+  {
+    "text": " had",
+    "startMs": 2500,
+    "endMs": 2632,
+    "timestampMs": 2566,
+    "confidence": null
+  },
+  {
+    "text": " gone",
+    "startMs": 2645,
+    "endMs": 2882,
+    "timestampMs": 2763,
+    "confidence": null
+  },
+  {
+    "text": " in",
+    "startMs": 2895,
+    "endMs": 3092,
+    "timestampMs": 2993,
+    "confidence": null
+  },
+  {
+    "text": " we'd",
+    "startMs": 3513,
+    "endMs": 3645,
+    "timestampMs": 3579,
+    "confidence": null
+  },
+  {
+    "text": " have",
+    "startMs": 3658,
+    "endMs": 3895,
+    "timestampMs": 3776,
+    "confidence": null
+  },
+  {
+    "text": " won",
+    "startMs": 3908,
+    "endMs": 4211,
+    "timestampMs": 4059,
+    "confidence": null
+  }
+]

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #0b1220;
+        --ink: #e5e7eb;
+        --font-display: "Space Grotesk", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sliding Doors demo -- full build. Seven scenes, each self-covering
+         at its boundary via the door motif (closes dark -> next scene
+         opens dark), so adjacent sub-compositions need no cross-fade:
+         Hook(0-7) Tension(7-13.5) Reveal(13.5-18.6) Proof(18.6-47.4)
+         Payoff(47.4-53) Claim(53-60.2) EndCard(60.2-67.7). -->
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="67.7"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        data-composition-id="scene-hook"
+        data-composition-src="compositions/hook.html"
+        data-start="0"
+        data-duration="7"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-tension"
+        data-composition-src="compositions/tension.html"
+        data-start="7"
+        data-duration="6.5"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-reveal"
+        data-composition-src="compositions/reveal.html"
+        data-start="13.5"
+        data-duration="5.1"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-proof"
+        data-composition-src="compositions/proof.html"
+        data-start="18.6"
+        data-duration="28.8"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-payoff"
+        data-composition-src="compositions/payoff.html"
+        data-start="47.4"
+        data-duration="5.6"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-claim"
+        data-composition-src="compositions/claim.html"
+        data-start="53"
+        data-duration="7.2"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+      <div
+        data-composition-id="scene-endcard"
+        data-composition-src="compositions/endcard.html"
+        data-start="60.2"
+        data-duration="7.5"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+        style="position: absolute; inset: 0"
+      ></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

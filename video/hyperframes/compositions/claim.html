@@ -1,0 +1,333 @@
+<!-- Claim scene -- SCRIPT.md beat 6. The real pipeline: Engine -> Analyst
+     -> Narrator -> fan, data visibly moving (approved spec). Nodes
+     stagger in with the "Two agents, on Microsoft Foundry" line; amber
+     dot travels Engine<->Analyst (tool call/result), green dot Analyst
+     -> Narrator -> fan, looping continuously so the diagram never sits
+     static. Door-wipe entrance/exit. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <template>
+      <div
+        id="cl-root"
+        data-composition-id="claim"
+        data-start="0"
+        data-duration="7.2"
+        data-width="1920"
+        data-height="1080"
+        data-motion-blur="on"
+      >
+        <style>
+          @font-face {
+            font-family: "Space Grotesk";
+            font-weight: 700;
+            font-style: normal;
+            src: url("../assets/fonts/SpaceGrotesk-700.woff2") format("woff2");
+          }
+          #cl-root {
+            --bg: #0b1220;
+            --border: #243049;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --accent: #22c55e;
+            --info: #3b82f6;
+            --amber: #f59e0b;
+            --purple: #8b5cf6;
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: radial-gradient(130% 100% at 50% 100%, #0f1729 0%, var(--bg) 55%, #060910 100%);
+          }
+          #cl-grid {
+            position: absolute;
+            inset: -100px;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 56px 56px;
+            opacity: 0.2;
+          }
+          #cl-headline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 150px;
+            text-align: center;
+            font-family: "Inter", -apple-system, sans-serif;
+            font-weight: 600;
+            font-size: 44px;
+          }
+          .cl-word {
+            display: inline-block;
+            color: var(--text-dim);
+            transform-origin: left center;
+            margin-right: 0.18em;
+          }
+
+          .cl-node {
+            position: absolute;
+            top: 470px;
+            width: 300px;
+            height: 170px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: #141c2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(24px) scale(0.92);
+          }
+          .cl-node-title {
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 34px;
+            color: var(--text);
+          }
+          .cl-node-sub {
+            font-family: "Inter", sans-serif;
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-top: 8px;
+            text-align: center;
+          }
+          #cl-engine {
+            left: 90px;
+            border-color: var(--border);
+          }
+          #cl-analyst {
+            left: 480px;
+            border-color: var(--info);
+          }
+          #cl-narrator {
+            left: 870px;
+            border-color: var(--purple);
+          }
+          #cl-fan {
+            left: 1260px;
+            width: 200px;
+            border-color: var(--accent);
+          }
+
+          .cl-edge {
+            position: absolute;
+            top: 554px;
+            height: 3px;
+            background: var(--border);
+          }
+          #cl-edge-1 {
+            left: 390px;
+            width: 90px;
+          }
+          #cl-edge-2 {
+            left: 780px;
+            width: 90px;
+          }
+          #cl-edge-3 {
+            left: 1170px;
+            width: 90px;
+          }
+          .cl-edge-fill {
+            position: absolute;
+            inset: 0;
+            background: var(--text-dim);
+            transform: scaleX(0);
+            transform-origin: left center;
+          }
+
+          .cl-dot {
+            position: absolute;
+            top: 547px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            opacity: 0;
+          }
+          #cl-dot-amber {
+            background: var(--amber);
+            box-shadow: 0 0 16px var(--amber);
+          }
+          #cl-dot-green {
+            background: var(--accent);
+            box-shadow: 0 0 16px var(--accent);
+          }
+
+          .cl-door {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: linear-gradient(135deg, #0f1729 0%, #070b14 100%);
+            z-index: 6;
+          }
+          #cl-door-l {
+            left: 0;
+            border-right: 2px solid var(--accent);
+          }
+          #cl-door-r {
+            right: 0;
+            border-left: 2px solid var(--accent);
+          }
+        </style>
+
+        <div id="cl-stage" class="clip" data-start="0" data-duration="7.2" data-track-index="0">
+          <div id="cl-grid"></div>
+          <div id="cl-headline"></div>
+
+          <div class="cl-edge" id="cl-edge-1"><div class="cl-edge-fill"></div></div>
+          <div class="cl-edge" id="cl-edge-2"><div class="cl-edge-fill"></div></div>
+          <div class="cl-edge" id="cl-edge-3"><div class="cl-edge-fill"></div></div>
+
+          <div class="cl-node" id="cl-engine">
+            <div class="cl-node-title">Engine</div>
+            <div class="cl-node-sub">win_probability.py<br />counterfactual.py</div>
+          </div>
+          <div class="cl-node" id="cl-analyst">
+            <div class="cl-node-title" style="color: var(--info)">Analyst</div>
+            <div class="cl-node-sub">Microsoft Foundry<br />gpt-5-mini</div>
+          </div>
+          <div class="cl-node" id="cl-narrator">
+            <div class="cl-node-title" style="color: var(--purple)">Narrator</div>
+            <div class="cl-node-sub">Microsoft Foundry<br />gpt-5-mini</div>
+          </div>
+          <div class="cl-node" id="cl-fan">
+            <div class="cl-node-title" style="font-size: 28px">Fan</div>
+            <div class="cl-node-sub">EN / עברית</div>
+          </div>
+
+          <div class="cl-dot" id="cl-dot-amber"></div>
+          <div class="cl-dot" id="cl-dot-green"></div>
+        </div>
+
+        <div class="cl-door clip" id="cl-door-l" data-start="0" data-duration="7.2" data-track-index="2" data-layout-allow-occlusion data-layout-allow-overflow></div>
+        <div class="cl-door clip" id="cl-door-r" data-start="0" data-duration="7.2" data-track-index="3" data-layout-allow-occlusion data-layout-allow-overflow></div>
+
+        <audio
+          id="cl-voice"
+          class="clip"
+          data-start="0.3"
+          data-duration="5.4"
+          data-track-index="4"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/06-claim.mp3"
+        ></audio>
+        <audio
+          id="cl-music"
+          class="clip"
+          data-start="0"
+          data-duration="7.2"
+          data-track-index="5"
+          data-track-kind="music"
+          data-has-audio="true"
+          data-volume="0.5"
+          data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":1},{"t":0.3,"v":0.35},{"t":5.6,"v":0.35},{"t":6.1,"v":1}]}]}'
+          src="../assets/audio/music-PLACEHOLDER-SILENT.mp3"
+        ></audio>
+      </div>
+
+      <script>
+        (function () {
+          var AL = 0.3;
+          var doorL = document.getElementById("cl-door-l");
+          var doorR = document.getElementById("cl-door-r");
+          var headline = document.getElementById("cl-headline");
+          var WORDS = [
+            { text: "Two", start: 0.1, end: 0.275 },
+            { text: "agents,", start: 0.288, end: 0.788 },
+            { text: "on", start: 1.038, end: 1.163 },
+            { text: "Microsoft", start: 1.175, end: 1.713 },
+            { text: "Foundry.", start: 1.725, end: 2.213 },
+            { text: "Every", start: 2.825, end: 3.038 },
+            { text: "number", start: 3.05, end: 3.325 },
+            { text: "comes", start: 3.338, end: 3.613 },
+            { text: "from", start: 3.625, end: 3.763 },
+            { text: "the", start: 3.775, end: 3.838 },
+            { text: "model,", start: 3.85, end: 4.25 },
+            { text: "never", start: 4.65, end: 4.85 },
+            { text: "made", start: 4.863, end: 5.088 },
+            { text: "up.", start: 5.1, end: 5.325 },
+          ];
+          var wordEls = WORDS.map(function (w, i) {
+            var span = document.createElement("span");
+            span.className = "cl-word";
+            span.textContent = w.text;
+            headline.appendChild(span);
+            if (i < WORDS.length - 1) headline.appendChild(document.createTextNode(" "));
+            return span;
+          });
+
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo(doorL, { xPercent: 0 }, { xPercent: -100, duration: 0.4, ease: "power3.inOut" }, 0);
+          tl.fromTo(doorR, { xPercent: 0 }, { xPercent: 100, duration: 0.4, ease: "power3.inOut" }, 0);
+
+          wordEls.forEach(function (el, i) {
+            var s = WORDS[i].start + AL;
+            var e = WORDS[i].end + AL;
+            tl.to(el, { color: "#22c55e", scale: 1.07, duration: 0.05 }, s);
+            tl.to(el, { color: "#e5e7eb", scale: 1.0, duration: 0.13 }, e);
+          });
+
+          // Nodes stagger in left to right as the line lands.
+          ["cl-engine", "cl-analyst", "cl-narrator", "cl-fan"].forEach(function (id, i) {
+            tl.to(
+              "#" + id,
+              { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power3.out" },
+              0.4 + i * 0.16,
+            );
+          });
+          // Edges draw on right after their nodes land.
+          ["cl-edge-1", "cl-edge-2", "cl-edge-3"].forEach(function (id, i) {
+            tl.to("#" + id + " .cl-edge-fill", { scaleX: 1, duration: 0.3, ease: "power2.out" }, 0.75 + i * 0.16);
+          });
+
+          // Data flow: amber dot Engine -> Analyst -> back (tool call +
+          // result), green dot Analyst -> Narrator -> Fan. Both loop for
+          // the rest of the scene so the diagram keeps moving.
+          var amber = document.getElementById("cl-dot-amber");
+          var green = document.getElementById("cl-dot-green");
+          // Transforms only (x), never `left` -- layout properties snap to
+          // integer device pixels under the seek-by-frame capture engine
+          // and stutter; x/scale/opacity interpolate sub-pixel.
+          function loopDot(el, fromX, toX, startAt, loopDur, repeats) {
+            gsap.set(el, { left: fromX, x: 0, opacity: 0 });
+            var dx = toX - fromX;
+            tl.to(el, { opacity: 1, duration: 0.15 }, startAt);
+            for (var r = 0; r < repeats; r++) {
+              var t = startAt + r * loopDur;
+              tl.fromTo(el, { x: 0 }, { x: dx, duration: loopDur * 0.42, ease: "power1.inOut" }, t);
+              tl.to(el, { x: 0, duration: loopDur * 0.42, ease: "power1.inOut" }, t + loopDur * 0.5);
+            }
+          }
+          loopDot(amber, 405, 765, 1.4, 1.3, 3);
+          function flowOnce(el, fromX, toX, startAt, dur) {
+            gsap.set(el, { left: fromX, x: 0, opacity: 0 });
+            var dx = toX - fromX;
+            tl.to(el, { opacity: 1, duration: 0.1 }, startAt);
+            tl.to(el, { x: dx, duration: dur, ease: "power1.inOut" }, startAt);
+            tl.to(el, { opacity: 0, duration: 0.15 }, startAt + dur);
+          }
+          flowOnce(green, 1185, 1545, 2.6, 0.6);
+          flowOnce(green, 1185, 1545, 4.0, 0.6);
+          flowOnce(green, 1185, 1545, 5.4, 0.6);
+
+          // Slow continued orbit on the whole node row (never fully static).
+          tl.to("#cl-stage", { y: -6, duration: 2.5, ease: "sine.inOut" }, 3.0);
+
+          tl.to(doorL, { xPercent: 0, duration: 0.4, ease: "power3.inOut" }, 6.75);
+          tl.to(doorR, { xPercent: 0, duration: 0.4, ease: "power3.inOut" }, 6.75);
+
+          tl.seek(0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["claim"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

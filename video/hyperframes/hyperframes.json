@@ -1,0 +1,90 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/hyperframes.json",
+  "registry": "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry",
+  "paths": {
+    "blocks": "compositions",
+    "components": "compositions/components",
+    "assets": "assets"
+  },
+  "media": {
+    "autoProxy": true
+  },
+  "authoringSkill": "hyperframes",
+  "registryItems": [
+    {
+      "name": "headline-slam",
+      "type": "hyperframes:component",
+      "target": "compositions/components/headline-slam.html"
+    },
+    {
+      "name": "mk-callout-highlight",
+      "type": "hyperframes:block",
+      "target": "compositions/mk-callout-highlight.html"
+    },
+    {
+      "name": "iris-reveal",
+      "type": "hyperframes:component",
+      "target": "compositions/components/iris-reveal.html"
+    },
+    {
+      "name": "cursor-zoom-follow",
+      "type": "hyperframes:component",
+      "target": "compositions/components/cursor-zoom-follow.html"
+    },
+    {
+      "name": "press-ripple",
+      "type": "hyperframes:component",
+      "target": "compositions/components/press-ripple.html"
+    },
+    {
+      "name": "flowchart",
+      "type": "hyperframes:block",
+      "target": "compositions/flowchart.html"
+    },
+    {
+      "name": "logo-outro",
+      "type": "hyperframes:block",
+      "target": "compositions/logo-outro.html"
+    },
+    {
+      "name": "mk-progress-stat",
+      "type": "hyperframes:block",
+      "target": "compositions/mk-progress-stat.html"
+    },
+    {
+      "name": "chart-story",
+      "type": "hyperframes:component",
+      "target": "compositions/components/chart-story.html"
+    },
+    {
+      "name": "echo-trail",
+      "type": "hyperframes:component",
+      "target": "compositions/components/echo-trail.html"
+    },
+    {
+      "name": "text-state-swap",
+      "type": "hyperframes:component",
+      "target": "compositions/components/text-state-swap.html"
+    },
+    {
+      "name": "strikethrough-replace",
+      "type": "hyperframes:component",
+      "target": "compositions/components/strikethrough-replace.html"
+    },
+    {
+      "name": "typed-prompt",
+      "type": "hyperframes:component",
+      "target": "compositions/components/typed-prompt.html"
+    },
+    {
+      "name": "agent-cursor",
+      "type": "hyperframes:component",
+      "target": "compositions/components/agent-cursor.html"
+    },
+    {
+      "name": "caption-pill-karaoke",
+      "type": "hyperframes:component",
+      "target": "compositions/components/caption-pill-karaoke.html"
+    }
+  ]
+}

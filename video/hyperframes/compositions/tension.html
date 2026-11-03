@@ -1,0 +1,252 @@
+<!-- Tension scene -- SCRIPT.md beat 2. Two fan claims collide and cancel
+     each other out -- the "old way failing on screen" per story.md.
+     Door-wipe entrance/exit (the recurring brand transition). Constant
+     motion: claims drift in from opposite sides, clash and judder at
+     center, one gets struck through, both dissolve into static/noise as
+     the narration lands on "two different stories" -- unresolved, into
+     the Reveal's answer. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <template>
+      <div
+        id="ts-root"
+        data-composition-id="tension"
+        data-start="0"
+        data-duration="6.5"
+        data-width="1920"
+        data-height="1080"
+        data-motion-blur="on"
+      >
+        <style>
+          @font-face {
+            font-family: "Space Grotesk";
+            font-weight: 700;
+            font-style: normal;
+            src: url("../assets/fonts/SpaceGrotesk-700.woff2") format("woff2");
+          }
+          #ts-root {
+            --bg: #0b1220;
+            --border: #243049;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --accent: #22c55e;
+            --loss: #ef4444;
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: radial-gradient(130% 100% at 70% 80%, #0f1729 0%, var(--bg) 55%, #060910 100%);
+          }
+          #ts-grid {
+            position: absolute;
+            inset: -100px;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 56px 56px;
+            opacity: 0.2;
+          }
+          .ts-claim {
+            position: absolute;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 72px;
+            letter-spacing: -0.02em;
+          }
+          #ts-claim-a {
+            top: 330px;
+          }
+          #ts-claim-b {
+            top: 620px;
+          }
+          .ts-word {
+            display: inline-block;
+            color: var(--text-dim);
+            transform-origin: left center;
+            margin-right: 0.18em;
+          }
+          #ts-vs {
+            position: absolute;
+            left: 50%;
+            top: 450px;
+            transform: translateX(-50%);
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 40px;
+            color: var(--loss);
+            opacity: 0;
+          }
+          #ts-static {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0px, transparent 2px, transparent 4px);
+            opacity: 0;
+            mix-blend-mode: overlay;
+          }
+          .ts-strike {
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            top: 50%;
+            height: 4px;
+            background: var(--loss);
+            transform: scaleX(0);
+            transform-origin: left center;
+          }
+
+          /* Door panels -- the recurring brand transition, fast version. */
+          .ts-door {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: linear-gradient(135deg, #0f1729 0%, #070b14 100%);
+            z-index: 6;
+          }
+          #ts-door-l {
+            left: 0;
+            border-right: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+          }
+          #ts-door-r {
+            right: 0;
+            border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+          }
+        </style>
+
+        <div id="ts-stage" class="clip" data-start="0" data-duration="6.5" data-track-index="0">
+          <div id="ts-grid"></div>
+          <div class="ts-claim" id="ts-claim-a"></div>
+          <div class="ts-claim" id="ts-claim-b"></div>
+          <div class="ts-strike" id="ts-strike-a" style="top: 370px"></div>
+          <div class="ts-strike" id="ts-strike-b" style="top: 660px"></div>
+          <div id="ts-vs">VS</div>
+          <div id="ts-static"></div>
+        </div>
+
+        <div id="ts-door-l" class="clip" data-start="0" data-duration="6.5" data-track-index="1" data-layout-allow-occlusion data-layout-allow-overflow></div>
+        <div id="ts-door-r" class="clip" data-start="0" data-duration="6.5" data-track-index="2" data-layout-allow-occlusion data-layout-allow-overflow></div>
+
+        <audio
+          id="ts-voice"
+          class="clip"
+          data-start="0.35"
+          data-duration="4.7"
+          data-track-index="3"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/02-tension.mp3"
+        ></audio>
+        <audio
+          id="ts-music"
+          class="clip"
+          data-start="0"
+          data-duration="6.5"
+          data-track-index="4"
+          data-track-kind="music"
+          data-has-audio="true"
+          data-volume="0.5"
+          data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":1},{"t":0.35,"v":0.35},{"t":5.1,"v":0.35},{"t":5.6,"v":1}]}]}'
+          src="../assets/audio/music-PLACEHOLDER-SILENT.mp3"
+        ></audio>
+      </div>
+
+      <script>
+        (function () {
+          var AL = 0.35;
+          var doorL = document.getElementById("ts-door-l");
+          var doorR = document.getElementById("ts-door-r");
+          var claimA = document.getElementById("ts-claim-a");
+          var claimB = document.getElementById("ts-claim-b");
+          var vs = document.getElementById("ts-vs");
+          var strikeA = document.getElementById("ts-strike-a");
+          var statik = document.getElementById("ts-static");
+
+          // Real narration, split across the two "competing claim" lines --
+          // this IS the caption (word-synced), not decorative text.
+          var LINE_A = [
+            { text: "It's", start: 0.113, end: 0.225 },
+            { text: "always", start: 0.238, end: 0.563 },
+            { text: "just", start: 0.575, end: 0.775 },
+            { text: "opinion.", start: 0.788, end: 1.188 },
+          ];
+          var LINE_B = [
+            { text: "Two", start: 1.863, end: 2.013 },
+            { text: "fans,", start: 2.025, end: 2.538 },
+            { text: "same", start: 2.763, end: 3.013 },
+            { text: "goal,", start: 3.025, end: 3.35 },
+            { text: "two", start: 3.613, end: 3.775 },
+            { text: "different", start: 3.788, end: 4.088 },
+            { text: "stories.", start: 4.1, end: 4.638 },
+          ];
+
+          function buildWords(container, words) {
+            return words.map(function (w, i) {
+              var span = document.createElement("span");
+              span.className = "ts-word";
+              span.textContent = w.text;
+              container.appendChild(span);
+              if (i < words.length - 1) container.appendChild(document.createTextNode(" "));
+              return span;
+            });
+          }
+          var wordsA = buildWords(claimA, LINE_A);
+          var wordsB = buildWords(claimB, LINE_B);
+
+          var tl = gsap.timeline({ paused: true });
+
+          // Door open (fast, 0.35s -- the recurring transition, quicker
+          // than the Hook's hero version).
+          tl.fromTo(doorL, { xPercent: 0 }, { xPercent: -100, duration: 0.35, ease: "power3.inOut" }, 0);
+          tl.fromTo(doorR, { xPercent: 0 }, { xPercent: 100, duration: 0.35, ease: "power3.inOut" }, 0);
+
+          // Line A drifts in from the left as it's spoken.
+          gsap.set(claimA, { x: -220, opacity: 0 });
+          gsap.set(claimB, { x: 220, opacity: 0 });
+          tl.to(claimA, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, AL);
+          // Line B drifts in from the right as IT'S spoken -- the two
+          // claims arrive sequentially, in real speech rhythm.
+          tl.to(claimB, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 1.5 + AL);
+
+          [
+            [wordsA, LINE_A],
+            [wordsB, LINE_B],
+          ].forEach(function (pair) {
+            pair[0].forEach(function (el, i) {
+              var start = pair[1][i].start + AL;
+              var end = pair[1][i].end + AL;
+              tl.to(el, { color: "#22c55e", scale: 1.08, duration: 0.06, ease: "power1.out" }, start);
+              tl.to(el, { color: "#e5e7eb", scale: 1.0, duration: 0.14, ease: "power1.out" }, end);
+            });
+          });
+
+          // Once both lines have landed, they clash -- impact judder + VS.
+          tl.to([claimA, claimB], { x: "+=6", duration: 0.05, ease: "power1.out" }, 4.75 + AL);
+          tl.to([claimA, claimB], { x: "-=6", duration: 0.05, ease: "power1.out" }, 4.8 + AL);
+          tl.to([claimA, claimB], { x: 0, duration: 0.05, ease: "power1.out" }, 4.85 + AL);
+          tl.to(vs, { opacity: 1, scale: 1.3, duration: 0.15, ease: "power2.out" }, 4.75 + AL);
+          tl.to(vs, { scale: 1, duration: 0.2, ease: "power2.out" }, 4.9 + AL);
+          // Once both lines have clashed, unresolved: strike-through +
+          // static + dissolve, right before the door closes.
+          tl.to(strikeA, { scaleX: 1, duration: 0.25, ease: "power2.in" }, 5.3);
+          tl.to(statik, { opacity: 0.5, duration: 0.25, ease: "power1.inOut" }, 5.35);
+          tl.to([claimA, claimB, vs], { opacity: 0.35, filter: "blur(2px)", duration: 0.45, ease: "power2.in" }, 5.5);
+
+          // Door close (fast, bridges to Reveal).
+          tl.to(doorL, { xPercent: 0, duration: 0.4, ease: "power3.inOut" }, 6.05);
+          tl.to(doorR, { xPercent: 0, duration: 0.4, ease: "power3.inOut" }, 6.05);
+
+          tl.seek(0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["tension"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

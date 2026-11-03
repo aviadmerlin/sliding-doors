@@ -1,0 +1,259 @@
+<!-- End card -- SCRIPT.md beat 7. Door-wipe reveal (recurring motif, one
+     last time), wordmark + tagline performed word by word in sync with
+     real narration, then repo/demo links stagger in. Holds static for
+     the final 2.5s -- the ONE place a static hold is allowed per the
+     brief. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <template>
+      <div
+        id="ec-root"
+        data-composition-id="endcard"
+        data-start="0"
+        data-duration="7.5"
+        data-width="1920"
+        data-height="1080"
+        data-motion-blur="on"
+      >
+        <style>
+          @font-face {
+            font-family: "Space Grotesk";
+            font-weight: 700;
+            font-style: normal;
+            src: url("../assets/fonts/SpaceGrotesk-700.woff2") format("woff2");
+          }
+          #ec-root {
+            --bg: #0b1220;
+            --border: #243049;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --accent: #22c55e;
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: var(--bg);
+          }
+          #ec-orbit {
+            position: absolute;
+            inset: -200px;
+          }
+          #ec-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px),
+              linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 64px 64px;
+            opacity: 0.2;
+          }
+          #ec-glow {
+            position: absolute;
+            width: 1100px;
+            height: 1100px;
+            left: 50%;
+            top: 50%;
+            margin: -550px 0 0 -550px;
+            border-radius: 50%;
+            background: radial-gradient(circle, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 65%);
+            filter: blur(14px);
+          }
+          #ec-wordmark {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 400px;
+            text-align: center;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 128px;
+            letter-spacing: -0.01em;
+          }
+          .ec-wm-word {
+            display: inline-block;
+            opacity: 0;
+          }
+          #ec-tagline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 565px;
+            text-align: center;
+            font-family: "Inter", -apple-system, sans-serif;
+            font-weight: 500;
+            font-size: 38px;
+          }
+          .ec-tag-word {
+            display: inline-block;
+            color: var(--text-dim);
+            transform-origin: left center;
+            margin-right: 0.18em;
+          }
+          #ec-links {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 700px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+          }
+          .ec-link {
+            padding: 16px 32px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(20, 28, 46, 0.7);
+            font-family: "Inter", sans-serif;
+            font-weight: 600;
+            font-size: 26px;
+            color: var(--text);
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          #ec-link-demo {
+            border-color: var(--accent);
+            color: var(--accent);
+          }
+
+          .ec-door {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: linear-gradient(135deg, #0f1729 0%, #070b14 100%);
+            z-index: 6;
+          }
+          #ec-door-l {
+            left: 0;
+            border-right: 2px solid var(--accent);
+          }
+          #ec-door-r {
+            right: 0;
+            border-left: 2px solid var(--accent);
+          }
+        </style>
+
+        <div id="ec-stage" class="clip" data-start="0" data-duration="7.5" data-track-index="0">
+          <div id="ec-orbit">
+            <div id="ec-grid"></div>
+            <div id="ec-glow"></div>
+          </div>
+          <div id="ec-wordmark">
+            <span class="ec-wm-word" id="ec-w1" style="color: var(--text)">Sliding</span>
+            <span class="ec-wm-word" id="ec-w2" style="color: var(--accent)">Doors</span>
+          </div>
+          <div id="ec-tagline"></div>
+          <div id="ec-links">
+            <div class="ec-link" id="ec-link-repo">github.com/aviadmerlin/sliding-doors</div>
+            <div class="ec-link" id="ec-link-demo">Live demo</div>
+          </div>
+        </div>
+
+        <div class="ec-door clip" id="ec-door-l" data-start="0" data-duration="7.5" data-track-index="2" data-layout-allow-occlusion data-layout-allow-overflow></div>
+        <div class="ec-door clip" id="ec-door-r" data-start="0" data-duration="7.5" data-track-index="3" data-layout-allow-occlusion data-layout-allow-overflow></div>
+
+        <audio
+          id="ec-voice"
+          class="clip"
+          data-start="0.3"
+          data-duration="4.6"
+          data-track-index="4"
+          data-track-kind="voiceover"
+          data-has-audio="true"
+          src="../assets/audio/07-end-card.mp3"
+        ></audio>
+        <audio
+          id="ec-music"
+          class="clip"
+          data-start="0"
+          data-duration="7.5"
+          data-track-index="5"
+          data-track-kind="music"
+          data-has-audio="true"
+          data-volume="0.5"
+          data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":1},{"t":0.3,"v":0.35},{"t":4.9,"v":0.35},{"t":5.4,"v":0.75},{"t":7.5,"v":0}]}]}'
+          src="../assets/audio/music-PLACEHOLDER-SILENT.mp3"
+        ></audio>
+      </div>
+
+      <script>
+        (function () {
+          var AL = 0.3;
+          var doorL = document.getElementById("ec-door-l");
+          var doorR = document.getElementById("ec-door-r");
+          var orbit = document.getElementById("ec-orbit");
+          var w1 = document.getElementById("ec-w1");
+          var w2 = document.getElementById("ec-w2");
+          var tagline = document.getElementById("ec-tagline");
+          var linkRepo = document.getElementById("ec-link-repo");
+          var linkDemo = document.getElementById("ec-link-demo");
+
+          var TAG_WORDS = [
+            { text: "Every", start: 1.813, end: 2.044 },
+            { text: "match,", start: 2.058, end: 2.56 },
+            { text: "every", start: 2.846, end: 3.049 },
+            { text: "moment,", start: 3.063, end: 3.525 },
+            { text: "every", start: 3.742, end: 3.96 },
+            { text: "what", start: 3.973, end: 4.15 },
+            { text: "if.", start: 4.164, end: 4.462 },
+          ];
+          var tagEls = TAG_WORDS.map(function (w, i) {
+            var span = document.createElement("span");
+            span.className = "ec-tag-word";
+            span.textContent = w.text;
+            tagline.appendChild(span);
+            if (i < TAG_WORDS.length - 1) tagline.appendChild(document.createTextNode(" "));
+            return span;
+          });
+
+          var tl = gsap.timeline({ paused: true });
+
+          gsap.set(orbit, { transformOrigin: "50% 50%" });
+          tl.to(orbit, { rotation: 5 * 3, duration: 5, ease: "none" }, 0);
+
+          // Door open -- the brand's own motif, one last time.
+          tl.fromTo(doorL, { xPercent: 0 }, { xPercent: -100, duration: 0.6, ease: "power3.inOut" }, 0);
+          tl.fromTo(doorR, { xPercent: 0 }, { xPercent: 100, duration: 0.6, ease: "power3.inOut" }, 0);
+
+          // Wordmark performed as "Sliding Doors" plays.
+          tl.fromTo(
+            w1,
+            { opacity: 0, scale: 0.85, filter: "blur(6px)" },
+            { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" },
+            0.109 + AL,
+          );
+          tl.fromTo(
+            w2,
+            { opacity: 0, scale: 0.8, filter: "blur(8px)" },
+            { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "power3.out" },
+            0.489 + AL,
+          );
+
+          // Tagline karaoke sweep.
+          tagEls.forEach(function (el, i) {
+            var s = TAG_WORDS[i].start + AL;
+            var e = TAG_WORDS[i].end + AL;
+            tl.to(el, { color: "#22c55e", scale: 1.06, duration: 0.05 }, s);
+            tl.to(el, { color: "#e5e7eb", scale: 1.0, duration: 0.13 }, e);
+          });
+          tl.to(tagline, { opacity: 1, duration: 0.01 }, 0);
+
+          // Links stagger in after the tagline lands.
+          tl.to(linkRepo, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4.9);
+          tl.to(linkDemo, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.05);
+
+          // Final hold: static from here to the end (the one exception).
+          tl.to({}, { duration: 2.0 }, 5.5);
+
+          tl.seek(0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["endcard"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
