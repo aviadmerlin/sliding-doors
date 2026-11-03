@@ -1,6 +1,8 @@
 node_modules
 .env
 .DS_Store
+.thumbnails/
+.waveform-cache/
 
 # Rendered output and generated captures/audio -- reproducible via
 # scripts/, too large and too easy to regenerate to version.
