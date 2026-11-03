@@ -17,7 +17,7 @@ All match data is **100% synthetic**: a fictional 20-club league, fictional
 players, 5 simulated seasons — no real clubs, players, or logos anywhere
 in the code, data, or UI.
 
-- **Demo video:** _TODO — add the hosted video URL here before submitting_
+- **Demo video:** [video/hyperframes/renders/full-v5.mp4](video/hyperframes/renders/full-v5.mp4) (draft quality — still being polished, see [video/CRITIQUE.md](video/CRITIQUE.md))
 - **Live demo:** https://sliding-doors.happytree-e6502234.switzerlandnorth.azurecontainerapps.io/
   (Azure Container Apps, `switzerlandnorth`)
 - **Submission pitch / testing instructions:** [SUBMISSION.md](SUBMISSION.md)
