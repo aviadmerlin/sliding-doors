@@ -1,0 +1,171 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+    #pb-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 120px 120px;
+    }
+    #pb-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.08), transparent 62%);
+    }
+    #pb-seam {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 1080px;
+      margin-left: -1px;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(245, 158, 11, 0.4) 22%,
+        rgba(245, 158, 11, 0.4) 78%,
+        transparent
+      );
+      opacity: 0.25;
+    }
+
+    /* The old argument, set as a fan's quote. */
+    #pb-quote {
+      position: absolute;
+      left: 192px;
+      top: 300px;
+      width: 1536px;
+      text-align: center;
+    }
+    #pb-quote-inner {
+      position: relative;
+      display: inline-block;
+      font-size: 74px;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: -0.015em;
+      line-height: 1.22;
+      color: #9ca3af;
+      max-width: 1440px;
+    }
+    #pb-strike {
+      position: absolute;
+      left: -8px;
+      top: 52%;
+      width: calc(100% + 16px);
+      height: 4px;
+      background: #ef4444;
+      transform-origin: left center;
+      opacity: 0;
+    }
+
+    /* The answer. */
+    #pb-answer {
+      position: absolute;
+      left: 192px;
+      top: 596px;
+      width: 1536px;
+      text-align: center;
+      font-size: 122px;
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .green {
+      color: #22c55e;
+    }
+  </style>
+
+  <div data-hf-id="hf-rs66" id="root" data-composition-id="problem" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-3gg7" id="pb-grid" data-layout-ignore=""></div>
+    <div data-hf-id="hf-qeml" id="pb-vignette" data-layout-ignore=""></div>
+    
+
+    <div data-hf-id="hf-sdn4" id="pb-quote" class="clip" data-start="0.15" data-duration="4.95" data-track-index="1">
+      <div data-hf-studio-original-inline-translate="" data-hf-studio-original-display="" data-hf-studio-original-box-sizing="" data-hf-studio-original-flex-shrink="" data-hf-studio-original-flex-grow="" data-hf-studio-original-flex-basis="" data-hf-studio-original-max-height="" data-hf-studio-original-max-width="" data-hf-studio-original-min-height="" data-hf-studio-original-min-width="" data-hf-studio-original-box-height="181" data-hf-studio-original-box-width="1440" data-hf-studio-original-height="" data-hf-studio-original-width="" data-hf-studio-box-size="true" style="--hf-studio-width: 1574px; --hf-studio-height: 198px; width: 1574px; height: 198px; min-width: 0px; min-height: 0px; max-width: none; max-height: none; box-sizing: border-box; translate: -19.236px -8.451px" data-hf-id="hf-o52v" id="pb-quote-inner">
+        <span data-hf-id="hf-2k0o" class="w" id="pb-q1">“We’d</span> <span data-hf-id="hf-msmy" class="w" id="pb-q2">have</span>
+        <span data-hf-id="hf-tm47" class="w" id="pb-q3">won</span> <span data-hf-id="hf-h9n1" class="w" id="pb-q4">if</span>
+        <span data-hf-id="hf-g4ca" class="w" id="pb-q5">that</span> <span data-hf-id="hf-ak2r" class="w" id="pb-q6">goal</span>
+        <span data-hf-id="hf-as79" class="w" id="pb-q7">hadn’t</span> <span data-hf-id="hf-one9" class="w" id="pb-q8">gone</span>
+        <span data-hf-id="hf-1yhd" class="w" id="pb-q9">in.”</span>
+        <span data-hf-id="hf-h2f4" id="pb-strike" data-layout-ignore=""></span>
+      </div>
+    </div>
+
+    <div data-hf-id="hf-ckcn" id="pb-answer" class="clip" data-start="2.95" data-duration="2.15" data-track-index="2">
+      <span data-hf-id="hf-zu6x" class="w" id="pb-a1">Now</span> <span data-hf-id="hf-9irb" class="w" id="pb-a2">you</span>
+      <span data-hf-id="hf-lk8d" class="w" id="pb-a3">can</span> <span data-hf-id="hf-gvq5" class="w green" id="pb-a4">test</span>
+      <span data-hf-id="hf-keyt" class="w green" id="pb-a5">it.</span>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Quote words on the measured voiceover (02_problem_a) + 0.2 s lead-in.
+      const quote = [
+        ["#pb-q1", 0.2],
+        ["#pb-q2", 0.435],
+        ["#pb-q3", 0.671],
+        ["#pb-q4", 0.847],
+        ["#pb-q5", 0.965],
+        ["#pb-q6", 1.2],
+        ["#pb-q7", 1.435],
+        ["#pb-q8", 1.788],
+        ["#pb-q9", 2.024],
+      ];
+      quote.forEach(([sel, t]) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 26, filter: "blur(9px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.26, ease: "power3.out" },
+          t,
+        );
+      });
+
+      // The argument gets struck out just before the answer arrives.
+      tl.fromTo(
+        "#pb-strike",
+        { opacity: 0, scaleX: 0 },
+        { opacity: 1, scaleX: 1, duration: 0.42, ease: "power3.inOut" },
+        2.44,
+      );
+      tl.to("#pb-quote-inner", { opacity: 0.4, duration: 0.4, ease: "power2.out" }, 2.72);
+
+      // "Now you can test it." — on 03_problem_b (local 3.0) + per word.
+      const answer = [
+        ["#pb-a1", 3.0],
+        ["#pb-a2", 3.375],
+        ["#pb-a3", 3.75],
+        ["#pb-a4", 4.125],
+        ["#pb-a5", 4.625],
+      ];
+      answer.forEach(([sel, t]) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 40, filter: "blur(12px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power4.out" },
+          t,
+        );
+      });
+
+      // Seam brightens as the film turns from the argument to the product.
+      
+      window.__timelines["problem"] = tl;
+    })();
+  </script>
+</template>

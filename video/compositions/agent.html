@@ -1,0 +1,213 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+
+    /* One untimed transform container per shot: typing, the thinking
+       beat, and the answer each get their own framing, and the hard cut
+       over the API wait carries a camera jump. Highlights sit inside
+       their shot's container in source-pixel coordinates. */
+    .ag-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      will-change: transform;
+    }
+    .ag-layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      object-fit: contain;
+    }
+
+    /* Source coords of the real question input. */
+    #ag-ring-input {
+      position: absolute;
+      left: 394px;
+      top: 746px;
+      width: 852px;
+      height: 52px;
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.22), 0 0 30px rgba(59, 130, 246, 0.32);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    /* Source coords of "9% to 92%" inside the real answer, measured on
+       this exact capture -- the same pair the simulation panel produced. */
+    #ag-band {
+      position: absolute;
+      left: 974px;
+      top: 918px;
+      width: 90px;
+      height: 26px;
+      background: rgba(245, 158, 11, 0.24);
+      border-bottom: 2px solid #f59e0b;
+      border-radius: 4px;
+      opacity: 0;
+      transform-origin: left center;
+      will-change: transform, opacity;
+    }
+
+    #ag-scrim {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 380px;
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.97) 46%, rgba(11, 18, 32, 0));
+    }
+    .ag-cap {
+      position: absolute;
+      left: 192px;
+      top: 124px;
+      width: 1536px;
+      text-align: center;
+      font-size: 92px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .blue {
+      color: #3b82f6;
+    }
+    .amber {
+      color: #f59e0b;
+    }
+  </style>
+
+  <!-- data-start/data-duration below mount for each shot's own slice of
+       the scene, generated from window.__TIMING__.scenes.agent and
+       .cuts.agent_cut_type_think / .agent_cut_answer. Tween times are
+       computed live from the manifest. -->
+  <div id="root" data-composition-id="agent" data-width="1920" data-height="1080">
+    <!-- Shot 1: the real question being typed, sped 1.6x in the file so
+         it reads quickly. The real Ask click lands at .cuts.agent_ask_click,
+         where the click SFX sits. -->
+    <div id="ag-cam-type" class="ag-cam" data-layout-allow-overflow>
+      <video
+        id="ag-cut-type"
+        class="ag-layer clip"
+        data-start="0"
+        data-duration="2.2"
+        data-track-index="1"
+        src="assets/clips/agent-type.mp4"
+        muted
+        playsinline
+      ></video>
+      <div id="ag-ring-input" data-layout-ignore></div>
+    </div>
+
+    <!-- Shot 2: the real "Thinking..." state. -->
+    <div id="ag-cam-think" class="ag-cam" data-layout-allow-overflow>
+      <video
+        id="ag-cut-think"
+        class="ag-layer clip"
+        data-start="2.2"
+        data-duration="0.9"
+        data-track-index="2"
+        src="assets/clips/agent-think.mp4"
+        muted
+        playsinline
+      ></video>
+    </div>
+
+    <!-- Shot 3: hard cut over the ~9 s API wait, straight to the answer.
+         A 2x screenshot of the same run, so the question above it is
+         continuous with the typing and the text stays sharp at 2.2x. -->
+    <div id="ag-cam-answer" class="ag-cam" data-layout-allow-overflow>
+      <img
+        id="ag-cut-answer"
+        class="ag-layer clip"
+        data-start="3.1"
+        data-duration="2.6"
+        data-track-index="3"
+        src="assets/screens/agent_answer.png"
+        alt="The agent's grounded answer: jumped from 9% to 92%"
+      />
+      <div id="ag-band" data-layout-ignore></div>
+    </div>
+
+    <div id="ag-scrim" data-layout-ignore></div>
+
+    <div id="ag-cap-ask" class="ag-cap clip" data-start="0" data-duration="2.2" data-track-index="4">
+      <span class="w" id="ag-w1">Or</span> <span class="w" id="ag-w2">just</span>
+      <span class="w" id="ag-w3">ask</span> <span class="w" id="ag-w4">the</span>
+      <span class="w blue" id="ag-w5">AI</span> <span class="w blue" id="ag-w6">agent.</span>
+    </div>
+
+    <div id="ag-cap-ans" class="ag-cap clip" data-start="3.1" data-duration="2.6" data-track-index="5">
+      <span class="w amber" id="ag-w7">Same</span> <span class="w amber" id="ag-w8">answer,</span>
+      <span class="w" id="ag-w9">in</span> <span class="w" id="ag-w10">plain</span>
+      <span class="w" id="ag-w11">English.</span>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Every time below comes from window.__TIMING__ -- no literal
+      // seconds in this file. See assets/timing.json / video/README.md.
+      const T = window.__TIMING__;
+      const W7 = T.lines["07_ask_agent"].words; // Or,just,ask,the,AI,agent
+      const W8 = T.lines["08_answer"].words;    // Same,answer,in,plain,English
+      const cut1 = T.cuts["agent_cut_type_think"].timeLocal;
+      const cut2 = T.cuts["agent_cut_answer"].timeLocal;
+      const clickAt = T.cuts["agent_ask_click"].timeLocal;
+
+      // Shot 1: 1.6x on the input, so the question is legible as it types.
+      tl.fromTo("#ag-cam-type", { scale: 1.6, x: 124, y: -320 }, { scale: 1.66, x: 118, y: -336, duration: cut1, ease: "none" }, 0);
+      // Shot 2: reframed onto the spinner.
+      tl.fromTo("#ag-cam-think", { scale: 1.6, x: 437, y: -315 }, { scale: 1.64, x: 434, y: -325, duration: cut2 - cut1, ease: "none" }, cut1);
+      // Shot 3: 2.2x on the clause that carries the numbers.
+      tl.fromTo("#ag-cam-answer", { scale: 2.2, x: 193, y: -640 }, { scale: 2.3, x: 184, y: -672, duration: T.scenes["agent"].duration - cut2, ease: "none" }, cut2);
+
+      // "Or just ask the AI agent."
+      ["#ag-w1", "#ag-w2", "#ag-w3", "#ag-w4", "#ag-w5", "#ag-w6"].forEach((sel, i) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 32, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.26, ease: "power4.out" },
+          W7[i].startLocal,
+        );
+      });
+
+      tl.fromTo("#ag-ring-input", { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 0.26, ease: "power3.out" }, W7[0].startLocal + 0.1);
+      tl.to("#ag-ring-input", { opacity: 0, duration: 0.2, ease: "power2.in" }, cut1 - 0.1);
+
+      // "Same answer, in plain English."
+      ["#ag-w7", "#ag-w8", "#ag-w9", "#ag-w10", "#ag-w11"].forEach((sel, i) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 32, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.26, ease: "power4.out" },
+          W8[i].startLocal,
+        );
+      });
+
+      // Sweep the highlight across the two numbers the agent wrote, once
+      // "answer" (the word naming it) has landed.
+      const bandAt = W8[1].startLocal;
+      tl.fromTo("#ag-band", { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.42, ease: "power3.out" }, bandAt);
+      tl.to("#ag-band", { opacity: 0.6, duration: 0.5, ease: "power1.inOut" }, bandAt + 1.28);
+
+      window.__timelines["agent"] = tl;
+    })();
+  </script>
+</template>

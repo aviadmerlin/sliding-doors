@@ -1,0 +1,877 @@
+{
+  "fps": 30,
+  "totalDuration": 35.8905,
+  "scenes": {
+    "hook": {
+      "start": 0.0,
+      "duration": 3.0332
+    },
+    "problem": {
+      "start": 3.0332,
+      "duration": 4.7402
+    },
+    "turning": {
+      "start": 7.7734,
+      "duration": 3.4885
+    },
+    "whatif": {
+      "start": 11.2619,
+      "duration": 3.5316
+    },
+    "reveal": {
+      "start": 14.7935,
+      "duration": 6.2648
+    },
+    "agent": {
+      "start": 21.0583,
+      "duration": 5.7
+    },
+    "closing": {
+      "start": 26.7583,
+      "duration": 9.1322
+    }
+  },
+  "lines": {
+    "01_hook": {
+      "sceneId": "hook",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.04479999999999999,
+      "voEndLocal": 2.7832,
+      "voDuration": 2.7384,
+      "words": [
+        {
+          "text": "What",
+          "startLocal": 0.15,
+          "endLocal": 0.2553,
+          "start": 0.1052,
+          "end": 0.2105,
+          "startAbs": 0.15,
+          "endAbs": 0.2553
+        },
+        {
+          "text": "if",
+          "startLocal": 0.2685,
+          "endLocal": 0.3869,
+          "start": 0.2237,
+          "end": 0.3421,
+          "startAbs": 0.2685,
+          "endAbs": 0.3869
+        },
+        {
+          "text": "the",
+          "startLocal": 0.4001,
+          "endLocal": 0.5053,
+          "start": 0.3553,
+          "end": 0.4605,
+          "startAbs": 0.4001,
+          "endAbs": 0.5053
+        },
+        {
+          "text": "84th-minute",
+          "startLocal": 0.6238,
+          "endLocal": 1.5053,
+          "start": 0.579,
+          "end": 1.4605,
+          "startAbs": 0.6238,
+          "endAbs": 1.5053
+        },
+        {
+          "text": "goal",
+          "startLocal": 1.5185,
+          "endLocal": 1.8474,
+          "start": 1.4737,
+          "end": 1.8026,
+          "startAbs": 1.5185,
+          "endAbs": 1.8474
+        },
+        {
+          "text": "never",
+          "startLocal": 1.9527,
+          "endLocal": 2.2027,
+          "start": 1.9079,
+          "end": 2.1579,
+          "startAbs": 1.9527,
+          "endAbs": 2.2027
+        },
+        {
+          "text": "happened",
+          "startLocal": 2.2158,
+          "endLocal": 2.6632,
+          "start": 2.171,
+          "end": 2.6184,
+          "startAbs": 2.2158,
+          "endAbs": 2.6632
+        }
+      ],
+      "audioSrc": "assets/audio/vo/01_hook.wav",
+      "voStart": 0.0448,
+      "voEnd": 2.7832,
+      "capAppear": 0.0
+    },
+    "02_problem_a": {
+      "sceneId": "problem",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.04479999999999999,
+      "voEndLocal": 2.178,
+      "voDuration": 2.1332,
+      "words": [
+        {
+          "text": "We'd",
+          "startLocal": 0.15,
+          "endLocal": 0.2685,
+          "start": 0.1052,
+          "end": 0.2237,
+          "startAbs": 3.1832,
+          "endAbs": 3.3017
+        },
+        {
+          "text": "have",
+          "startLocal": 0.2816,
+          "endLocal": 0.4132,
+          "start": 0.2368,
+          "end": 0.3684,
+          "startAbs": 3.3148,
+          "endAbs": 3.4464
+        },
+        {
+          "text": "won",
+          "startLocal": 0.4264,
+          "endLocal": 0.6106,
+          "start": 0.3816,
+          "end": 0.5658,
+          "startAbs": 3.4596,
+          "endAbs": 3.6438
+        },
+        {
+          "text": "if",
+          "startLocal": 0.6238,
+          "endLocal": 0.7422,
+          "start": 0.579,
+          "end": 0.6974,
+          "startAbs": 3.657,
+          "endAbs": 3.7754
+        },
+        {
+          "text": "that",
+          "startLocal": 0.7553,
+          "endLocal": 0.9527,
+          "start": 0.7105,
+          "end": 0.9079,
+          "startAbs": 3.7885,
+          "endAbs": 3.9859
+        },
+        {
+          "text": "goal",
+          "startLocal": 0.9658,
+          "endLocal": 1.2816,
+          "start": 0.921,
+          "end": 1.2368,
+          "startAbs": 3.999,
+          "endAbs": 4.3148
+        },
+        {
+          "text": "hadn't",
+          "startLocal": 1.2948,
+          "endLocal": 1.5843,
+          "start": 1.25,
+          "end": 1.5395,
+          "startAbs": 4.328,
+          "endAbs": 4.6175
+        },
+        {
+          "text": "gone",
+          "startLocal": 1.5974,
+          "endLocal": 1.8343,
+          "start": 1.5526,
+          "end": 1.7895,
+          "startAbs": 4.6306,
+          "endAbs": 4.8675
+        },
+        {
+          "text": "in",
+          "startLocal": 1.8474,
+          "endLocal": 2.058,
+          "start": 1.8026,
+          "end": 2.0132,
+          "startAbs": 4.8806,
+          "endAbs": 5.0912
+        }
+      ],
+      "audioSrc": "assets/audio/vo/02_problem_a.wav",
+      "voStart": 3.078,
+      "voEnd": 5.2112,
+      "capAppear": 3.0332
+    },
+    "03_problem_b": {
+      "sceneId": "problem",
+      "capAppearLocal": 2.528,
+      "voStartLocal": 2.5728,
+      "voEndLocal": 3.6402,
+      "voDuration": 1.0674,
+      "words": [
+        {
+          "text": "Now",
+          "startLocal": 2.678,
+          "endLocal": 2.7833,
+          "start": 0.1052,
+          "end": 0.2105,
+          "startAbs": 5.7112,
+          "endAbs": 5.8165
+        },
+        {
+          "text": "you",
+          "startLocal": 2.7965,
+          "endLocal": 2.8886,
+          "start": 0.2237,
+          "end": 0.3158,
+          "startAbs": 5.8297,
+          "endAbs": 5.9218
+        },
+        {
+          "text": "can",
+          "startLocal": 2.9018,
+          "endLocal": 3.0202,
+          "start": 0.329,
+          "end": 0.4474,
+          "startAbs": 5.935,
+          "endAbs": 6.0534
+        },
+        {
+          "text": "test",
+          "startLocal": 3.0333,
+          "endLocal": 3.3623,
+          "start": 0.4605,
+          "end": 0.7895,
+          "startAbs": 6.0665,
+          "endAbs": 6.3955
+        },
+        {
+          "text": "it",
+          "startLocal": 3.3754,
+          "endLocal": 3.5202,
+          "start": 0.8026,
+          "end": 0.9474,
+          "startAbs": 6.4086,
+          "endAbs": 6.5534
+        }
+      ],
+      "audioSrc": "assets/audio/vo/03_problem_b.wav",
+      "voStart": 5.606,
+      "voEnd": 6.6734,
+      "capAppear": 5.5612
+    },
+    "04_turning_point": {
+      "sceneId": "turning",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.04479999999999999,
+      "voEndLocal": 3.1385,
+      "voDuration": 3.0937,
+      "words": [
+        {
+          "text": "Minute",
+          "startLocal": 0.15,
+          "endLocal": 0.4001,
+          "start": 0.1052,
+          "end": 0.3553,
+          "startAbs": 7.9234,
+          "endAbs": 8.1735
+        },
+        {
+          "text": "84",
+          "startLocal": 0.4132,
+          "endLocal": 1.0316,
+          "start": 0.3684,
+          "end": 0.9868,
+          "startAbs": 8.1866,
+          "endAbs": 8.805
+        },
+        {
+          "text": "one",
+          "startLocal": 1.3738,
+          "endLocal": 1.5974,
+          "start": 1.329,
+          "end": 1.5526,
+          "startAbs": 9.1472,
+          "endAbs": 9.3708
+        },
+        {
+          "text": "goal",
+          "startLocal": 1.6106,
+          "endLocal": 1.9,
+          "start": 1.5658,
+          "end": 1.8552,
+          "startAbs": 9.384,
+          "endAbs": 9.6734
+        },
+        {
+          "text": "swings",
+          "startLocal": 1.9132,
+          "endLocal": 2.3474,
+          "start": 1.8684,
+          "end": 2.3026,
+          "startAbs": 9.6866,
+          "endAbs": 10.1208
+        },
+        {
+          "text": "the",
+          "startLocal": 2.3606,
+          "endLocal": 2.4395,
+          "start": 2.3158,
+          "end": 2.3947,
+          "startAbs": 10.134,
+          "endAbs": 10.2129
+        },
+        {
+          "text": "match",
+          "startLocal": 2.4527,
+          "endLocal": 3.0185,
+          "start": 2.4079,
+          "end": 2.9737,
+          "startAbs": 10.2261,
+          "endAbs": 10.7919
+        }
+      ],
+      "audioSrc": "assets/audio/vo/04_turning_point.wav",
+      "voStart": 7.8182,
+      "voEnd": 10.9119,
+      "capAppear": 7.7734
+    },
+    "05a_cancel": {
+      "sceneId": "whatif",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.04479999999999999,
+      "voEndLocal": 0.7568999999999999,
+      "voDuration": 0.7121,
+      "words": [
+        {
+          "text": "Cancel",
+          "start": 0.1052,
+          "end": 0.4342,
+          "startLocal": 0.15,
+          "endLocal": 0.479,
+          "startAbs": 11.4119,
+          "endAbs": 11.7409
+        },
+        {
+          "text": "it",
+          "start": 0.4474,
+          "end": 0.5921,
+          "startLocal": 0.4922,
+          "endLocal": 0.6369,
+          "startAbs": 11.7541,
+          "endAbs": 11.8988
+        }
+      ],
+      "audioSrc": "assets/audio/vo/05a_cancel.wav",
+      "voStart": 11.3067,
+      "voEnd": 12.0188,
+      "capAppear": 11.2619
+    },
+    "05b_replay": {
+      "sceneId": "whatif",
+      "capAppearLocal": 2.08,
+      "voStartLocal": 2.1248,
+      "voEndLocal": 3.2316000000000003,
+      "voDuration": 1.1068,
+      "words": [
+        {
+          "text": "Replay",
+          "start": 0.1052,
+          "end": 0.3947,
+          "startLocal": 2.23,
+          "endLocal": 2.5195,
+          "startAbs": 13.4919,
+          "endAbs": 13.7814
+        },
+        {
+          "text": "the",
+          "start": 0.4079,
+          "end": 0.4868,
+          "startLocal": 2.5327,
+          "endLocal": 2.6116,
+          "startAbs": 13.7946,
+          "endAbs": 13.8735
+        },
+        {
+          "text": "match",
+          "start": 0.5,
+          "end": 0.9868,
+          "startLocal": 2.6248,
+          "endLocal": 3.1116,
+          "startAbs": 13.8867,
+          "endAbs": 14.3735
+        }
+      ],
+      "audioSrc": "assets/audio/vo/05b_replay.wav",
+      "voStart": 13.3867,
+      "voEnd": 14.4935,
+      "capAppear": 13.3419
+    },
+    "06_reveal": {
+      "sceneId": "reveal",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.03159999999999999,
+      "voEndLocal": 5.1648000000000005,
+      "voDuration": 5.1332,
+      "words": [
+        {
+          "text": "Without",
+          "start": 0.1184,
+          "end": 0.4079,
+          "startLocal": 0.15,
+          "endLocal": 0.4395,
+          "startAbs": 14.9435,
+          "endAbs": 15.233
+        },
+        {
+          "text": "that",
+          "start": 0.421,
+          "end": 0.6316,
+          "startLocal": 0.4526,
+          "endLocal": 0.6632,
+          "startAbs": 15.2461,
+          "endAbs": 15.4567
+        },
+        {
+          "text": "goal",
+          "start": 0.6448,
+          "end": 0.9605,
+          "startLocal": 0.6764,
+          "endLocal": 0.9921,
+          "startAbs": 15.4699,
+          "endAbs": 15.7856
+        },
+        {
+          "text": "Dunmore",
+          "start": 1.2632,
+          "end": 1.6316,
+          "startLocal": 1.2948,
+          "endLocal": 1.6632,
+          "startAbs": 16.0883,
+          "endAbs": 16.4567
+        },
+        {
+          "text": "Town's",
+          "start": 1.6447,
+          "end": 2.0263,
+          "startLocal": 1.6763,
+          "endLocal": 2.0579,
+          "startAbs": 16.4698,
+          "endAbs": 16.8514
+        },
+        {
+          "text": "win",
+          "start": 2.0395,
+          "end": 2.2105,
+          "startLocal": 2.0711,
+          "endLocal": 2.2421,
+          "startAbs": 16.8646,
+          "endAbs": 17.0356
+        },
+        {
+          "text": "chance",
+          "start": 2.2237,
+          "end": 2.5789,
+          "startLocal": 2.2553,
+          "endLocal": 2.6105,
+          "startAbs": 17.0488,
+          "endAbs": 17.404
+        },
+        {
+          "text": "jumps",
+          "start": 2.5921,
+          "end": 2.9079,
+          "startLocal": 2.6237,
+          "endLocal": 2.9395,
+          "startAbs": 17.4172,
+          "endAbs": 17.733
+        },
+        {
+          "text": "from",
+          "start": 2.921,
+          "end": 3.1052,
+          "startLocal": 2.9526,
+          "endLocal": 3.1368,
+          "startAbs": 17.7461,
+          "endAbs": 17.9303
+        },
+        {
+          "text": "9%",
+          "start": 3.1184,
+          "end": 3.8401,
+          "derived": "proportional-split",
+          "startLocal": 3.15,
+          "endLocal": 3.8717,
+          "startAbs": 17.9435,
+          "endAbs": 18.6652
+        },
+        {
+          "text": "to",
+          "start": 3.8401,
+          "end": 4.0205,
+          "derived": "proportional-split",
+          "startLocal": 3.8717,
+          "endLocal": 4.0521,
+          "startAbs": 18.6652,
+          "endAbs": 18.8456
+        },
+        {
+          "text": "92%",
+          "start": 4.0205,
+          "end": 5.0132,
+          "derived": "proportional-split",
+          "startLocal": 4.0521,
+          "endLocal": 5.0448,
+          "startAbs": 18.8456,
+          "endAbs": 19.8383
+        }
+      ],
+      "audioSrc": "assets/audio/vo/06_reveal.wav",
+      "voStart": 14.8251,
+      "voEnd": 19.9583,
+      "capAppear": 14.7935
+    },
+    "07_ask_agent": {
+      "sceneId": "agent",
+      "capAppearLocal": 0.0,
+      "voStartLocal": 0.04479999999999999,
+      "voEndLocal": 1.6648,
+      "voDuration": 1.62,
+      "words": [
+        {
+          "text": "Or",
+          "start": 0.1052,
+          "end": 0.171,
+          "startLocal": 0.15,
+          "endLocal": 0.2158,
+          "startAbs": 21.2083,
+          "endAbs": 21.2741
+        },
+        {
+          "text": "just",
+          "start": 0.1842,
+          "end": 0.3947,
+          "startLocal": 0.229,
+          "endLocal": 0.4395,
+          "startAbs": 21.2873,
+          "endAbs": 21.4978
+        },
+        {
+          "text": "ask",
+          "start": 0.4079,
+          "end": 0.6579,
+          "startLocal": 0.4527,
+          "endLocal": 0.7027,
+          "startAbs": 21.511,
+          "endAbs": 21.761
+        },
+        {
+          "text": "the",
+          "start": 0.671,
+          "end": 0.75,
+          "startLocal": 0.7158,
+          "endLocal": 0.7948,
+          "startAbs": 21.7741,
+          "endAbs": 21.8531
+        },
+        {
+          "text": "AI",
+          "start": 0.7632,
+          "end": 1.079,
+          "startLocal": 0.808,
+          "endLocal": 1.1238,
+          "startAbs": 21.8663,
+          "endAbs": 22.1821
+        },
+        {
+          "text": "agent",
+          "start": 1.0921,
+          "end": 1.5,
+          "startLocal": 1.1369,
+          "endLocal": 1.5448,
+          "startAbs": 22.1952,
+          "endAbs": 22.6031
+        }
+      ],
+      "audioSrc": "assets/audio/vo/07_ask_agent.wav",
+      "voStart": 21.1031,
+      "voEnd": 22.7231,
+      "capAppear": 21.0583
+    },
+    "08_answer": {
+      "sceneId": "agent",
+      "capAppearLocal": 3.18,
+      "voStartLocal": 3.2248,
+      "voEndLocal": 5.1738,
+      "voDuration": 1.949,
+      "words": [
+        {
+          "text": "Same",
+          "start": 0.1052,
+          "end": 0.3289,
+          "startLocal": 3.33,
+          "endLocal": 3.5537,
+          "startAbs": 24.3883,
+          "endAbs": 24.612
+        },
+        {
+          "text": "answer",
+          "start": 0.3421,
+          "end": 0.7237,
+          "startLocal": 3.5669,
+          "endLocal": 3.9485,
+          "startAbs": 24.6252,
+          "endAbs": 25.0068
+        },
+        {
+          "text": "in",
+          "start": 0.9737,
+          "end": 1.0395,
+          "startLocal": 4.1985,
+          "endLocal": 4.2643,
+          "startAbs": 25.2568,
+          "endAbs": 25.3226
+        },
+        {
+          "text": "plain",
+          "start": 1.0526,
+          "end": 1.3158,
+          "startLocal": 4.2774,
+          "endLocal": 4.5406,
+          "startAbs": 25.3357,
+          "endAbs": 25.5989
+        },
+        {
+          "text": "English",
+          "start": 1.329,
+          "end": 1.829,
+          "startLocal": 4.5538,
+          "endLocal": 5.0538,
+          "startAbs": 25.6121,
+          "endAbs": 26.1121
+        }
+      ],
+      "audioSrc": "assets/audio/vo/08_answer.wav",
+      "voStart": 24.2831,
+      "voEnd": 26.2321,
+      "capAppear": 24.2383
+    },
+    "09_wordmark": {
+      "sceneId": "closing",
+      "capAppearLocal": 0.35,
+      "voStartLocal": 0.3948,
+      "voEndLocal": 1.449,
+      "voDuration": 1.0542,
+      "words": [
+        {
+          "text": "Sliding",
+          "start": 0.1052,
+          "end": 0.4605,
+          "startLocal": 0.5,
+          "endLocal": 0.8553,
+          "startAbs": 27.2583,
+          "endAbs": 27.6136
+        },
+        {
+          "text": "Doors",
+          "start": 0.4737,
+          "end": 0.9342,
+          "startLocal": 0.8685,
+          "endLocal": 1.329,
+          "startAbs": 27.6268,
+          "endAbs": 28.0873
+        }
+      ],
+      "audioSrc": "assets/audio/vo/09_wordmark.wav",
+      "voStart": 27.1531,
+      "voEnd": 28.2073,
+      "capAppear": 27.1083
+    },
+    "10_tagline": {
+      "sceneId": "closing",
+      "capAppearLocal": 1.749,
+      "voStartLocal": 1.7938,
+      "voEndLocal": 4.5322,
+      "voDuration": 2.7384,
+      "words": [
+        {
+          "text": "Stop",
+          "start": 0.1052,
+          "end": 0.4605,
+          "startLocal": 1.899,
+          "endLocal": 2.2543,
+          "startAbs": 28.6573,
+          "endAbs": 29.0126
+        },
+        {
+          "text": "debating",
+          "start": 0.4737,
+          "end": 0.9079,
+          "startLocal": 2.2675,
+          "endLocal": 2.7017,
+          "startAbs": 29.0258,
+          "endAbs": 29.46
+        },
+        {
+          "text": "the",
+          "start": 0.921,
+          "end": 1.0,
+          "startLocal": 2.7148,
+          "endLocal": 2.7938,
+          "startAbs": 29.4731,
+          "endAbs": 29.5521
+        },
+        {
+          "text": "what-if",
+          "start": 1.0132,
+          "end": 1.5658,
+          "startLocal": 2.807,
+          "endLocal": 3.3596,
+          "startAbs": 29.5653,
+          "endAbs": 30.1179
+        },
+        {
+          "text": "Simulate",
+          "start": 2.0,
+          "end": 2.4605,
+          "startLocal": 3.7938,
+          "endLocal": 4.2543,
+          "startAbs": 30.5521,
+          "endAbs": 31.0126
+        },
+        {
+          "text": "it",
+          "start": 2.4737,
+          "end": 2.6184,
+          "startLocal": 4.2675,
+          "endLocal": 4.4122,
+          "startAbs": 31.0258,
+          "endAbs": 31.1705
+        }
+      ],
+      "audioSrc": "assets/audio/vo/10_tagline.wav",
+      "voStart": 28.5521,
+      "voEnd": 31.2905,
+      "capAppear": 28.5073
+    }
+  },
+  "cuts": {
+    "problem_strike": {
+      "sceneId": "problem",
+      "timeLocal": 2.258,
+      "timeAbs": 5.2912
+    },
+    "turning_ring": {
+      "sceneId": "turning",
+      "timeLocal": 1.9132,
+      "timeAbs": 9.6866
+    },
+    "whatif_cut": {
+      "sceneId": "whatif",
+      "timeLocal": 2.0,
+      "note": "gap between 05a end (0.757) and 05b start -- silence margin 1.243s",
+      "timeAbs": 13.2619
+    },
+    "whatif_click": {
+      "sceneId": "whatif",
+      "timeLocal": 2.42,
+      "timeAbs": 13.6819
+    },
+    "reveal_9pct": {
+      "sceneId": "reveal",
+      "timeLocal": 3.15,
+      "timeAbs": 17.9435
+    },
+    "reveal_to": {
+      "sceneId": "reveal",
+      "timeLocal": 3.8717,
+      "timeAbs": 18.6652
+    },
+    "reveal_92pct": {
+      "sceneId": "reveal",
+      "timeLocal": 4.0521,
+      "timeAbs": 18.8456
+    },
+    "reveal_proof": {
+      "sceneId": "reveal",
+      "timeLocal": 4.3621,
+      "timeAbs": 19.1556
+    },
+    "agent_cut_type_think": {
+      "sceneId": "agent",
+      "timeLocal": 2.2,
+      "timeAbs": 23.2583
+    },
+    "agent_cut_answer": {
+      "sceneId": "agent",
+      "timeLocal": 3.1,
+      "timeAbs": 24.1583
+    },
+    "agent_ask_click": {
+      "sceneId": "agent",
+      "timeLocal": 2.1563,
+      "timeAbs": 23.2146
+    },
+    "closing_seam": {
+      "sceneId": "closing",
+      "timeLocal": 0.0,
+      "timeAbs": 26.7583
+    },
+    "closing_credits": {
+      "sceneId": "closing",
+      "timeLocal": 4.8322,
+      "timeAbs": 31.5905
+    }
+  },
+  "sfx": {
+    "sfx-pop-ring": {
+      "sceneId": "turning",
+      "startLocal": 1.7932,
+      "volume": 0.3,
+      "start": 9.5666
+    },
+    "sfx-whoosh-whatif": {
+      "sceneId": "whatif",
+      "startLocal": 1.838,
+      "volume": 0.3,
+      "start": 13.0999
+    },
+    "sfx-click-run": {
+      "sceneId": "whatif",
+      "startLocal": 2.347,
+      "volume": 0.4,
+      "start": 13.6089
+    },
+    "sfx-impact-reveal": {
+      "sceneId": "reveal",
+      "startLocal": 2.0661,
+      "volume": 0.22,
+      "start": 16.8596
+    },
+    "sfx-whoosh-agent": {
+      "sceneId": "agent",
+      "startLocal": 2.038,
+      "volume": 0.3,
+      "start": 23.0963
+    },
+    "sfx-click-ask": {
+      "sceneId": "agent",
+      "startLocal": 2.0833,
+      "volume": 0.4,
+      "start": 23.1416
+    },
+    "sfx-tick-thinking": {
+      "sceneId": "agent",
+      "startLocal": 2.277,
+      "volume": 0.22,
+      "start": 23.3353
+    }
+  },
+  "clipDurations": {
+    "whatif-a": 2.0,
+    "whatif-b": 1.5316,
+    "agent-type": 2.2,
+    "agent-think": 0.9,
+    "agent-answer": 2.6
+  }
+}

@@ -1,0 +1,200 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+
+    /* One untimed transform container per cut, so each shot gets its own
+       framing and the hard cut carries a camera jump. Each highlight sits
+       inside its cut's container in source-pixel coordinates, so it stays
+       locked to the real control through the move. */
+    .wi-cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      will-change: transform;
+    }
+    .wi-cut {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      object-fit: contain;
+    }
+
+    .wi-ring {
+      position: absolute;
+      border: 2px solid #f59e0b;
+      border-radius: 10px;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.22), 0 0 34px rgba(245, 158, 11, 0.34);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    /* Source coords of the real Event select. */
+    #wi-ring-event {
+      left: 372px;
+      top: 640px;
+      width: 836px;
+      height: 44px;
+    }
+    /* Source coords of the real "Run counterfactual" button. */
+    #wi-ring-run {
+      left: 385px;
+      top: 698px;
+      width: 195px;
+      height: 52px;
+    }
+
+    #wi-scrim-top {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 400px;
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.97) 44%, rgba(11, 18, 32, 0));
+    }
+    #wi-scrim-bottom {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 1920px;
+      height: 150px;
+      background: linear-gradient(0deg, rgba(11, 18, 32, 0.85), rgba(11, 18, 32, 0));
+    }
+    .wi-cap {
+      position: absolute;
+      left: 192px;
+      top: 138px;
+      width: 1536px;
+      text-align: center;
+      font-size: 92px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .amber {
+      color: #f59e0b;
+    }
+  </style>
+
+  <!-- Line "Cancel it. Replay the match." is spoken as two separate VO
+       files (05a_cancel, 05b_replay) so the video cut lands in the gap
+       BETWEEN lines, not mid-sentence -- see video/README.md and
+       scripts/timing/02_build_timing.py's build_whatif(). Mount windows
+       below are generated from window.__TIMING__.scenes.whatif /
+       .cuts.whatif_cut; all tween times are read from the manifest. -->
+  <div id="root" data-composition-id="whatif" data-width="1920" data-height="1080">
+    <!-- Cut A: the real dropdown open and the 84' goal being picked.
+         Source assets/clips/whatif-a.mp4 (dropdown_open 6.35, event_selected
+         7.83 inside the original capture). -->
+    <div id="wi-cam-a" class="wi-cam" data-layout-allow-overflow>
+      <video
+        id="wi-cut-a"
+        class="wi-cut clip"
+        data-start="0"
+        data-duration="2.0"
+        data-track-index="1"
+        src="assets/clips/whatif-a.mp4"
+        muted
+        playsinline
+      ></video>
+      <div id="wi-ring-event" class="wi-ring" data-layout-ignore></div>
+    </div>
+
+    <!-- Cut B: hard cut onto the button, held through the real click and
+         the rest of "Replay the match." Source assets/clips/whatif-b.mp4
+         (run_clicked 9.27 inside the original capture, 0.42s into this
+         clip). The clip's native length is ~1.1s; data-duration below is
+         longer so it holds its last frame through the rest of the line
+         rather than squeezing the voiceover -- verified on snapshot. -->
+    <div id="wi-cam-b" class="wi-cam" data-layout-allow-overflow>
+      <video
+        id="wi-cut-b"
+        class="wi-cut clip"
+        data-start="2.0"
+        data-duration="1.5316"
+        data-track-index="2"
+        src="assets/clips/whatif-b.mp4"
+        muted
+        playsinline
+      ></video>
+      <div id="wi-ring-run" class="wi-ring" data-layout-ignore></div>
+    </div>
+
+    <div id="wi-scrim-top" data-layout-ignore></div>
+    <div id="wi-scrim-bottom" data-layout-ignore></div>
+
+    <div id="wi-cap-a" class="wi-cap clip" data-start="0" data-duration="2.0" data-track-index="3">
+      <span class="w amber" id="wi-a-w1">Cancel</span> <span class="w amber" id="wi-a-w2">it.</span>
+    </div>
+    <div id="wi-cap-b" class="wi-cap clip" data-start="2.0" data-duration="1.5316" data-track-index="4">
+      <span class="w" id="wi-b-w1">Replay</span> <span class="w" id="wi-b-w2">the</span>
+      <span class="w" id="wi-b-w3">match.</span>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Every time below comes from window.__TIMING__ -- no literal
+      // seconds in this file. See assets/timing.json / video/README.md.
+      const T = window.__TIMING__;
+      const Wa = T.lines["05a_cancel"].words; // Cancel, it
+      const Wb = T.lines["05b_replay"].words; // Replay, the, match
+      const cutTime = T.cuts["whatif_cut"].timeLocal;
+      const clickTime = T.cuts["whatif_click"].timeLocal;
+      const sceneDur = T.scenes["whatif"].duration;
+      const clipBDur = sceneDur - cutTime;
+
+      // Cut A: 1.5x, framing the Event select and its open option list.
+      tl.fromTo("#wi-cam-a", { scale: 1.5, x: 0, y: -250 }, { scale: 1.56, x: -8, y: -272, duration: cutTime, ease: "none" }, 0);
+      // Cut B: 1.6x onto the Run button, held through the rest of the line.
+      tl.fromTo("#wi-cam-b", { scale: 1.6, x: 365, y: -274 }, { scale: 1.66, x: 358, y: -288, duration: clipBDur, ease: "none" }, cutTime);
+
+      // "Cancel it."
+      [Wa[0], Wa[1]].forEach((w, i) => {
+        tl.fromTo(
+          `#wi-a-w${i + 1}`,
+          { opacity: 0, y: 34, filter: "blur(11px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power4.out" },
+          w.startLocal,
+        );
+      });
+      // "Replay the match."
+      [Wb[0], Wb[1], Wb[2]].forEach((w, i) => {
+        tl.fromTo(
+          `#wi-b-w${i + 1}`,
+          { opacity: 0, y: 34, filter: "blur(11px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power4.out" },
+          w.startLocal,
+        );
+      });
+
+      // Ring the control being changed while "Cancel it." plays, off well
+      // before the cut.
+      tl.fromTo("#wi-ring-event", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, Wa[0].startLocal + 0.1);
+      tl.to("#wi-ring-event", { opacity: 0, duration: 0.22, ease: "power2.in" }, cutTime - 0.26);
+
+      // Ring the Run button, then punch it on the real recorded click.
+      tl.fromTo("#wi-ring-run", { opacity: 0, scale: 1.14 }, { opacity: 1, scale: 1, duration: 0.26, ease: "power3.out" }, cutTime + 0.06);
+      tl.to("#wi-ring-run", { scale: 0.94, duration: 0.09, ease: "power2.out" }, clickTime);
+      tl.to("#wi-ring-run", { scale: 1, duration: 0.2, ease: "power2.out" }, clickTime + 0.09);
+
+      window.__timelines["whatif"] = tl;
+    })();
+  </script>
+</template>

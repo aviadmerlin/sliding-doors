@@ -6,6 +6,14 @@
       "runtimeExecutable": ".venv/bin/python3",
       "runtimeArgs": ["-m", "streamlit", "run", "app.py", "--server.headless", "true"],
       "port": 8501
+    },
+    {
+      "name": "video-studio",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "hyperframes@0.9.15", "preview", "--no-open"],
+      "cwd": "video",
+      "port": 3002,
+      "autoPort": true
     }
   ]
 }

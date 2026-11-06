@@ -1,0 +1,206 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+
+    /* Real scoreboard, straight from the running app. */
+    #tn-score {
+      position: absolute;
+      left: 260px;
+      top: 66px;
+      width: 1400px;
+      height: 54px;
+      object-fit: contain;
+      opacity: 0;
+    }
+
+    /* Real win-probability chart. Its own background is the app's
+       #0B1220, so the push-in never reveals a seam against the stage. */
+    #tn-stage {
+      position: absolute;
+      left: 120px;
+      top: 400px;
+      width: 1680px;
+      height: 484px;
+      will-change: transform;
+    }
+    #tn-chart {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1680px;
+      height: 484px;
+      object-fit: contain;
+    }
+    /* Ring lives inside the chart's transform so it stays locked to the
+       84' marker through the whole move. Authored small; the 2.1x
+       camera scales it to ~630px with a ~4px stroke. */
+    #tn-ring {
+      position: absolute;
+      left: 1405px;
+      top: 108px;
+      width: 300px;
+      height: 300px;
+      border: 2px solid #f59e0b;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25), 0 0 40px rgba(245, 158, 11, 0.3);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    /* Readout card, left of the ring. */
+    #tn-card {
+      position: absolute;
+      left: 150px;
+      top: 614px;
+      width: 760px;
+      padding: 30px 36px 34px;
+      background: rgba(20, 28, 46, 0.92);
+      border: 1px solid #243049;
+      border-left: 5px solid #ef4444;
+      border-radius: 14px;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #tn-card-kicker {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    #tn-card-team {
+      margin-top: 10px;
+      font-size: 38px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+    #tn-card-nums {
+      margin-top: 8px;
+      font-size: 92px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+    .tn-from {
+      color: #e5e7eb;
+    }
+    .tn-arrow {
+      color: #9ca3af;
+      font-weight: 700;
+    }
+    .tn-to {
+      color: #ef4444;
+    }
+
+    /* Kinetic caption, same line as the voiceover. */
+    #tn-cap {
+      position: absolute;
+      left: 192px;
+      top: 182px;
+      width: 1536px;
+      text-align: center;
+      font-size: 86px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .amber {
+      color: #f59e0b;
+    }
+  </style>
+
+  <!-- data-start/data-duration: mount windows, generated from
+       window.__TIMING__.scenes.turning (3.4885s). Per-word and the ring
+       cut time are computed live from the manifest below. -->
+  <div id="root" data-composition-id="turning" data-width="1920" data-height="1080">
+    <img
+      id="tn-score"
+      class="clip"
+      data-start="0"
+      data-duration="3.4885"
+      data-track-index="1"
+      src="assets/screens/scoreboard.png"
+      alt="Oakhaven City 3 - 2 Dunmore Town"
+    />
+
+    <div id="tn-stage" class="clip" data-start="0" data-duration="3.4885" data-track-index="2" data-layout-allow-overflow>
+      <img id="tn-chart" data-start="0" data-duration="3.4885" src="assets/screens/chart.png" alt="Win probability across 90 minutes" />
+      <div id="tn-ring" data-layout-ignore></div>
+    </div>
+
+    <div id="tn-cap" class="clip" data-start="0" data-duration="3.4885" data-track-index="3">
+      <span class="w" id="tn-w1">Minute</span> <span class="w amber" id="tn-w2">84:</span>
+      <span class="w" id="tn-w3">one</span> <span class="w" id="tn-w4">goal</span>
+      <span class="w" id="tn-w5">swings</span> <span class="w" id="tn-w6">the</span>
+      <span class="w" id="tn-w7">match.</span>
+    </div>
+
+    <div id="tn-card" class="clip" data-start="1.9132" data-duration="1.5753" data-track-index="4">
+      <div id="tn-card-kicker">Real match</div>
+      <div id="tn-card-team">Dunmore Town win</div>
+      <div id="tn-card-nums">
+        <span class="tn-from">91%</span> <span class="tn-arrow">→</span>
+        <span class="tn-to">9%</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Every time below comes from window.__TIMING__ -- no literal
+      // seconds in this file. See assets/timing.json / video/README.md.
+      const T = window.__TIMING__;
+      const W = T.lines["04_turning_point"].words; // 7 words: Minute,84,one,goal,swings,the,match
+      const sceneDur = T.scenes["turning"].duration;
+      const ringAt = T.cuts["turning_ring"].timeLocal; // word "swings" lands here
+
+      tl.fromTo("#tn-score", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0);
+      tl.fromTo("#tn-chart", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 0.05);
+
+      const spans = ["#tn-w1", "#tn-w2", "#tn-w3", "#tn-w4", "#tn-w5", "#tn-w6", "#tn-w7"];
+      spans.forEach((sel, i) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 32, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power4.out" },
+          W[i].startLocal,
+        );
+      });
+
+      // Camera: hold the whole match, push to the 84' cliff, arriving
+      // exactly as "swings" lands, then settle for the rest of the scene.
+      const pushDur = 0.84;
+      const pushStart = Math.max(0, ringAt - pushDur);
+      tl.fromTo("#tn-stage", { scale: 1.18, x: 0, y: -16 }, { scale: 1.24, x: 0, y: -18, duration: pushStart, ease: "none" }, 0);
+      tl.to("#tn-stage", { scale: 2.1, x: -1141, y: -115, duration: ringAt - pushStart, ease: "power2.inOut" }, pushStart);
+      tl.to("#tn-stage", { scale: 2.16, x: -1176, y: -118, duration: sceneDur - ringAt, ease: "none" }, ringAt);
+
+      // Ring draws on "swings" — the word that names the swing.
+      tl.fromTo("#tn-ring", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.42, ease: "power3.out" }, ringAt);
+
+      tl.fromTo(
+        "#tn-card",
+        { opacity: 0, x: -40, filter: "blur(10px)" },
+        { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.38, ease: "power4.out" },
+        ringAt + 0.034,
+      );
+
+      window.__timelines["turning"] = tl;
+    })();
+  </script>
+</template>

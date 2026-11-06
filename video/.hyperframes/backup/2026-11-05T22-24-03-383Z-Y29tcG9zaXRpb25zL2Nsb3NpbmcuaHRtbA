@@ -1,0 +1,216 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+    #cl-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 120px 120px;
+    }
+    #cl-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 34%, rgba(34, 197, 94, 0.1), transparent 60%);
+    }
+
+    /* The motif resolves: the seam the film opened on becomes the gap
+       the wordmark slides out of. */
+    #cl-seam {
+      position: absolute;
+      left: 959px;
+      top: 232px;
+      width: 2px;
+      height: 196px;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(245, 158, 11, 0.9) 16%,
+        rgba(245, 158, 11, 0.9) 84%,
+        transparent
+      );
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    #cl-wordmark {
+      position: absolute;
+      left: 192px;
+      top: 246px;
+      width: 1536px;
+      text-align: center;
+      font-size: 152px;
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+    #cl-wordmark span {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    #cl-tagline {
+      position: absolute;
+      left: 192px;
+      top: 470px;
+      width: 1536px;
+      text-align: center;
+      font-size: 62px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .green {
+      color: #22c55e;
+    }
+
+    #cl-rule {
+      position: absolute;
+      left: 760px;
+      top: 606px;
+      width: 400px;
+      height: 1px;
+      background: #243049;
+      transform-origin: center;
+      opacity: 0;
+    }
+
+    #cl-credits {
+      position: absolute;
+      left: 310px;
+      top: 664px;
+      width: 1300px;
+      text-align: center;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #cl-name {
+      font-size: 36px;
+      font-weight: 700;
+      color: #e5e7eb;
+      letter-spacing: 0.01em;
+    }
+    .cl-meta {
+      margin-top: 16px;
+      font-size: 29px;
+      font-weight: 500;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+    #cl-stack {
+      margin-top: 18px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #7b8aa0;
+      letter-spacing: 0.02em;
+    }
+    /* Reserved slot for a GitHub / portfolio URL — set the creditUrl
+       variable in Studio (or index.html) and it fills in here. */
+    #cl-url {
+      margin-top: 20px;
+      min-height: 38px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #22c55e;
+      letter-spacing: 0.02em;
+    }
+  </style>
+
+  <div id="root" data-composition-id="closing" data-width="1920" data-height="1080">
+    <div id="cl-grid" data-layout-ignore></div>
+    <div id="cl-glow" data-layout-ignore></div>
+    <div id="cl-seam" data-layout-ignore></div>
+
+    <div id="cl-wordmark" class="clip" data-start="0" data-duration="8.1" data-track-index="1" data-layout-allow-overlap>
+      <span id="cl-wm1">Sliding</span> <span id="cl-wm2">Doors</span>
+    </div>
+
+    <div id="cl-tagline" class="clip" data-start="2.2" data-duration="5.9" data-track-index="2">
+      <span class="w" id="cl-t1">Stop</span> <span class="w" id="cl-t2">debating</span>
+      <span class="w" id="cl-t3">the</span> <span class="w" id="cl-t4">what-if.</span>
+      <span class="w green" id="cl-t5">Simulate</span> <span class="w green" id="cl-t6">it.</span>
+    </div>
+
+    <div id="cl-rule" data-layout-ignore></div>
+
+    <div id="cl-credits" class="clip" data-start="3.8" data-duration="4.3" data-track-index="3">
+      <div id="cl-name" data-var-text="creditName">Aviad Merlin</div>
+      <div class="cl-meta">
+        Built for the Microsoft x Premier League Inside the Game hackathon<br />
+        Demo data: fictional clubs and players
+      </div>
+      <div id="cl-stack">Microsoft Agent Framework + Azure OpenAI</div>
+      <div id="cl-url" data-var-text="creditUrl"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // The door opens: seam flares, then the two words slide out of it.
+      tl.fromTo("#cl-seam", { opacity: 0, scaleY: 0.3 }, { opacity: 1, scaleY: 1, duration: 0.3, ease: "power3.out" }, 0);
+      tl.to("#cl-seam", { opacity: 0, duration: 0.45, ease: "power2.inOut" }, 0.42);
+
+      tl.fromTo(
+        "#cl-wm1",
+        { opacity: 0, x: 120 },
+        { opacity: 1, x: 0, duration: 0.62, ease: "power4.out" },
+        0.2,
+      );
+      tl.fromTo(
+        "#cl-wm2",
+        { opacity: 0, x: -120 },
+        { opacity: 1, x: 0, duration: 0.62, ease: "power4.out" },
+        0.2,
+      );
+
+      // Tagline on the measured voiceover (10_tagline) + 0.2 s.
+      [
+        ["#cl-t1", 2.4],
+        ["#cl-t2", 2.767],
+        ["#cl-t3", 3.501],
+        ["#cl-t4", 3.776],
+        ["#cl-t5", 4.511],
+        ["#cl-t6", 5.245],
+      ].forEach(([sel, t]) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 26, filter: "blur(9px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power4.out" },
+          t,
+        );
+      });
+
+      tl.fromTo("#cl-rule", { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.5);
+
+      // Credits ride up in their own zone below the rule while the last
+      // line is still being spoken, so the 17-word hackathon line gets
+      // the ~4.3 s a closing line needs to actually be read.
+      tl.fromTo(
+        "#cl-credits",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        3.8,
+      );
+
+      // Slow settle on the whole card so the last frames still breathe.
+      tl.fromTo("#cl-wordmark", { scale: 1 }, { scale: 1.02, duration: 8.1, ease: "none" }, 0);
+
+      window.__timelines["closing"] = tl;
+    })();
+  </script>
+</template>

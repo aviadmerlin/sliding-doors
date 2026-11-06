@@ -1,0 +1,179 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+    #cl-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 120px 120px;
+    }
+    #cl-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 34%, rgba(34, 197, 94, 0.1), transparent 60%);
+    }
+
+    #cl-wordmark {
+      position: absolute;
+      left: 192px;
+      top: 246px;
+      width: 1536px;
+      text-align: center;
+      font-size: 152px;
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+    #cl-wordmark span {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    #cl-tagline {
+      position: absolute;
+      left: 192px;
+      top: 470px;
+      width: 1536px;
+      text-align: center;
+      font-size: 62px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .w {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    .green {
+      color: #22c55e;
+    }
+
+    #cl-rule {
+      position: absolute;
+      left: 760px;
+      top: 606px;
+      width: 400px;
+      height: 1px;
+      background: #243049;
+      transform-origin: center;
+      opacity: 0;
+    }
+
+    #cl-credits {
+      position: absolute;
+      left: 310px;
+      top: 664px;
+      width: 1300px;
+      text-align: center;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #cl-name {
+      font-size: 36px;
+      font-weight: 700;
+      color: #e5e7eb;
+      letter-spacing: 0.01em;
+    }
+    .cl-meta {
+      margin-top: 16px;
+      font-size: 29px;
+      font-weight: 500;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+    #cl-stack {
+      margin-top: 18px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #7b8aa0;
+      letter-spacing: 0.02em;
+    }
+    /* Reserved slot for a GitHub / portfolio URL — set the creditUrl
+       variable in Studio (or index.html) and it fills in here. */
+    #cl-url {
+      margin-top: 20px;
+      min-height: 38px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #22c55e;
+      letter-spacing: 0.02em;
+    }
+  </style>
+
+  <!-- data-start/data-duration below mount for the whole scene (generated
+       from window.__TIMING__.scenes.closing); every tween time is read
+       from the manifest. -->
+  <div id="root" data-composition-id="closing" data-width="1920" data-height="1080">
+    <div id="cl-grid" data-layout-ignore></div>
+    <div id="cl-glow" data-layout-ignore></div>
+
+    <div id="cl-wordmark" class="clip" data-start="0" data-duration="9.1322" data-track-index="1" data-layout-allow-overlap>
+      <span id="cl-wm1">Sliding</span> <span id="cl-wm2">Doors</span>
+    </div>
+
+    <div id="cl-tagline" class="clip" data-start="0" data-duration="9.1322" data-track-index="2">
+      <span class="w" id="cl-t1">Stop</span> <span class="w" id="cl-t2">debating</span>
+      <span class="w" id="cl-t3">the</span> <span class="w" id="cl-t4">what-if.</span>
+      <span class="w green" id="cl-t5">Simulate</span> <span class="w green" id="cl-t6">it.</span>
+    </div>
+
+    <div id="cl-rule" data-layout-ignore></div>
+
+    <div id="cl-credits" class="clip" data-start="0" data-duration="9.1322" data-track-index="3">
+      <div id="cl-name" data-var-text="creditName">Aviad Merlin</div>
+      <div class="cl-meta">
+        Built for the Microsoft x Premier League Inside the Game hackathon<br />
+        Demo data: fictional clubs and players
+      </div>
+      <div id="cl-stack">Microsoft Agent Framework + Azure OpenAI</div>
+      <div id="cl-url" data-var-text="creditUrl"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Every time below comes from window.__TIMING__ -- no literal
+      // seconds in this file. See assets/timing.json / video/README.md.
+      const T = window.__TIMING__;
+      const W9 = T.lines["09_wordmark"].words;  // Sliding, Doors
+      const W10 = T.lines["10_tagline"].words;  // Stop,debating,the,what-if,Simulate,it
+      const creditsAt = T.cuts["closing_credits"].timeLocal;
+      const wordmarkAppear = T.lines["09_wordmark"].capAppearLocal;
+
+      tl.fromTo("#cl-wm1", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.62, ease: "power4.out" }, wordmarkAppear);
+      tl.fromTo("#cl-wm2", { opacity: 0, x: -120 }, { opacity: 1, x: 0, duration: 0.62, ease: "power4.out" }, wordmarkAppear);
+
+      // Tagline, word by word.
+      ["#cl-t1", "#cl-t2", "#cl-t3", "#cl-t4", "#cl-t5", "#cl-t6"].forEach((sel, i) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0, y: 26, filter: "blur(9px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.28, ease: "power4.out" },
+          W10[i].startLocal,
+        );
+      });
+
+      tl.fromTo("#cl-rule", { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.5, ease: "power3.out" }, creditsAt - 0.3);
+
+      // Credits ride up in their own zone below the rule, held to the end.
+      tl.fromTo("#cl-credits", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, creditsAt);
+
+      // Slow settle on the whole card so the last frames still breathe.
+      tl.fromTo("#cl-wordmark", { scale: 1 }, { scale: 1.02, duration: T.scenes["closing"].duration, ease: "none" }, 0);
+
+      window.__timelines["closing"] = tl;
+    })();
+  </script>
+</template>

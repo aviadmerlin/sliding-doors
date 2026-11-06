@@ -1,0 +1,202 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+    #rv-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 120px 120px;
+    }
+    #rv-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 72% 44%, rgba(34, 197, 94, 0.16), transparent 58%);
+      opacity: 0;
+    }
+
+    #rv-kicker {
+      position: absolute;
+      left: 192px;
+      top: 150px;
+      width: 1536px;
+      text-align: center;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+
+    .rv-block {
+      position: absolute;
+      top: 268px;
+      width: 760px;
+      text-align: center;
+    }
+    #rv-left {
+      left: 120px;
+    }
+    #rv-right {
+      left: 1040px;
+    }
+    .rv-label {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #rv-left .rv-label {
+      color: #9ca3af;
+    }
+    #rv-right .rv-label {
+      color: #f59e0b;
+    }
+    .rv-num {
+      margin-top: 4px;
+      font-size: 232px;
+      font-weight: 900;
+      letter-spacing: -0.045em;
+      line-height: 1.04;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+    }
+    #rv-num-left {
+      color: #ef4444;
+    }
+    #rv-num-right {
+      color: #22c55e;
+    }
+    .rv-dir {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #rv-dir-left {
+      color: #ef4444;
+    }
+    #rv-dir-right {
+      color: #22c55e;
+    }
+
+    /* Real output from the app, as proof the numbers aren't drawn. */
+    #rv-proof {
+      position: absolute;
+      left: 410px;
+      top: 730px;
+      width: 1100px;
+      height: 286px;
+      border: 1px solid #243049;
+      border-radius: 12px;
+      background-image: url("assets/screens/result_cards.png");
+      background-size: 1447px auto;
+      background-position: -286px -384px;
+      background-repeat: no-repeat;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #rv-proof-tag {
+      position: absolute;
+      left: 410px;
+      top: 694px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #6b7a90;
+      opacity: 0;
+    }
+  </style>
+
+  <!-- data-start/data-duration below mount for the whole scene (generated
+       from window.__TIMING__.scenes.reveal); every tween time is computed
+       live from the manifest's word/cut data. -->
+  <div id="root" data-composition-id="reveal" data-width="1920" data-height="1080">
+    <div id="rv-grid" data-layout-ignore></div>
+    <div id="rv-glow" data-layout-ignore></div>
+
+    <div id="rv-kicker" class="clip" data-start="0" data-duration="6.2648" data-track-index="1">
+      Dunmore Town win chance
+    </div>
+
+    <div id="rv-left" class="rv-block clip" data-start="0" data-duration="6.2648" data-track-index="2">
+      <div class="rv-label" id="rv-label-left">With the goal</div>
+      <div class="rv-num" id="rv-num-left">9%</div>
+      <div class="rv-dir" id="rv-dir-left">▼ goal stood</div>
+    </div>
+
+    <div id="rv-right" class="rv-block clip" data-start="0" data-duration="6.2648" data-track-index="3">
+      <div class="rv-label" id="rv-label-right">Without the goal</div>
+      <div class="rv-num" id="rv-num-right">92%</div>
+      <div class="rv-dir" id="rv-dir-right">▲ +84%</div>
+    </div>
+
+    <div id="rv-proof-tag" class="clip" data-start="0" data-duration="6.2648" data-track-index="4">
+      Real output
+    </div>
+    <div id="rv-proof" class="clip" data-start="0" data-duration="6.2648" data-track-index="5"></div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Every time below comes from window.__TIMING__ -- no literal
+      // seconds in this file. See assets/timing.json / video/README.md.
+      // Word 9/10/11 ("9%","to","92%") are a proportional decomposition
+      // of one merged TTS token -- see 01_generate_audio.py -- everything
+      // else is a raw WordBoundary timestamp.
+      const T = window.__TIMING__;
+      const W = T.lines["06_reveal"].words;
+      const wGoal = W[2];   // "goal" -- the fork names itself
+      const wJumps = W[7];  // "jumps" -- anticipation begins
+      const w9 = W[9];      // "9%"
+      const w92 = W[11];    // "92%"
+
+      tl.fromTo("#rv-label-left", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 0.05);
+      tl.fromTo("#rv-num-left", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.1);
+      tl.fromTo("#rv-dir-left", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+
+      // The empty right-hand side is labelled early so the question is
+      // legible long before the answer arrives.
+      tl.fromTo("#rv-label-right", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, wGoal.startLocal + 0.2);
+
+      // "jumps" — anticipation. The bass swell is already running under
+      // this (impact SFX peak lands on "92%", see assets/timing.json).
+      // The old number dims.
+      const jumpsToNinetyTwo = w92.startLocal - wJumps.startLocal;
+      // Must finish strictly before the "9%" pulse below starts (w9.startLocal),
+      // or its tail silently overrides the pulse's resting scale.
+      const dimStart = wJumps.startLocal + 0.19;
+      const dimDuration = Math.max(0.12, Math.min(0.66, w9.startLocal - dimStart - 0.02));
+      tl.to("#rv-num-left", { opacity: 0.45, scale: 0.94, duration: dimDuration, ease: "power2.inOut" }, dimStart);
+
+      // "9%" — one last pulse on the number about to be replaced, timed
+      // to finish just before the slam.
+      tl.to("#rv-num-left", { scale: 1.02, duration: 0.16, ease: "power2.out" }, w9.startLocal);
+      tl.to("#rv-num-left", { scale: 0.94, duration: Math.max(0.1, w92.startLocal - w9.startLocal - 0.16), ease: "power2.inOut" }, w9.startLocal + 0.16);
+
+      // "92%" — the slam. Everything lands on this frame.
+      tl.fromTo("#rv-num-right", { opacity: 0, scale: 1.45, filter: "blur(22px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.34, ease: "power4.out" }, w92.startLocal);
+      tl.fromTo("#rv-glow", { opacity: 0 }, { opacity: 1, duration: 0.42, ease: "power2.out" }, w92.startLocal);
+      tl.fromTo("#rv-dir-right", { opacity: 0, y: 20, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2.4)" }, w92.startLocal + 0.14);
+
+      // Proof: the real cards this came from, held under the numbers.
+      const proofAt = T.cuts["reveal_proof"].timeLocal;
+      tl.fromTo("#rv-proof-tag", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, proofAt);
+      tl.fromTo("#rv-proof", { opacity: 0, y: 34 }, { opacity: 0.88, y: 0, duration: 0.44, ease: "power3.out" }, proofAt);
+
+      window.__timelines["reveal"] = tl;
+    })();
+  </script>
+</template>

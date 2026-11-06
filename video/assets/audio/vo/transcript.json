@@ -1,0 +1,74 @@
+[
+  {
+    "text": "Without",
+    "start": 0.17,
+    "end": 0.52,
+    "id": "w0"
+  },
+  {
+    "text": "that",
+    "start": 0.52,
+    "end": 0.82,
+    "id": "w1"
+  },
+  {
+    "text": "goal,",
+    "start": 0.82,
+    "end": 1.28,
+    "id": "w2"
+  },
+  {
+    "text": "Dunmore",
+    "start": 1.36,
+    "end": 1.86,
+    "id": "w3"
+  },
+  {
+    "text": "towns",
+    "start": 1.86,
+    "end": 2.26,
+    "id": "w4"
+  },
+  {
+    "text": "win",
+    "start": 2.28,
+    "end": 2.52,
+    "id": "w5"
+  },
+  {
+    "text": "chance",
+    "start": 2.52,
+    "end": 2.93,
+    "id": "w6"
+  },
+  {
+    "text": "jumps",
+    "start": 3.05,
+    "end": 3.43,
+    "id": "w7"
+  },
+  {
+    "text": "from",
+    "start": 3.43,
+    "end": 3.76,
+    "id": "w8"
+  },
+  {
+    "text": "9%",
+    "start": 3.76,
+    "end": 4.08,
+    "id": "w9"
+  },
+  {
+    "text": "to",
+    "start": 4.09,
+    "end": 4.25,
+    "id": "w10"
+  },
+  {
+    "text": "92%.",
+    "start": 4.25,
+    "end": 4.95,
+    "id": "w11"
+  }
+]

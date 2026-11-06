@@ -1,0 +1,402 @@
+{
+  "01_hook": {
+    "text": "What if the 84th-minute goal never happened?",
+    "duration": 2.7384,
+    "rawDuration": 3.024,
+    "words": [
+      {
+        "text": "What",
+        "start": 0.1052,
+        "end": 0.2105
+      },
+      {
+        "text": "if",
+        "start": 0.2237,
+        "end": 0.3421
+      },
+      {
+        "text": "the",
+        "start": 0.3553,
+        "end": 0.4605
+      },
+      {
+        "text": "84th-minute",
+        "start": 0.579,
+        "end": 1.4605
+      },
+      {
+        "text": "goal",
+        "start": 1.4737,
+        "end": 1.8026
+      },
+      {
+        "text": "never",
+        "start": 1.9079,
+        "end": 2.1579
+      },
+      {
+        "text": "happened",
+        "start": 2.171,
+        "end": 2.6184
+      }
+    ]
+  },
+  "02_problem_a": {
+    "text": "We'd have won if that goal hadn't gone in.",
+    "duration": 2.1332,
+    "rawDuration": 2.4,
+    "words": [
+      {
+        "text": "We'd",
+        "start": 0.1052,
+        "end": 0.2237
+      },
+      {
+        "text": "have",
+        "start": 0.2368,
+        "end": 0.3684
+      },
+      {
+        "text": "won",
+        "start": 0.3816,
+        "end": 0.5658
+      },
+      {
+        "text": "if",
+        "start": 0.579,
+        "end": 0.6974
+      },
+      {
+        "text": "that",
+        "start": 0.7105,
+        "end": 0.9079
+      },
+      {
+        "text": "goal",
+        "start": 0.921,
+        "end": 1.2368
+      },
+      {
+        "text": "hadn't",
+        "start": 1.25,
+        "end": 1.5395
+      },
+      {
+        "text": "gone",
+        "start": 1.5526,
+        "end": 1.7895
+      },
+      {
+        "text": "in",
+        "start": 1.8026,
+        "end": 2.0132
+      }
+    ]
+  },
+  "03_problem_b": {
+    "text": "Now you can test it.",
+    "duration": 1.0674,
+    "rawDuration": 1.872,
+    "words": [
+      {
+        "text": "Now",
+        "start": 0.1052,
+        "end": 0.2105
+      },
+      {
+        "text": "you",
+        "start": 0.2237,
+        "end": 0.3158
+      },
+      {
+        "text": "can",
+        "start": 0.329,
+        "end": 0.4474
+      },
+      {
+        "text": "test",
+        "start": 0.4605,
+        "end": 0.7895
+      },
+      {
+        "text": "it",
+        "start": 0.8026,
+        "end": 0.9474
+      }
+    ]
+  },
+  "04_turning_point": {
+    "text": "Minute 84: one goal swings the match.",
+    "duration": 3.0937,
+    "rawDuration": 3.36,
+    "words": [
+      {
+        "text": "Minute",
+        "start": 0.1052,
+        "end": 0.3553
+      },
+      {
+        "text": "84",
+        "start": 0.3684,
+        "end": 0.9868
+      },
+      {
+        "text": "one",
+        "start": 1.329,
+        "end": 1.5526
+      },
+      {
+        "text": "goal",
+        "start": 1.5658,
+        "end": 1.8552
+      },
+      {
+        "text": "swings",
+        "start": 1.8684,
+        "end": 2.3026
+      },
+      {
+        "text": "the",
+        "start": 2.3158,
+        "end": 2.3947
+      },
+      {
+        "text": "match",
+        "start": 2.4079,
+        "end": 2.9737
+      }
+    ]
+  },
+  "05a_cancel": {
+    "text": "Cancel it.",
+    "duration": 0.7121,
+    "rawDuration": 1.872,
+    "words": [
+      {
+        "text": "Cancel",
+        "start": 0.1052,
+        "end": 0.4342
+      },
+      {
+        "text": "it",
+        "start": 0.4474,
+        "end": 0.5921
+      }
+    ]
+  },
+  "05b_replay": {
+    "text": "Replay the match.",
+    "duration": 1.1068,
+    "rawDuration": 1.872,
+    "words": [
+      {
+        "text": "Replay",
+        "start": 0.1052,
+        "end": 0.3947
+      },
+      {
+        "text": "the",
+        "start": 0.4079,
+        "end": 0.4868
+      },
+      {
+        "text": "match",
+        "start": 0.5,
+        "end": 0.9868
+      }
+    ]
+  },
+  "06_reveal": {
+    "text": "Without that goal, Dunmore Town's win chance jumps from 9% to 92%.",
+    "duration": 5.1332,
+    "rawDuration": 5.4,
+    "words": [
+      {
+        "text": "Without",
+        "start": 0.1184,
+        "end": 0.4079
+      },
+      {
+        "text": "that",
+        "start": 0.421,
+        "end": 0.6316
+      },
+      {
+        "text": "goal",
+        "start": 0.6448,
+        "end": 0.9605
+      },
+      {
+        "text": "Dunmore",
+        "start": 1.2632,
+        "end": 1.6316
+      },
+      {
+        "text": "Town's",
+        "start": 1.6447,
+        "end": 2.0263
+      },
+      {
+        "text": "win",
+        "start": 2.0395,
+        "end": 2.2105
+      },
+      {
+        "text": "chance",
+        "start": 2.2237,
+        "end": 2.5789
+      },
+      {
+        "text": "jumps",
+        "start": 2.5921,
+        "end": 2.9079
+      },
+      {
+        "text": "from",
+        "start": 2.921,
+        "end": 3.1052
+      },
+      {
+        "text": "9%",
+        "start": 3.1184,
+        "end": 3.8401,
+        "derived": "proportional-split"
+      },
+      {
+        "text": "to",
+        "start": 3.8401,
+        "end": 4.0205,
+        "derived": "proportional-split"
+      },
+      {
+        "text": "92%",
+        "start": 4.0205,
+        "end": 5.0132,
+        "derived": "proportional-split"
+      }
+    ]
+  },
+  "07_ask_agent": {
+    "text": "Or just ask the AI agent.",
+    "duration": 1.62,
+    "rawDuration": 1.896,
+    "words": [
+      {
+        "text": "Or",
+        "start": 0.1052,
+        "end": 0.171
+      },
+      {
+        "text": "just",
+        "start": 0.1842,
+        "end": 0.3947
+      },
+      {
+        "text": "ask",
+        "start": 0.4079,
+        "end": 0.6579
+      },
+      {
+        "text": "the",
+        "start": 0.671,
+        "end": 0.75
+      },
+      {
+        "text": "AI",
+        "start": 0.7632,
+        "end": 1.079
+      },
+      {
+        "text": "agent",
+        "start": 1.0921,
+        "end": 1.5
+      }
+    ]
+  },
+  "08_answer": {
+    "text": "Same answer, in plain English.",
+    "duration": 1.949,
+    "rawDuration": 2.208,
+    "words": [
+      {
+        "text": "Same",
+        "start": 0.1052,
+        "end": 0.3289
+      },
+      {
+        "text": "answer",
+        "start": 0.3421,
+        "end": 0.7237
+      },
+      {
+        "text": "in",
+        "start": 0.9737,
+        "end": 1.0395
+      },
+      {
+        "text": "plain",
+        "start": 1.0526,
+        "end": 1.3158
+      },
+      {
+        "text": "English",
+        "start": 1.329,
+        "end": 1.829
+      }
+    ]
+  },
+  "09_wordmark": {
+    "text": "Sliding Doors.",
+    "duration": 1.0542,
+    "rawDuration": 1.872,
+    "words": [
+      {
+        "text": "Sliding",
+        "start": 0.1052,
+        "end": 0.4605
+      },
+      {
+        "text": "Doors",
+        "start": 0.4737,
+        "end": 0.9342
+      }
+    ]
+  },
+  "10_tagline": {
+    "text": "Stop debating the what-if. Simulate it.",
+    "duration": 2.7384,
+    "rawDuration": 3.0,
+    "words": [
+      {
+        "text": "Stop",
+        "start": 0.1052,
+        "end": 0.4605
+      },
+      {
+        "text": "debating",
+        "start": 0.4737,
+        "end": 0.9079
+      },
+      {
+        "text": "the",
+        "start": 0.921,
+        "end": 1.0
+      },
+      {
+        "text": "what-if",
+        "start": 1.0132,
+        "end": 1.5658
+      },
+      {
+        "text": "Simulate",
+        "start": 2.0,
+        "end": 2.4605
+      },
+      {
+        "text": "it",
+        "start": 2.4737,
+        "end": 2.6184
+      }
+    ]
+  }
+}

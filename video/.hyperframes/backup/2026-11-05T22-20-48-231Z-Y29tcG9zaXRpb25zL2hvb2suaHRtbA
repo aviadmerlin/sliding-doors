@@ -1,0 +1,165 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #0b1220;
+      font-family: Inter, sans-serif;
+      color: #e5e7eb;
+    }
+    /* Faint engineering grid — the product is a simulator, not a billboard. */
+    #hk-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 120px 120px;
+    }
+    #hk-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 45%, rgba(59, 130, 246, 0.1), transparent 62%);
+    }
+    /* The "sliding door" seam: the film's recurring motif. */
+    #hk-seam {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 1080px;
+      margin-left: -1px;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(245, 158, 11, 0.55) 22%,
+        rgba(245, 158, 11, 0.55) 78%,
+        transparent
+      );
+      opacity: 0;
+    }
+    #hk-copy {
+      position: absolute;
+      left: 192px;
+      top: 0;
+      width: 1536px;
+      height: 1080px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .hk-line {
+      display: block;
+      white-space: nowrap;
+    }
+    #hk-l1 {
+      font-size: 46px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+    #hk-l2,
+    #hk-l3 {
+      font-size: 128px;
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+    }
+    /* The whole question is on screen from frame 0 as a ghost, then each
+       word lights up on the syllable that says it. Gives a legible first
+       frame (the social thumbnail) and a light-up rhythm rather than the
+       usual word-by-word fade-in. */
+    .w {
+      display: inline-block;
+      opacity: 0.34;
+      will-change: transform, opacity, filter;
+    }
+    .amber {
+      color: #f59e0b;
+    }
+    .red {
+      color: #ef4444;
+    }
+    /* Underline that sweeps beneath the minute, drawn like the chart's marker. */
+    #hk-rule {
+      position: absolute;
+      left: 50%;
+      bottom: 318px;
+      width: 560px;
+      height: 4px;
+      margin-left: -280px;
+      background: #f59e0b;
+      transform-origin: left center;
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080">
+    <div id="hk-grid" data-layout-ignore></div>
+    <div id="hk-vignette" data-layout-ignore></div>
+    <div id="hk-seam" data-layout-ignore></div>
+
+    <div id="hk-copy" data-layout-allow-overflow>
+      <div id="hk-l1" class="hk-line clip" data-start="0" data-duration="3.4" data-track-index="1">
+        <span class="w" id="hk-w1">What</span> <span class="w" id="hk-w2">if</span>
+        <span class="w" id="hk-w3">the</span>
+      </div>
+      <div id="hk-l2" class="hk-line clip" data-start="0" data-duration="3.4" data-track-index="2">
+        <span class="w amber" id="hk-w4">84th-minute</span> <span class="w" id="hk-w5">goal</span>
+      </div>
+      <div id="hk-l3" class="hk-line clip" data-start="0" data-duration="3.4" data-track-index="3">
+        <span class="w red" id="hk-w6">never</span> <span class="w" id="hk-w7">happened?</span>
+      </div>
+    </div>
+
+    <div id="hk-rule" data-layout-ignore></div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Word entrances land on the measured voiceover (assets/audio/vo/words.json,
+      // 01_hook) + the line's 0.2 s lead-in: What 0.20, if 0.50, the 0.66,
+      // 84th-minute 0.88, goal 1.72, never 2.02, happened? 2.40.
+      const words = [
+        ["#hk-w1", 0.2],
+        ["#hk-w2", 0.503],
+        ["#hk-w3", 0.655],
+        ["#hk-w4", 0.882],
+        ["#hk-w5", 1.716],
+        ["#hk-w6", 2.019],
+        ["#hk-w7", 2.398],
+      ];
+      words.forEach(([sel, t]) => {
+        tl.fromTo(
+          sel,
+          { opacity: 0.34, scale: 0.97, filter: "blur(3px)" },
+          { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.3, ease: "power4.out" },
+          t,
+        );
+      });
+
+      // Rule sweeps under "84th-minute" as the minute is spoken.
+      tl.fromTo(
+        "#hk-rule",
+        { opacity: 0, scaleX: 0 },
+        { opacity: 1, scaleX: 1, duration: 0.46, ease: "power3.out" },
+        0.95,
+      );
+
+      // The seam wakes up on the last word — the door about to slide.
+      tl.fromTo("#hk-seam", { opacity: 0, scaleY: 0.3 }, { opacity: 1, scaleY: 1, duration: 0.5, ease: "power2.out" }, 2.42);
+      tl.to("#hk-seam", { opacity: 0.25, duration: 0.5, ease: "power1.inOut" }, 2.95);
+
+      // Slow push-in across the whole hook so it never sits still.
+      tl.fromTo("#hk-copy", { scale: 1 }, { scale: 1.045, duration: 3.4, ease: "none" }, 0);
+
+      window.__timelines["hook"] = tl;
+    })();
+  </script>
+</template>

@@ -91,8 +91,7 @@ to a conversational answer:
 Microsoft Foundry / Azure OpenAI (`gpt-5-mini`, Global Standard
 deployment), Azure Monitor OpenTelemetry / Application Insights (optional
 tracing of every agent run and tool call to the Foundry portal), Azure
-Container Apps (hosts the live demo), and Azure AI Speech (neural
-voiceover for the demo video only). See the README's "Microsoft & Azure
+Container Apps (hosts the live demo). See the README's "Microsoft & Azure
 stack" section for exactly how each is wired in — nothing claimed there
 isn't actually used.
 

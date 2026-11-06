@@ -17,7 +17,7 @@ All match data is **100% synthetic**: a fictional 20-club league, fictional
 players, 5 simulated seasons — no real clubs, players, or logos anywhere
 in the code, data, or UI.
 
-- **Demo video:** [video/hyperframes/renders/full-v5.mp4](video/hyperframes/renders/full-v5.mp4) (draft quality — still being polished, see [video/CRITIQUE.md](video/CRITIQUE.md))
+- **Demo video:** [video/renders/sliding-doors-demo.mp4](video/renders/sliding-doors-demo.mp4) (36s, 1080p — built from real Playwright recordings of the running app, see [video/README.md](video/README.md))
 - **Live demo:** https://sliding-doors.happytree-e6502234.switzerlandnorth.azurecontainerapps.io/
   (Azure Container Apps, `switzerlandnorth`)
 - **Submission pitch / testing instructions:** [SUBMISSION.md](SUBMISSION.md)
@@ -89,9 +89,6 @@ Only what's actually wired up and used — nothing aspirational:
   deployment), `reasoning: {"effort": "low"}` + a 1200-token cap on both
   roles for cost control. Configured via `AZURE_OPENAI_ENDPOINT` /
   `AZURE_OPENAI_API_KEY` / `AZURE_OPENAI_CHAT_DEPLOYMENT_NAME`.
-- **Azure AI Speech** (neural text-to-speech) — used only to generate the
-  demo video's voiceover (`video/scripts/generate-voiceover.mjs`), not
-  part of the running app.
 - **Azure Monitor OpenTelemetry / Application Insights** (optional) —
   `azure-monitor-opentelemetry` + Agent Framework's built-in OTel
   instrumentation trace every agent run and tool call to the Foundry
@@ -147,9 +144,9 @@ tests/                    # pytest suite: data integrity, model logic, consisten
 .streamlit/config.toml    # dark sports-product theme
 .claude/skills/developing-with-streamlit/  # official Streamlit agent skill (vendored, see Setup)
 Dockerfile / .dockerignore  # Azure Container Apps deployment (see "Deployment" below)
-video/                    # Remotion project that produces the hackathon demo video
-                            # from real Playwright recordings of the live app + an
-                            # Azure AI Speech voiceover -- see video/README.md
+video/                    # HyperFrames project that produces the hackathon demo video
+                            # from real Playwright recordings of the live app -- see
+                            # video/README.md (video-old/ is the superseded first attempt)
 ```
 
 ## Setup & run (from a clean clone)
