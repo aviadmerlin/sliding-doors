@@ -17,7 +17,11 @@ All match data is **100% synthetic**: a fictional 20-club league, fictional
 players, 5 simulated seasons — no real clubs, players, or logos anywhere
 in the code, data, or UI.
 
-- **Demo video:** [video/renders/sliding-doors-demo.mp4](video/renders/sliding-doors-demo.mp4) (36s, 1080p — built from real Playwright recordings of the running app, see [video/README.md](video/README.md))
+- **Demo video** (35.9s, 1080p — built from real Playwright recordings of the running app, see [video/README.md](video/README.md)):
+
+  https://github.com/user-attachments/assets/9d84f811-65a3-448c-8054-3a2ec7a2bbb9
+
+  (source file: [video/renders/sliding-doors-demo.mp4](video/renders/sliding-doors-demo.mp4))
 - **Live demo:** https://sliding-doors.happytree-e6502234.switzerlandnorth.azurecontainerapps.io/
   (Azure Container Apps, `switzerlandnorth`)
 - **Submission pitch / testing instructions:** [SUBMISSION.md](SUBMISSION.md)
